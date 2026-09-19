@@ -2,565 +2,299 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dashboard - STEAM MP 7000</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STEAM MP 7000 — Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  :root{
-    --merah:#C8102E;
-    --merah-dark:#9B0C23;
-    --emas:#F59E0B;
-    --emas-dark:#B45309;
-    --putih:#FFFFFF;
-    --hitam:#1F2937;
-    --abu:#6B7280;
-    --abu-bg:#F3F4F6;
-    --hijau:#16A34A;
-    --hijau-bg:#DCFCE7;
-    --merah-bg:#FEE2E2;
-    --biru:#2563EB;
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --merah:#C8102E; --merah-hover:#A00D25;
+    --emas:#F59E0B; --emas-muda:#FBBF24;
+    --abu:#F9FAFB; --text:#1F2937; --text-light:#6B7280;
+    --border:#E5E7EB;
   }
-  html,body{height:100%}
-  body{
+  body {
     font-family:'Poppins',system-ui,-apple-system,sans-serif;
-    background:var(--abu-bg);
-    color:var(--hitam);
-    min-height:100vh;
-    padding-bottom:78px;
-    overflow-x:hidden;
+    background:var(--abu); color:var(--text);
+    min-height:100vh; padding-bottom:74px;
+    font-size:14px;
   }
 
-  /* ===== HEADER ===== */
-  #appHeader{
-    background:linear-gradient(135deg,var(--merah),var(--merah-dark));
-    color:#fff;
-    padding:14px 16px;
-    position:sticky;
-    top:0;
-    z-index:50;
-    box-shadow:0 3px 12px rgba(0,0,0,.18);
+  /* ============ HEADER ============ */
+  #appHeader {
+    position:fixed; top:0; left:0; right:0; z-index:40;
+    background:linear-gradient(135deg,#C8102E,#A00D25);
+    color:#fff; padding:10px 14px;
+    display:flex; align-items:center; gap:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,.18);
+    min-height:60px;
   }
-  .hdr-row{
-    display:flex;
-    align-items:center;
-    gap:10px;
+  .header-logo {
+    width:40px; height:40px; border-radius:50%;
+    background:linear-gradient(135deg,#FBBF24,#F59E0B);
+    color:#C8102E; font-weight:800; font-size:15px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; box-shadow:0 3px 8px rgba(0,0,0,.25);
   }
-  .hdr-logo{
-    width:40px;height:40px;
-    border-radius:50%;
-    background:linear-gradient(145deg,#F59E0B,#D97706);
-    display:flex;align-items:center;justify-content:center;
-    font-weight:800;font-size:14px;color:#fff;
-    border:2px solid rgba(255,255,255,.7);
+  .header-info { flex:1; min-width:0; }
+  .header-title { font-size:14px; font-weight:800; letter-spacing:-.3px; }
+  .header-user {
+    font-size:11px; opacity:.92; margin-top:1px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .header-sub { font-size:9.5px; opacity:.85; font-style:italic; margin-top:1px; }
+  .badge-demo {
+    background:#FBBF24; color:#111827;
+    padding:4px 8px; border-radius:6px;
+    font-size:10px; font-weight:800; letter-spacing:.4px;
     flex-shrink:0;
   }
-  .hdr-title{
-    flex:1;
-    min-width:0;
+  .header-actions { display:flex; gap:6px; flex-shrink:0; }
+  .header-btn {
+    background:rgba(255,255,255,.16); border:none; color:#fff;
+    width:36px; height:36px; border-radius:10px;
+    font-size:16px; cursor:pointer; transition:.15s;
+    display:flex; align-items:center; justify-content:center;
   }
-  .hdr-title h1{
-    font-size:15px;font-weight:800;letter-spacing:.4px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  }
-  .hdr-title p{
-    font-size:11px;opacity:.9;font-weight:500;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  }
-  .hdr-actions{display:flex;gap:6px;align-items:center}
-  .hdr-btn{
-    background:rgba(255,255,255,.18);
-    border:none;
-    color:#fff;
-    width:36px;height:36px;
-    border-radius:10px;
-    cursor:pointer;
-    font-size:16px;
-    display:flex;align-items:center;justify-content:center;
-    transition:.18s;
-  }
-  .hdr-btn:hover{background:rgba(255,255,255,.32)}
-  .demo-badge{
-    background:var(--emas);
-    color:#fff;
-    font-size:9.5px;
-    font-weight:700;
-    padding:3px 7px;
-    border-radius:20px;
-    letter-spacing:.5px;
-    white-space:nowrap;
-  }
+  .header-btn:hover { background:rgba(255,255,255,.3); }
 
-  /* ===== CONTENT ===== */
-  #appContent{
-    padding:16px;
-    max-width:900px;
-    margin:0 auto;
+  /* ============ CONTENT ============ */
+  #appContent {
+    max-width:1100px; margin:0 auto;
+    padding:76px 14px 20px;
   }
+  .page-title {
+    font-size:18px; font-weight:800; color:var(--text);
+    margin-bottom:4px; letter-spacing:-.3px;
+  }
+  .page-sub { font-size:12px; color:var(--text-light); margin-bottom:16px; }
+  .back-btn {
+    display:inline-flex; align-items:center; gap:6px;
+    background:#fff; border:1px solid var(--border);
+    padding:8px 14px; border-radius:10px;
+    font-family:inherit; font-size:12.5px; font-weight:600;
+    color:var(--text); cursor:pointer; margin-bottom:14px;
+    transition:.15s;
+  }
+  .back-btn:hover { border-color:var(--merah); color:var(--merah); }
 
-  .page-title{
-    font-size:18px;
-    font-weight:800;
-    color:var(--merah);
-    margin-bottom:4px;
+  /* ============ MENU GRID ============ */
+  .menu-grid {
+    display:grid; grid-template-columns:repeat(2,1fr); gap:12px;
   }
-  .page-sub{
-    font-size:12.5px;
-    color:var(--abu);
-    margin-bottom:16px;
-  }
-
-  /* ===== MENU GRID ===== */
-  .menu-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:12px;
-  }
-  .menu-card{
-    background:#fff;
-    border-radius:16px;
-    padding:16px 12px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:9px;
-    cursor:pointer;
-    border:none;
-    font-family:inherit;
-    box-shadow:0 2px 8px rgba(0,0,0,.06);
-    transition:.2s;
-    text-align:center;
+  .menu-card {
+    background:#fff; border-radius:12px; padding:18px 12px;
+    box-shadow:0 2px 4px rgba(0,0,0,.1);
+    cursor:pointer; transition:.18s;
+    display:flex; flex-direction:column; align-items:center;
+    gap:8px; text-align:center; border:1.5px solid transparent;
     position:relative;
-    overflow:hidden;
   }
-  .menu-card::after{
-    content:"";
-    position:absolute;
-    inset:auto 0 0 0;
-    height:3px;
-    background:linear-gradient(90deg,var(--merah),var(--emas));
-    transform:scaleX(0);
-    transition:.25s;
+  .menu-card:hover {
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(0,0,0,.13);
+    border-color:var(--emas-muda);
   }
-  .menu-card:hover{transform:translateY(-3px);box-shadow:0 8px 18px rgba(200,16,46,.15)}
-  .menu-card:hover::after{transform:scaleX(1)}
-  .menu-card .m-ico{
-    width:48px;height:48px;
-    border-radius:13px;
-    background:linear-gradient(145deg,var(--merah),var(--merah-dark));
-    color:#fff;
-    display:flex;align-items:center;justify-content:center;
-    font-size:22px;
-    box-shadow:0 4px 10px rgba(200,16,46,.28);
+  .menu-card .ikon { font-size:28px; line-height:1; }
+  .menu-card .label { font-size:12.5px; font-weight:600; line-height:1.3; }
+  .menu-card.highlight {
+    background:linear-gradient(135deg,#FFF7ED,#FFFBEB);
+    border-color:var(--emas-muda);
   }
-  .menu-card .m-label{
-    font-size:12px;
-    font-weight:700;
-    color:var(--hitam);
-    line-height:1.3;
+  .menu-card.highlight .label { color:var(--merah); }
+
+  /* ============ CARD / PANEL ============ */
+  .card {
+    background:#fff; border-radius:12px; padding:16px;
+    box-shadow:0 2px 4px rgba(0,0,0,.1); margin-bottom:14px;
+  }
+  .card-title {
+    font-size:14px; font-weight:700; margin-bottom:12px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .card-title::before {
+    content:''; width:4px; height:16px;
+    background:var(--merah); border-radius:2px;
   }
 
-  /* ===== CARD / SECTION ===== */
-  .card{
-    background:#fff;
-    border-radius:16px;
-    padding:16px;
-    box-shadow:0 2px 10px rgba(0,0,0,.06);
-    margin-bottom:14px;
+  /* ============ FORM ============ */
+  .field { margin-bottom:13px; }
+  .field label {
+    display:block; font-size:12px; font-weight:600;
+    color:#374151; margin-bottom:5px;
   }
-  .card h2{
-    font-size:15px;
-    font-weight:800;
-    color:var(--merah);
-    margin-bottom:12px;
-    display:flex;align-items:center;gap:8px;
+  input, select, textarea {
+    width:100%; padding:11px 12px;
+    border:1.5px solid var(--border); border-radius:9px;
+    font-family:inherit; font-size:13.5px; color:var(--text);
+    background:#F9FAFB; transition:.15s; outline:none;
   }
-  .back-btn{
-    background:none;border:none;
-    color:var(--merah);
-    font-family:inherit;
-    font-weight:700;
-    font-size:13px;
-    cursor:pointer;
-    padding:0;
-    margin-bottom:12px;
-    display:flex;align-items:center;gap:6px;
+  input:focus, select:focus, textarea:focus {
+    border-color:var(--merah); background:#fff;
+    box-shadow:0 0 0 3px rgba(200,16,46,.09);
   }
-  .back-btn:hover{text-decoration:underline}
+  input:disabled, select:disabled {
+    background:#F3F4F6; color:#9CA3AF; cursor:not-allowed;
+  }
+  input[readonly] { background:#F3F4F6; color:#6B7280; }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .toggle-group {
+    display:flex; background:#F3F4F6; border-radius:10px;
+    padding:4px; gap:4px; margin-bottom:14px;
+  }
+  .toggle-btn {
+    flex:1; padding:10px; border:none; background:transparent;
+    border-radius:8px; font-family:inherit; font-size:12.5px;
+    font-weight:700; color:#6B7280; cursor:pointer; transition:.15s;
+  }
+  .toggle-btn.active {
+    background:var(--merah); color:#fff;
+    box-shadow:0 3px 8px rgba(200,16,46,.28);
+  }
+  .toggle-btn.active.gray { background:#6B7280; box-shadow:none; }
 
-  /* ===== FORM ===== */
-  .form-group{margin-bottom:13px}
-  .form-group label{
-    display:block;
-    font-size:12.5px;
-    font-weight:600;
-    margin-bottom:5px;
-    color:var(--hitam);
+  /* ============ BUTTONS ============ */
+  .btn-primary, .btn-outline, .btn-danger, .btn-ghost {
+    padding:12px 18px; border-radius:9px;
+    font-family:inherit; font-size:13px; font-weight:700;
+    cursor:pointer; transition:.15s; border:none;
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    letter-spacing:.2px;
   }
-  .form-group input,
-  .form-group select,
-  .form-group textarea{
-    width:100%;
-    padding:11px 12px;
-    border:1.5px solid #E5E7EB;
-    border-radius:10px;
-    font-family:inherit;
-    font-size:14px;
-    color:var(--hitam);
-    background:#fff;
-    outline:none;
-    transition:.18s;
+  .btn-primary {
+    background:var(--merah); color:#fff;
+    box-shadow:0 3px 10px rgba(200,16,46,.28);
   }
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus{
-    border-color:var(--merah);
-    box-shadow:0 0 0 3px rgba(200,16,46,.1);
+  .btn-primary:hover:not(:disabled) { background:var(--merah-hover); }
+  .btn-primary:disabled, .btn-primary.disabled {
+    opacity:.5; cursor:not-allowed; box-shadow:none;
   }
-  .form-group input:disabled,
-  .form-group select:disabled{
-    background:var(--abu-bg);
-    color:var(--abu);
-    cursor:not-allowed;
+  .btn-outline {
+    background:#fff; color:var(--merah);
+    border:2px solid var(--emas);
   }
-  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .btn-outline:hover:not(:disabled) { background:#FFFBEB; }
+  .btn-outline:disabled, .btn-outline.disabled { opacity:.5; cursor:not-allowed; }
+  .btn-danger { background:#DC2626; color:#fff; }
+  .btn-danger:hover:not(:disabled){ background:#B91C1C; }
+  .btn-danger:disabled { opacity:.5; cursor:not-allowed; }
+  .btn-ghost {
+    background:#F3F4F6; color:#374151;
+  }
+  .btn-ghost:hover { background:#E5E7EB; }
+  .btn-block { width:100%; }
+  .btn-sm { padding:7px 12px; font-size:11.5px; border-radius:8px; }
 
-  .toggle-group{
-    display:flex;
-    gap:8px;
-    margin-bottom:13px;
+  /* ============ TABLE ============ */
+  .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; min-width:480px; }
+  thead th {
+    background:#FEF2F2; color:var(--merah);
+    font-weight:700; font-size:11.5px; text-align:left;
+    padding:10px 10px; white-space:nowrap;
+    border-bottom:1.5px solid #FECACA;
   }
-  .toggle-btn{
-    flex:1;
-    padding:10px;
-    border-radius:10px;
-    border:1.5px solid #E5E7EB;
-    background:#fff;
-    font-family:inherit;
-    font-weight:700;
-    font-size:12.5px;
-    cursor:pointer;
-    color:var(--abu);
-    transition:.18s;
-  }
-  .toggle-btn.active{
-    background:var(--merah);
-    color:#fff;
-    border-color:var(--merah);
-  }
-  .toggle-btn.active.green{
-    background:var(--hijau);
-    border-color:var(--hijau);
-  }
-  .toggle-btn.active.red{
-    background:#DC2626;
-    border-color:#DC2626;
-  }
-
-  .preview-box{
-    background:linear-gradient(135deg,#FFF7ED,#FFEDD5);
-    border:1.5px dashed var(--emas);
-    border-radius:12px;
-    padding:12px 14px;
-    margin-bottom:14px;
-  }
-  .preview-box .pv-label{
-    font-size:11.5px;
-    color:var(--emas-dark);
-    font-weight:600;
-  }
-  .preview-box .pv-value{
-    font-size:20px;
-    font-weight:800;
-    color:var(--merah);
-    margin-top:2px;
-  }
-
-  .btn{
-    padding:12px 18px;
-    border-radius:11px;
-    font-family:inherit;
-    font-size:14px;
-    font-weight:700;
-    cursor:pointer;
-    border:none;
-    transition:.2s;
-    letter-spacing:.3px;
-  }
-  .btn-primary{
-    background:linear-gradient(145deg,var(--merah),var(--merah-dark));
-    color:#fff;
-    box-shadow:0 4px 12px rgba(200,16,46,.3);
-    width:100%;
-  }
-  .btn-primary:hover{filter:brightness(1.06)}
-  .btn-primary:disabled{opacity:.6;cursor:not-allowed}
-  .btn-outline{
-    background:transparent;
-    border:1.5px solid var(--merah);
-    color:var(--merah);
-  }
-  .btn-outline:hover{background:rgba(200,16,46,.07)}
-  .btn-gold{
-    background:linear-gradient(145deg,var(--emas),var(--emas-dark));
-    color:#fff;
-    box-shadow:0 4px 12px rgba(245,158,11,.3);
-  }
-  .btn-gold:hover{filter:brightness(1.06)}
-  .btn-sm{
-    padding:7px 12px;
-    font-size:12px;
-    border-radius:9px;
-  }
-  .btn-ghost{
-    background:var(--abu-bg);
-    color:var(--hitam);
-    border:1px solid #E5E7EB;
-  }
-  .btn-ghost:hover{background:#E5E7EB}
-  .btn-danger{
-    background:#FEE2E2;
-    color:#991B1B;
-    border:1px solid #FCA5A5;
-  }
-  .btn-danger:hover{background:#FCA5A5}
-  .btn-row{display:flex;gap:8px;flex-wrap:wrap}
-
-  /* ===== TABLE ===== */
-  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  table{
-    width:100%;
-    border-collapse:collapse;
-    font-size:12.5px;
-    min-width:520px;
-  }
-  table th{
-    background:var(--abu-bg);
-    color:var(--hitam);
-    font-weight:700;
-    text-align:left;
-    padding:9px 10px;
-    border-bottom:2px solid #E5E7EB;
-    white-space:nowrap;
-    font-size:11.5px;
-  }
-  table td{
-    padding:9px 10px;
-    border-bottom:1px solid #F3F4F6;
+  tbody td {
+    padding:10px 10px; border-bottom:1px solid #F3F4F6;
     vertical-align:middle;
   }
-  table tr:hover td{background:#FAFAFA}
-  .badge{
-    display:inline-block;
-    padding:2px 8px;
-    border-radius:20px;
-    font-size:10.5px;
-    font-weight:700;
-    letter-spacing:.3px;
+  tbody tr:hover { background:#FAFAFA; }
+  .cell-bonus-pos { background:#DCFCE7; color:#15803D; font-weight:700; border-radius:6px; }
+  .badge {
+    display:inline-block; padding:3px 8px; border-radius:6px;
+    font-size:10px; font-weight:800; letter-spacing:.3px;
   }
-  .badge-green{background:var(--hijau-bg);color:#166534}
-  .badge-red{background:var(--merah-bg);color:#991B1B}
-  .badge-gold{background:#FEF3C7;color:#92400E}
-  .badge-blue{background:#DBEAFE;color:#1E40AF}
-  .badge-gray{background:#E5E7EB;color:#374151}
-  .bonus-cell{color:var(--hijau);font-weight:700}
-  .empty-state{
-    text-align:center;
-    padding:28px 12px;
-    color:var(--abu);
+  .badge-tembus { background:#DCFCE7; color:#15803D; }
+  .badge-aktif { background:#DBEAFE; color:#1D4ED8; }
+  .badge-nonaktif { background:#FEE2E2; color:#B91C1C; }
+  .badge-warn { background:#FEF3C7; color:#92400E; }
+  .badge-ok { background:#DCFCE7; color:#15803D; }
+  .badge-err { background:#FEE2E2; color:#B91C1C; }
+  .empty-state {
+    text-align:center; padding:30px 10px; color:var(--text-light);
     font-size:13px;
   }
-  .empty-state .big{font-size:38px;margin-bottom:8px;opacity:.5}
+  .empty-state .ic { font-size:38px; display:block; margin-bottom:8px; opacity:.5; }
 
-  /* ===== TOAST ===== */
-  #toastBox{
-    position:fixed;
-    top:16px;
-    left:50%;
-    transform:translateX(-50%);
-    z-index:9999;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    width:calc(100% - 32px);
-    max-width:400px;
-    pointer-events:none;
+  /* ============ PREVIEW BOX ============ */
+  .preview-box {
+    background:linear-gradient(135deg,#FFF7ED,#FFFBEB);
+    border:1.5px dashed var(--emas); border-radius:10px;
+    padding:13px; text-align:center; margin:6px 0 14px;
   }
-  .toast{
-    background:#fff;
-    border-radius:12px;
-    padding:12px 14px;
-    box-shadow:0 8px 24px rgba(0,0,0,.18);
-    font-size:13px;
-    font-weight:600;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    animation:toastIn .3s ease;
-    border-left:4px solid var(--hijau);
+  .preview-box .lbl { font-size:11px; color:var(--text-light); font-weight:600; }
+  .preview-box .val { font-size:22px; font-weight:800; color:var(--merah); margin-top:2px; }
+  .preview-box .val.neg { color:#DC2626; }
+
+  /* ============ BOTTOM NAV ============ */
+  #bottomNav {
+    position:fixed; bottom:0; left:0; right:0; z-index:40;
+    background:#fff; border-top:1px solid var(--border);
+    display:flex; justify-content:space-around; align-items:center;
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    box-shadow:0 -2px 10px rgba(0,0,0,.06);
+  }
+  .nav-item {
+    flex:1; background:none; border:none; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center;
+    gap:2px; padding:6px 2px; font-family:inherit;
+    color:var(--text-light); transition:.15s; border-radius:8px;
+  }
+  .nav-item .ic { font-size:19px; line-height:1; }
+  .nav-item .tx { font-size:9.5px; font-weight:600; }
+  .nav-item.active { color:var(--merah); }
+  .nav-item.active .ic { transform:scale(1.08); }
+
+  /* ============ MODAL ============ */
+  .overlay {
+    display:none; position:fixed; inset:0; z-index:60;
+    background:rgba(17,24,39,.6); backdrop-filter:blur(3px);
+    align-items:center; justify-content:center; padding:16px;
+  }
+  .overlay.show { display:flex; }
+  .modal {
+    width:100%; max-width:420px; background:#fff;
+    border-radius:16px; padding:20px;
+    box-shadow:0 24px 60px rgba(0,0,0,.35);
+    max-height:88vh; overflow-y:auto;
+    animation:pop .18s ease-out;
+  }
+  @keyframes pop { from{transform:scale(.94);opacity:0} to{transform:scale(1);opacity:1} }
+  .modal h3 { font-size:16px; margin-bottom:12px; }
+  .modal-actions {
+    display:flex; gap:10px; margin-top:16px;
+  }
+  .modal-actions .btn-primary, .modal-actions .btn-ghost { flex:1; }
+
+  /* ============ TOAST ============ */
+  #toastWrap {
+    position:fixed; top:70px; left:50%; transform:translateX(-50%);
+    z-index:80; display:flex; flex-direction:column; gap:8px;
+    width:calc(100% - 32px); max-width:380px; pointer-events:none;
+  }
+  .toast {
+    background:#1F2937; color:#fff; padding:12px 16px;
+    border-radius:10px; font-size:12.5px; font-weight:500;
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+    animation:slideDown .25s ease-out;
+    display:flex; align-items:center; gap:8px;
     pointer-events:auto;
   }
-  .toast.error{border-left-color:#DC2626}
-  .toast.info{border-left-color:var(--biru)}
-  .toast.gold{border-left-color:var(--emas)}
-  @keyframes toastIn{
-    from{opacity:0;transform:translateY(-14px)}
-    to{opacity:1;transform:translateY(0)}
-  }
+  .toast.success { background:#15803D; }
+  .toast.error { background:#B91C1C; }
+  .toast.warning { background:#B45309; }
+  .toast.info { background:#1D4ED8; }
+  @keyframes slideDown { from{transform:translateY(-16px);opacity:0} to{transform:translateY(0);opacity:1} }
 
-  /* ===== MODAL ===== */
-  .modal-overlay{
-    position:fixed;inset:0;
-    background:rgba(0,0,0,.55);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:16px;
-    z-index:200;
-    backdrop-filter:blur(3px);
-    overflow-y:auto;
+  /* ============ RESPONSIVE ============ */
+  @media(min-width:640px){
+    .menu-grid { grid-template-columns:repeat(3,1fr); }
+    #appContent { padding:80px 20px 24px; }
   }
-  .modal-overlay.show{display:flex}
-  .modal{
-    background:#fff;
-    border-radius:18px;
-    padding:20px;
-    width:100%;
-    max-width:440px;
-    box-shadow:0 20px 50px rgba(0,0,0,.35);
-    animation:fadeUp .3s ease;
-    max-height:92vh;
-    overflow-y:auto;
-    margin:auto;
-  }
-  @keyframes fadeUp{
-    from{opacity:0;transform:translateY(16px)}
-    to{opacity:1;transform:translateY(0)}
-  }
-  .modal h3{
-    font-size:16px;
-    color:var(--merah);
-    margin-bottom:14px;
-    font-weight:800;
-  }
-  .modal-actions{
-    display:flex;
-    gap:8px;
-    margin-top:16px;
-  }
-  .modal-actions .btn{flex:1}
-
-  /* ===== BOTTOM NAV ===== */
-  #bottomNav{
-    position:fixed;
-    bottom:0;left:0;right:0;
-    background:#fff;
-    display:flex;
-    justify-content:space-around;
-    padding:7px 4px 9px;
-    box-shadow:0 -3px 14px rgba(0,0,0,.09);
-    z-index:60;
-    border-top:2px solid var(--emas);
-  }
-  .nav-item{
-    flex:1;
-    background:none;
-    border:none;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:2px;
-    padding:5px;
-    cursor:pointer;
-    font-family:inherit;
-    color:var(--abu);
-    font-size:10px;
-    font-weight:600;
-    border-radius:9px;
-    transition:.18s;
-  }
-  .nav-item .n-ico{font-size:19px;line-height:1}
-  .nav-item.active{color:var(--merah);background:rgba(200,16,46,.07)}
-  .nav-item:hover{color:var(--merah)}
-
-  /* ===== STAT GRID (dashboard) ===== */
-  .stat-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-    margin-bottom:14px;
-  }
-  .stat-card{
-    background:#fff;
-    border-radius:14px;
-    padding:14px;
-    box-shadow:0 2px 8px rgba(0,0,0,.06);
-    border-left:4px solid var(--merah);
-  }
-  .stat-card.gold{border-left-color:var(--emas)}
-  .stat-card.green{border-left-color:var(--hijau)}
-  .stat-card.blue{border-left-color:var(--biru)}
-  .stat-card .s-label{
-    font-size:11px;
-    color:var(--abu);
-    font-weight:600;
-    margin-bottom:4px;
-  }
-  .stat-card .s-value{
-    font-size:19px;
-    font-weight:800;
-    color:var(--hitam);
-  }
-
-  .info-row{
-    display:flex;
-    justify-content:space-between;
-    padding:8px 0;
-    border-bottom:1px dashed #E5E7EB;
-    font-size:13px;
-  }
-  .info-row:last-child{border-bottom:none}
-  .info-row .lbl{color:var(--abu);font-weight:500}
-  .info-row .val{font-weight:700;color:var(--hitam);text-align:right;max-width:60%}
-
-  .loading-box{
-    text-align:center;
-    padding:26px;
-    color:var(--abu);
-    font-size:13px;
-  }
-  .loading-box .spinner{
-    display:inline-block;
-    width:26px;height:26px;
-    border:3px solid #E5E7EB;
-    border-top-color:var(--merah);
-    border-radius:50%;
-    animation:spin .7s linear infinite;
-    margin-bottom:8px;
-  }
-  @keyframes spin{to{transform:rotate(360deg)}}
-
-  /* ===== RESPONSIVE ===== */
-  @media(min-width:600px){
-    #appContent{padding:22px}
-    .menu-grid{grid-template-columns:repeat(4,1fr)}
-    .stat-grid{grid-template-columns:repeat(4,1fr)}
-    .hdr-title h1{font-size:17px}
-  }
-
-  /* Anti-iklan placeholder owner */
-  .ad-slot{
-    background:repeating-linear-gradient(45deg,#F3F4F6,#F3F4F6 10px,#E5E7EB 10px,#E5E7EB 20px);
-    border:1.5px dashed #9CA3AF;
-    border-radius:12px;
-    padding:20px 12px;
-    text-align:center;
-    color:#6B7280;
-    font-size:12px;
-    font-weight:600;
-    margin-bottom:14px;
+  @media(min-width:1024px){
+    .menu-grid { grid-template-columns:repeat(4,1fr); }
   }
 </style>
 </head>
@@ -569,1578 +303,1241 @@
 <header id="appHeader"></header>
 <main id="appContent"></main>
 <nav id="bottomNav"></nav>
-<div id="toastBox"></div>
-<div class="modal-overlay" id="globalModal">
-  <div class="modal" id="globalModalContent"></div>
+
+<div id="toastWrap"></div>
+
+<div class="overlay" id="modalOverlay">
+  <div class="modal" id="modalBox"></div>
 </div>
 
 <script>
 (function(){
   'use strict';
 
-  /* =====================================================
-     KONFIG
-     ===================================================== */
-  var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwWiWeesEtkkzsbZrEb4I1WYAj8LPVY73H5ZZo1kB8UjWCcL2v5IbH3WvfZqblkEhMu/exec';
-  var TOKEN = 'steam-mp-7000-2026';
-  var SESSION_KEY = 'steam_mp_session';
+  /* =========================================================
+     KONFIGURASI
+     ========================================================= */
+  const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwWiWeesEtkkzsbZrEb4I1WYAj8LPVY73H5ZZo1kB8UjWCcL2v5IbH3WvfZqblkEhMu/exec';
+  const TOKEN = 'steam-mp-7000-2026';
+  const SESSION_KEY = 'steam_mp_session';
 
-  /* =====================================================
-     SESSION
-     ===================================================== */
+  /* =========================================================
+     SESSION (ANTI-LOOP)
+     ========================================================= */
   function getSession(){
-    try{
-      var raw = localStorage.getItem(SESSION_KEY);
-      if(!raw) return null;
-      var s = JSON.parse(raw);
-      if(!s || !s.user_id) return null;
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      if (!raw) return null;
+      const s = JSON.parse(raw);
+      if (!s || !s.user_id) return null;
+      const batas = s.is_demo ? 15*60*1000 : 8*60*60*1000;
+      if (s.login_time && (Date.now() - s.login_time) > batas){
+        localStorage.removeItem(SESSION_KEY);
+        return null;
+      }
       return s;
-    }catch(e){ return null; }
+    } catch(e){
+      localStorage.removeItem(SESSION_KEY);
+      return null;
+    }
   }
-  function setSession(s){
-    try{ localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }catch(e){}
-  }
-  function clearSession(){
-    try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
-  }
-
-  /* =====================================================
-     API WRAPPER
-     ===================================================== */
-  function apiPost(action, data){
-    var body = Object.assign({ action: action, token: TOKEN }, data || {});
-    return fetch(BACKEND_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(body)
-    }).then(function(r){
-      return r.json();
-    });
-  }
-  function baca(sheet){ return apiPost('baca', { sheet: sheet }); }
-  function tulis(sheet, data){ return apiPost('tulis', { sheet: sheet, data: data }); }
-  function update(sheet, row, data){ return apiPost('update', { sheet: sheet, row: row, data: data }); }
-  function hapus(sheet, row){ return apiPost('hapus', { sheet: sheet, row: row }); }
-
-  /* =====================================================
-     UTIL
-     ===================================================== */
-  function $(id){ return document.getElementById(id); }
-  function esc(s){
-    if(s == null) return '-';
-    return String(s)
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;')
-      .replace(/'/g,'&#39;');
-  }
-  function safe(s){ return (s == null || s === '') ? '-' : s; }
-  function todayStr(){
-    var d = new Date();
-    var m = String(d.getMonth()+1).padStart(2,'0');
-    var day = String(d.getDate()).padStart(2,'0');
-    return d.getFullYear() + '-' + m + '-' + day;
-  }
-  function rupiah(n){
-    if(n == null || isNaN(n)) n = 0;
-    return 'Rp ' + Number(n).toLocaleString('id-ID');
-  }
-  function num(v){ var n = Number(v); return isNaN(n) ? 0 : n; }
-  function uuidv4(){
-    if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c){
-      var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
-      return v.toString(16);
-    });
-  }
-
-  /* =====================================================
-     TOAST
-     ===================================================== */
-  function toast(msg, type){
-    type = type || 'success';
-    var box = $('toastBox');
-    var el = document.createElement('div');
-    el.className = 'toast ' + type;
-    var ico = type === 'error' ? '❌' : type === 'info' ? 'ℹ️' : type === 'gold' ? '🎉' : '✅';
-    el.innerHTML = '<span>' + ico + '</span><span>' + esc(msg) + '</span>';
-    box.appendChild(el);
-    setTimeout(function(){
-      el.style.transition = 'opacity .3s, transform .3s';
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(-12px)';
-      setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 320);
-    }, 3000);
-  }
-
-  /* =====================================================
-     MODAL
-     ===================================================== */
-  function openModal(html){
-    var ov = $('globalModal');
-    var c = $('globalModalContent');
-    c.innerHTML = html;
-    ov.classList.add('show');
-  }
-  function closeModal(){
-    $('globalModal').classList.remove('show');
-    $('globalModalContent').innerHTML = '';
-  }
-  $('globalModal').addEventListener('click', function(e){
-    if(e.target === $('globalModal')) closeModal();
-  });
-
-  /* =====================================================
-     GUARD: SESSION SEKALI DI AWAL
-     ===================================================== */
-  var session = getSession();
-  if(!session){
+  function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+  function logout(){
+    if (!confirm('Yakin ingin keluar?')) return;
     clearSession();
     window.location.replace('index.html');
-    return;
+  }
+  function isDemo(){
+    const s = getSession();
+    return s && s.is_demo === true;
   }
 
-  var STATE = {
-    page: 'menu',
-    user: session,
-    cache: {}
+  /* =========================================================
+     API WRAPPER
+     ========================================================= */
+  async function apiPost(action, data){
+    try {
+      const res = await fetch(BACKEND_URL, {
+        method:'POST',
+        headers:{ 'Content-Type':'text/plain' },
+        body: JSON.stringify({ action, token:TOKEN, ...data }),
+        redirect:'follow'
+      });
+      const text = await res.text();
+      try { return JSON.parse(text); }
+      catch(e){ return { ok:false, pesan:'Respons tidak valid' }; }
+    } catch(e){
+      return { ok:false, pesan:'Gagal terhubung ke server' };
+    }
+  }
+  async function ambilData(sheet){
+    const s = getSession();
+    if (s && s.is_demo) return { ok:true, data: DUMMY_DATA[sheet] || [] };
+    return await apiPost('baca', { sheet });
+  }
+  async function simpanData(sheet, data){
+    if (isDemo()){ showToast('Mode demo — tidak bisa menyimpan','warning'); return {ok:false,pesan:'Mode demo'}; }
+    return await apiPost('tulis', { sheet, data });
+  }
+  async function updateData(sheet, row, data){
+    if (isDemo()){ showToast('Mode demo — tidak bisa mengubah','warning'); return {ok:false,pesan:'Mode demo'}; }
+    return await apiPost('update', { sheet, row, data });
+  }
+  async function hapusData(sheet, row){
+    if (isDemo()){ showToast('Mode demo — tidak bisa menghapus','warning'); return {ok:false,pesan:'Mode demo'}; }
+    return await apiPost('hapus', { sheet, row });
+  }
+
+  /* =========================================================
+     DUMMY DATA (MODE DEMO)
+     ========================================================= */
+  const DUMMY_DATA = {
+    'Users': [
+      { id:'1001', nama:'Demo Owner', jabatan:'Owner', kode_cabang:'-', status:'aktif' },
+      { id:'4001', nama:'Demo Karyawan', jabatan:'Karyawan', kode_cabang:'GROBOGAN', status:'aktif' }
+    ],
+    'Target_Cabang': [
+      { kode_cabang:'GROBOGAN', nama_cabang:'Grobogan', target_harian:100 },
+      { kode_cabang:'PALIS', nama_cabang:'Palis', target_harian:50 }
+    ],
+    'Pendapatan_Harian': [
+      { tanggal:'2026-01-15', kode_cabang:'GROBOGAN', id_karyawan:'4001', nama_karyawan:'Karyawan A', status_masuk:'ya', unit:50, tips:1000, bonus:0, kasbon:0, wifi:1000, tembus_target:'tidak' },
+      { tanggal:'2026-01-15', kode_cabang:'GROBOGAN', id_karyawan:'4002', nama_karyawan:'Karyawan B', status_masuk:'ya', unit:30, tips:500, bonus:0, kasbon:0, wifi:1000, tembus_target:'tidak' }
+    ],
+    'Pengajuan_Kasbon': [
+      { id_pengajuan:'KSB-001', tanggal_pengajuan:'2026-01-15', id_karyawan:'4001', nama_karyawan:'Karyawan A', jumlah_kasbon:20000, status:'auto_disetujui' }
+    ],
+    'Izin_Istirahat': [
+      { id_izin:'IZ-001', tanggal_izin:'2026-01-20', jenis_izin:'istirahat', id_karyawan:'4001', nama_karyawan:'Karyawan A', status:'disetujui' }
+    ],
+    'Payroll': [
+      { periode:'2026-01-P1', id_karyawan:'4001', nama_karyawan:'Karyawan A', total_payroll:100000, status:'dibayar' }
+    ],
+    'Pengaturan': [
+      { key:'bonus_kepala_toko', value:'10000' },
+      { key:'bonus_karyawan', value:'5000' },
+      { key:'wifi_harian', value:'1000' }
+    ],
+    'Log_Submisi': [],
+    'Pengeluaran': [
+      { tanggal:'2026-01-15', kode_cabang:'GROBOGAN', kategori:'Operasional', jumlah:50000, keterangan:'Contoh' }
+    ],
+    'Laporan_Cabang': [
+      { tanggal:'2026-01-15', kode_cabang:'GROBOGAN', judul:'Laporan Demo', isi:'Contoh laporan', status:'baru' }
+    ]
   };
 
-  /* =====================================================
-     MENU DEFINISI (berdasarkan role)
-     ===================================================== */
-  var MENU_OWNER = [
-    { key:'dashboard_pendapatan', label:'Dashboard Pendapatan', ico:'📈' },
-    { key:'manajemen_manusia',     label:'Manajemen Manusia',   ico:'👥' },
-    { key:'cek_payroll',           label:'Cek Payroll',          ico:'💰' },
-    { key:'input_pendapatan',      label:'Pendapatan',           ico:'🧾' },
-    { key:'input_pengeluaran',     label:'Input Pengeluaran',    ico:'💸' },
-    { key:'kasbon',                label:'Kasbon',               ico:'🏦' },
-    { key:'izin',                  label:'Izin',                 ico:'📅' },
-    { key:'laporan_cabang',        label:'Laporan Cabang',       ico:'🏪' },
-    { key:'pengaturan',            label:'Pengaturan',           ico:'⚙️' },
-    { key:'profil',                label:'Profil',               ico:'👤' },
-    { key:'keluar',                label:'Keluar',               ico:'🚪' }
-  ];
-  var MENU_ADMIN = [
-    { key:'dashboard_pendapatan', label:'Dashboard Pendapatan', ico:'📈' },
-    { key:'cek_payroll',           label:'Cek Payroll',          ico:'💰' },
-    { key:'input_pengeluaran',     label:'Input Pengeluaran',    ico:'💸' },
-    { key:'kasbon',                label:'Kasbon',               ico:'🏦' },
-    { key:'izin',                  label:'Izin',                 ico:'📅' },
-    { key:'laporan_cabang',        label:'Laporan Cabang',       ico:'🏪' },
-    { key:'profil',                label:'Profil',               ico:'👤' },
-    { key:'keluar',                label:'Keluar',               ico:'🚪' }
-  ];
-  var MENU_KT = [
-    { key:'dashboard_pendapatan', label:'Dashboard Pendapatan', ico:'📈' },
-    { key:'input_pendapatan',      label:'Input Pendapatan',    ico:'🧾' },
-    { key:'cek_payroll',           label:'Cek Payroll',         ico:'💰' },
-    { key:'kasbon_saya',           label:'Kasbon Saya',         ico:'🏦' },
-    { key:'izin_saya',             label:'Izin Saya',           ico:'📅' },
-    { key:'laporan_cabang',        label:'Laporan Cabang',      ico:'🏪' },
-    { key:'profil',                label:'Profil',              ico:'👤' },
-    { key:'keluar',                label:'Keluar',              ico:'🚪' }
-  ];
-  var MENU_KARYAWAN = [
-    { key:'kasbon_saya',  label:'Kasbon Saya',  ico:'🏦' },
-    { key:'izin_saya',    label:'Izin Saya',    ico:'📅' },
-    { key:'payroll_saya', label:'Payroll Saya', ico:'💰' },
-    { key:'profil',       label:'Profil',       ico:'👤' },
-    { key:'keluar',       label:'Keluar',       ico:'🚪' }
-  ];
+  /* =========================================================
+     HELPER UI
+     ========================================================= */
+  const $ = id => document.getElementById(id);
+  function escapeHtml(str){
+    if (str === undefined || str === null) return '-';
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function val(v){ return (v===undefined||v===null||v==='') ? '-' : v; }
+  function rupiah(n){
+    n = Number(n)||0;
+    return 'Rp ' + n.toLocaleString('id-ID');
+  }
+  function todayStr(){
+    const d = new Date();
+    const p = x => String(x).padStart(2,'0');
+    return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+  }
+  function toast(msg, type){
+    const wrap = $('toastWrap');
+    const el = document.createElement('div');
+    el.className = 'toast ' + (type || 'info');
+    const ic = { success:'✅', error:'❌', warning:'⚠️', info:'ℹ️' }[type||'info'];
+    el.innerHTML = '<span>'+ic+'</span><span>'+escapeHtml(msg)+'</span>';
+    wrap.appendChild(el);
+    setTimeout(() => { el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),320); }, 3000);
+  }
+  function showToast(msg, type){ toast(msg, type); }
 
-  function getMenu(){
-    var j = String(STATE.user.user_jabatan || '').toLowerCase();
-    if(j.indexOf('owner') !== -1) return MENU_OWNER;
-    if(j.indexOf('admin') !== -1) return MENU_ADMIN;
-    if(j.indexOf('kepala') !== -1) return MENU_KT;
-    if(j.indexOf('karyawan') !== -1) return MENU_KARYAWAN;
-    return MENU_KARYAWAN;
-  }
-  function canEdit(){
-    var j = String(STATE.user.user_jabatan || '').toLowerCase();
-    return j.indexOf('owner') !== -1 || j.indexOf('admin') !== -1;
-  }
-  function isOwner(){
-    return String(STATE.user.user_jabatan || '').toLowerCase().indexOf('owner') !== -1;
-  }
-  function isKT(){
-    return String(STATE.user.user_jabatan || '').toLowerCase().indexOf('kepala') !== -1;
-  }
-  function isKaryawan(){
-    return String(STATE.user.user_jabatan || '').toLowerCase().indexOf('karyawan') !== -1;
-  }
-
-  /* =====================================================
-     HITUNG-HITUNGAN (frontend)
-     ===================================================== */
-  function hitungTotal(o){
-    // o: {status_masuk, unit, tips, bonus, kasbon, wifi}
-    var wifi = num(o.wifi);
-    if(wifi === 0) wifi = 1000;
-    if(o.status_masuk === 'ya'){
-      return num(o.unit) + num(o.tips) + num(o.bonus) - num(o.kasbon) - wifi;
-    }else{
-      return 0 - num(o.kasbon) - 1000;
+  /* =========================================================
+     KOMPONEN
+     ========================================================= */
+  function tombolAksi(label, onclick, cls){
+    const btn = document.createElement('button');
+    btn.textContent = label;
+    btn.className = cls || 'btn-primary btn-sm';
+    if (isDemo()){
+      btn.disabled = true;
+      btn.title = 'Mode demo — tidak bisa input';
+      btn.classList.add('disabled');
+    } else {
+      btn.onclick = onclick;
     }
+    return btn;
   }
 
-  function hitungBatasKasbon(pendapatanBelumDibayar){
-    // Batas sederhana: tidak melebihi pendapatan bersih belum dibayar
-    return Math.max(0, num(pendapatanBelumDibayar));
+  /* =========================================================
+     MODAL
+     ========================================================= */
+  function openModal(html){
+    $('modalBox').innerHTML = html;
+    $('modalOverlay').classList.add('show');
   }
+  function closeModal(){
+    $('modalOverlay').classList.remove('show');
+    $('modalBox').innerHTML = '';
+  }
+  $('modalOverlay').addEventListener('click', e => {
+    if (e.target === $('modalOverlay')) closeModal();
+  });
 
-  /* =====================================================
-     HEADER RENDER
-     ===================================================== */
-  function renderHeader(){
-    var u = STATE.user;
-    var html = '' +
-      '<div class="hdr-row">' +
-        '<div class="hdr-logo">MP</div>' +
-        '<div class="hdr-title">' +
-          '<h1>STEAM MP 7000</h1>' +
-          '<p>' + esc(safe(u.user_nama)) + ' • ' + esc(safe(u.user_jabatan)) +
-            (u.user_kode_cabang && u.user_kode_cabang !== '-' ? ' • ' + esc(u.user_kode_cabang) : '') +
-          '</p>' +
-        '</div>' +
-        (u.is_demo ? '<span class="demo-badge">DEMO</span>' : '') +
-        '<div class="hdr-actions">' +
-          '<button class="hdr-btn" id="btnProfilHdr" title="Profil">👤</button>' +
-          '<button class="hdr-btn" id="btnLogoutHdr" title="Keluar">🚪</button>' +
-        '</div>' +
+  /* =========================================================
+     HEADER
+     ========================================================= */
+  function renderHeader(session){
+    const header = $('appHeader');
+    const nama = session.user_nama || 'Pengguna';
+    const jabatan = session.user_jabatan || '-';
+    const demo = session.is_demo === true;
+    header.innerHTML =
+      '<div class="header-logo">MP</div>'+
+      '<div class="header-info">'+
+        '<div class="header-title">STEAM MP 7000</div>'+
+        '<div class="header-user">'+escapeHtml(nama)+' · '+escapeHtml(jabatan)+'</div>'+
+        (demo ? '<div class="header-sub">Hanya untuk lihat fitur</div>' : '')+
+      '</div>'+
+      (demo ? '<span class="badge-demo">MODE DEMO</span>' : '')+
+      '<div class="header-actions">'+
+        '<button id="btnProfil" class="header-btn">👤</button>'+
+        '<button id="btnKeluar" class="header-btn">🚪</button>'+
       '</div>';
-    $('appHeader').innerHTML = html;
-    $('btnProfilHdr').onclick = function(){ go('profil'); };
-    $('btnLogoutHdr').onclick = function(){ logout(); };
+    $('btnProfil').onclick = () => navigateTo('profil');
+    $('btnKeluar').onclick = logout;
   }
 
-  /* =====================================================
-     BOTTOM NAV
-     ===================================================== */
-  function renderNav(){
-    var html = '' +
-      '<button class="nav-item" data-page="menu">' +
-        '<span class="n-ico">🏠</span><span>Menu</span>' +
-      '</button>' +
-      '<button class="nav-item" data-page="dashboard_pendapatan">' +
-        '<span class="n-ico">📈</span><span>Pendapatan</span>' +
-      '</button>' +
-      '<button class="nav-item" data-page="profil">' +
-        '<span class="n-ico">👤</span><span>Profil</span>' +
-      '</button>';
-    $('bottomNav').innerHTML = html;
-    var items = $('bottomNav').querySelectorAll('.nav-item');
-    items.forEach(function(b){
-      b.onclick = function(){ go(b.getAttribute('data-page')); };
+  /* =========================================================
+     MENU PER ROLE
+     ========================================================= */
+  function getRoleFromJabatan(jabatan){
+    const r = String(jabatan||'').toLowerCase().trim();
+    if (r.includes('owner')) return 'owner';
+    if (r.includes('admin')) return 'admin';
+    if (r.includes('kepala')) return 'kepala_toko';
+    return 'karyawan';
+  }
+  function getMenuByRole(jabatan){
+    const role = getRoleFromJabatan(jabatan);
+    const menus = {
+      owner: [
+        { ikon:'📊', label:'Dashboard Pendapatan', page:'dashboard-pendapatan', highlight:true },
+        { ikon:'👥', label:'Manajemen Manusia', page:'manusia' },
+        { ikon:'💰', label:'Cek Payroll', page:'payroll' },
+        { ikon:'💵', label:'Pendapatan', page:'pendapatan' },
+        { ikon:'📤', label:'Input Pengeluaran', page:'pengeluaran' },
+        { ikon:'🏦', label:'Kasbon', page:'kasbon' },
+        { ikon:'📅', label:'Izin', page:'izin' },
+        { ikon:'📝', label:'Laporan Cabang', page:'laporan' },
+        { ikon:'⚙️', label:'Pengaturan', page:'pengaturan' },
+        { ikon:'👤', label:'Profil', page:'profil' },
+        { ikon:'🚪', label:'Keluar', page:'keluar' }
+      ],
+      admin: [
+        { ikon:'📊', label:'Dashboard Pendapatan', page:'dashboard-pendapatan', highlight:true },
+        { ikon:'💰', label:'Cek Payroll', page:'payroll' },
+        { ikon:'📤', label:'Input Pengeluaran', page:'pengeluaran' },
+        { ikon:'🏦', label:'Kasbon', page:'kasbon' },
+        { ikon:'📅', label:'Izin', page:'izin' },
+        { ikon:'📝', label:'Laporan Cabang', page:'laporan' },
+        { ikon:'👤', label:'Profil', page:'profil' },
+        { ikon:'🚪', label:'Keluar', page:'keluar' }
+      ],
+      kepala_toko: [
+        { ikon:'📊', label:'Dashboard Pendapatan', page:'dashboard-pendapatan', highlight:true },
+        { ikon:'💵', label:'Input Pendapatan', page:'pendapatan' },
+        { ikon:'💰', label:'Cek Payroll', page:'payroll' },
+        { ikon:'🏦', label:'Kasbon Saya', page:'kasbon' },
+        { ikon:'📅', label:'Izin Saya', page:'izin' },
+        { ikon:'📝', label:'Laporan Cabang', page:'laporan' },
+        { ikon:'👤', label:'Profil', page:'profil' },
+        { ikon:'🚪', label:'Keluar', page:'keluar' }
+      ],
+      karyawan: [
+        { ikon:'🏦', label:'Kasbon Saya', page:'kasbon', highlight:true },
+        { ikon:'📅', label:'Izin Saya', page:'izin' },
+        { ikon:'💰', label:'Payroll Saya', page:'payroll' },
+        { ikon:'👤', label:'Profil', page:'profil' },
+        { ikon:'🚪', label:'Keluar', page:'keluar' }
+      ]
+    };
+    return menus[role] || menus.karyawan;
+  }
+
+  /* =========================================================
+     ROUTING
+     ========================================================= */
+  let CURRENT_SESSION = null;
+  let CURRENT_PAGE = 'home';
+
+  function navigateTo(page){
+    if (page === 'keluar'){ logout(); return; }
+    CURRENT_PAGE = page;
+    const content = $('appContent');
+    content.innerHTML = '<div class="empty-state"><span class="ic">⏳</span>Memuat...</div>';
+    const role = getRoleFromJabatan(CURRENT_SESSION.user_jabatan);
+    const pages = {
+      'home': renderHome,
+      'dashboard-pendapatan': renderDashboardPendapatan,
+      'manusia': renderManusia,
+      'payroll': renderPayroll,
+      'pendapatan': renderPendapatan,
+      'pengeluaran': renderPengeluaran,
+      'kasbon': renderKasbon,
+      'izin': renderIzin,
+      'laporan': renderLaporan,
+      'pengaturan': renderPengaturan,
+      'profil': renderProfil
+    };
+    const fn = pages[page] || renderHome;
+    try { fn(); } catch(e){ content.innerHTML = '<div class="empty-state"><span class="ic">⚠️</span>Terjadi kesalahan: '+escapeHtml(e.message)+'</div>'; }
+    renderBottomNav();
+  }
+
+  function renderBottomNav(){
+    const nav = $('bottomNav');
+    const role = getRoleFromJabatan(CURRENT_SESSION.user_jabatan);
+    let items = [];
+    if (role === 'owner' || role === 'admin'){
+      items = [
+        { ic:'🏠', tx:'Home', page:'home' },
+        { ic:'📊', tx:'Dashboard', page:'dashboard-pendapatan' },
+        { ic:'💵', tx:'Pendapatan', page:'pendapatan' },
+        { ic:'👤', tx:'Profil', page:'profil' }
+      ];
+    } else if (role === 'kepala_toko'){
+      items = [
+        { ic:'🏠', tx:'Home', page:'home' },
+        { ic:'💵', tx:'Pendapatan', page:'pendapatan' },
+        { ic:'🏦', tx:'Kasbon', page:'kasbon' },
+        { ic:'👤', tx:'Profil', page:'profil' }
+      ];
+    } else {
+      items = [
+        { ic:'🏠', tx:'Home', page:'home' },
+        { ic:'🏦', tx:'Kasbon', page:'kasbon' },
+        { ic:'💰', tx:'Payroll', page:'payroll' },
+        { ic:'👤', tx:'Profil', page:'profil' }
+      ];
+    }
+    nav.innerHTML = items.map(it =>
+      '<button class="nav-item '+(CURRENT_PAGE===it.page?'active':'')+'" data-page="'+it.page+'">'+
+        '<span class="ic">'+it.ic+'</span><span class="tx">'+it.tx+'</span>'+
+      '</button>'
+    ).join('');
+    nav.querySelectorAll('.nav-item').forEach(b => {
+      b.onclick = () => navigateTo(b.dataset.page);
     });
   }
-  function setNavActive(page){
-    var items = $('bottomNav').querySelectorAll('.nav-item');
-    items.forEach(function(b){
-      if(b.getAttribute('data-page') === page){
-        b.classList.add('active');
-      }else{
-        b.classList.remove('active');
-      }
-    });
-  }
 
-  /* =====================================================
-     ROUTER
-     ===================================================== */
-  function go(page){
-    STATE.page = page;
-    if(page === 'keluar'){ logout(); return; }
-    setNavActive(page);
-    var c = $('appContent');
-    c.innerHTML = '<div class="loading-box"><div class="spinner"></div><div>Memuat...</div></div>';
-    try{
-      if(page === 'menu') renderMenuPage();
-      else if(page === 'profil') renderProfilPage();
-      else if(page === 'dashboard_pendapatan') renderDashboardPendapatan();
-      else if(page === 'input_pendapatan') renderInputPendapatan();
-      else if(page === 'input_pengeluaran') renderInputPengeluaran();
-      else if(page === 'kasbon' || page === 'kasbon_saya') renderKasbon(page);
-      else if(page === 'izin' || page === 'izin_saya') renderIzin(page);
-      else if(page === 'cek_payroll') renderCekPayroll();
-      else if(page === 'payroll_saya') renderPayrollSaya();
-      else if(page === 'laporan_cabang') renderLaporanCabang();
-      else if(page === 'manajemen_manusia') renderManajemenManusia();
-      else if(page === 'pengaturan') renderPengaturan();
-      else renderMenuPage();
-    }catch(e){
-      c.innerHTML = '<div class="card"><div class="empty-state"><div class="big">⚠️</div>Terjadi kesalahan: ' + esc(e.message) + '</div></div>';
-    }
-  }
-
-  /* =====================================================
-     MENU PAGE
-     ===================================================== */
-  function renderMenuPage(){
-    var menu = getMenu().filter(function(m){ return m.key !== 'keluar'; });
-    var u = STATE.user;
-    var html = '' +
-      '<div class="page-title">Halo, ' + esc(safe(u.user_nama)) + ' 👋</div>' +
-      '<div class="page-sub">' + esc(safe(u.user_jabatan)) + ' • ' + esc(safe(u.user_kode_cabang)) + '</div>';
-
-    if(isOwner()){
-      html += '<div class="ad-slot">Slot Iklan Owner (placeholder Monetag)</div>';
-    }
-
+  /* =========================================================
+     RENDER: HOME (MENU)
+     ========================================================= */
+  function renderHome(){
+    const session = CURRENT_SESSION;
+    const menu = getMenuByRole(session.user_jabatan).filter(m => m.page !== 'keluar' && m.page !== 'profil');
+    let html = '<div class="page-title">Selamat Datang, '+escapeHtml(session.user_nama)+' 👋</div>';
+    html += '<div class="page-sub">'+escapeHtml(session.user_jabatan)+(session.user_kode_cabang && session.user_kode_cabang!=='-' ? ' · '+escapeHtml(session.user_kode_cabang) : '')+'</div>';
     html += '<div class="menu-grid">';
-    menu.forEach(function(m){
-      html += '' +
-        '<button class="menu-card" data-key="' + m.key + '">' +
-          '<div class="m-ico">' + m.ico + '</div>' +
-          '<div class="m-label">' + esc(m.label) + '</div>' +
-        '</button>';
+    menu.forEach(m => {
+      html += '<div class="menu-card '+(m.highlight?'highlight':'')+'" data-page="'+m.page+'">'+
+        '<span class="ikon">'+m.ikon+'</span><span class="label">'+escapeHtml(m.label)+'</span></div>';
     });
-    html += '</div>' +
-      '<button class="btn btn-danger" id="btnLogoutMenu" style="width:100%;margin-top:18px">🚪 Keluar</button>';
-
+    html += '</div>';
     $('appContent').innerHTML = html;
-
-    var cards = $('appContent').querySelectorAll('.menu-card');
-    cards.forEach(function(c){
-      c.onclick = function(){ go(c.getAttribute('data-key')); };
+    $('appContent').querySelectorAll('.menu-card').forEach(c => {
+      c.onclick = () => navigateTo(c.dataset.page);
     });
-    $('btnLogoutMenu').onclick = logout;
   }
 
-  /* =====================================================
-     PROFIL PAGE
-     ===================================================== */
-  function renderProfilPage(){
-    var u = STATE.user;
-    var html = '' +
-      '<button class="back-btn" id="btnBack">← Kembali</button>' +
-      '<div class="card">' +
-        '<h2>👤 Profil</h2>' +
-        '<div class="info-row"><span class="lbl">ID</span><span class="val">' + esc(safe(u.user_id)) + '</span></div>' +
-        '<div class="info-row"><span class="lbl">Nama</span><span class="val">' + esc(safe(u.user_nama)) + '</span></div>' +
-        '<div class="info-row"><span class="lbl">Jabatan</span><span class="val">' + esc(safe(u.user_jabatan)) + '</span></div>' +
-        '<div class="info-row"><span class="lbl">Kode Cabang</span><span class="val">' + esc(safe(u.user_kode_cabang)) + '</span></div>' +
-        '<div class="info-row"><span class="lbl">Mode</span><span class="val">' + (u.is_demo ? 'DEMO' : 'Normal') + '</span></div>' +
-        '<div class="info-row"><span class="lbl">Login</span><span class="val">' + new Date(u.login_time || Date.now()).toLocaleString('id-ID') + '</span></div>' +
-      '</div>' +
-      '<button class="btn btn-danger" id="btnLogoutProfil" style="width:100%">🚪 Keluar</button>';
-    $('appContent').innerHTML = html;
-    $('btnBack').onclick = function(){ go('menu'); };
-    $('btnLogoutProfil').onclick = logout;
-  }
+  /* =========================================================
+     RENDER: DASHBOARD PENDAPATAN
+     ========================================================= */
+  async function renderDashboardPendapatan(){
+    const content = $('appContent');
+    content.innerHTML =
+      '<button class="back-btn" data-back>← Kembali</button>'+
+      '<div class="page-title">📊 Dashboard Pendapatan</div>'+
+      '<div class="page-sub">Ringkasan pendapatan & target cabang</div>'+
+      '<div id="dashContent"><div class="empty-state"><span class="ic">⏳</span>Memuat data...</div></div>';
+    content.querySelector('[data-back]').onclick = () => navigateTo('home');
 
-  /* =====================================================
-     LOGOUT
-     ===================================================== */
-  function logout(){
-    clearSession();
-    window.location.replace('index.html');
-  }
+    const [resPend, resTarget] = await Promise.all([
+      ambilData('Pendapatan_Harian'),
+      ambilData('Target_Cabang')
+    ]);
+    const pend = (resPend && resPend.ok && Array.isArray(resPend.data)) ? resPend.data : [];
+    const target = (resTarget && resTarget.ok && Array.isArray(resTarget.data)) ? resTarget.data : [];
 
-  /* =====================================================
-     DASHBOARD PENDAPATAN
-     ===================================================== */
-  function renderDashboardPendapatan(){
-    $('appContent').innerHTML = '' +
-      '<button class="back-btn" id="btnBack">← Kembali</button>' +
-      '<div class="page-title">📈 Dashboard Pendapatan</div>' +
-      '<div class="page-sub" id="dashSub">Memuat data...</div>' +
-      '<div class="stat-grid" id="dashStats"></div>' +
-      '<div class="card" id="dashDetail"><h2>Detail</h2><div class="loading-box"><div class="spinner"></div><div>Memuat...</div></div></div>';
-    $('btnBack').onclick = function(){ go('menu'); };
+    const hariIni = todayStr();
+    const pendHariIni = pend.filter(p => String(p.tanggal||'').slice(0,10) === hariIni);
 
-    baca('Pendapatan_Harian').then(function(res){
-      if(!res || !res.ok){ throw new Error((res && res.pesan) || 'Gagal baca data.'); }
-      var all = Array.isArray(res.data) ? res.data : [];
-      var today = todayStr();
-      var cabang = STATE.user.user_kode_cabang;
+    // Group per cabang
+    const perCabang = {};
+    pendHariIni.forEach(p => {
+      const k = p.kode_cabang || '-';
+      if (!perCabang[k]) perCabang[k] = { unit:0, tips:0, bonus:0, kasbon:0, wifi:0, jumlah:0 };
+      perCabang[k].unit += Number(p.unit)||0;
+      perCabang[k].tips += Number(p.tips)||0;
+      perCabang[k].bonus += Number(p.bonus)||0;
+      perCabang[k].kasbon += Number(p.kasbon)||0;
+      perCabang[k].wifi += Number(p.wifi)||0;
+      perCabang[k].jumlah++;
+    });
 
-      var rows = all.filter(function(r){
-        var t = String(r.tanggal || '').slice(0,10);
-        if(t !== today) return false;
-        if(canEdit()) return true;
-        if(cabang && cabang !== '-') return String(r.kode_cabang||'') === String(cabang);
-        return true;
+    let html = '';
+    const totalUnit = pendHariIni.reduce((a,p)=>a+(Number(p.unit)||0),0);
+    html += '<div class="card"><div class="card-title">Ringkasan Hari Ini ('+hariIni+')</div>';
+    html += '<div class="row2">';
+    html += '<div><div class="lbl" style="font-size:11px;color:var(--text-light)">Total Unit</div><div style="font-size:22px;font-weight:800;color:var(--merah)">'+totalUnit+'</div></div>';
+    html += '<div><div class="lbl" style="font-size:11px;color:var(--text-light)">Transaksi</div><div style="font-size:22px;font-weight:800;color:var(--merah)">'+pendHariIni.length+'</div></div>';
+    html += '</div></div>';
+
+    html += '<div class="card"><div class="card-title">Per Cabang</div>';
+    if (Object.keys(perCabang).length === 0){
+      html += '<div class="empty-state"><span class="ic">📭</span>Belum ada data hari ini</div>';
+    } else {
+      Object.keys(perCabang).forEach(k => {
+        const c = perCabang[k];
+        const t = target.find(x => String(x.kode_cabang)===k);
+        const tgt = t ? Number(t.target_harian)||0 : 0;
+        const pct = tgt > 0 ? Math.min(100, Math.round(c.unit/tgt*100)) : 0;
+        const tembus = tgt > 0 && c.unit >= tgt;
+        html += '<div style="margin-bottom:14px">';
+        html += '<div style="display:flex;justify-content:space-between;margin-bottom:6px">';
+        html += '<b style="font-size:13px">'+escapeHtml(k)+'</b>';
+        html += tembus ? '<span class="badge badge-tembus">TEMBUS</span>' : '<span style="font-size:11px;color:var(--text-light)">'+c.unit+' / '+tgt+'</span>';
+        html += '</div>';
+        html += '<div style="height:8px;background:#F3F4F6;border-radius:4px;overflow:hidden">';
+        html += '<div style="height:100%;width:'+pct+'%;background:'+(tembus?'#15803D':'#C8102E')+'"></div>';
+        html += '</div>';
+        html += '<div style="font-size:11px;color:var(--text-light);margin-top:4px">Tips: '+rupiah(c.tips)+' · Bonus: '+rupiah(c.bonus)+'</div>';
+        html += '</div>';
       });
+    }
+    html += '</div>';
 
-      var totalUnit = 0, totalTips = 0, totalBonus = 0, totalKasbon = 0, totalWifi = 0, totalNet = 0;
-      rows.forEach(function(r){
-        totalUnit += num(r.unit);
-        totalTips += num(r.tips);
-        totalBonus += num(r.bonus);
-        totalKasbon += num(r.kasbon);
-        totalWifi += num(r.wifi) || 1000;
-        totalNet += num(r.total) || hitungTotal(r);
-      });
+    $('dashContent').innerHTML = html;
+  }
 
-      $('dashSub').textContent = 'Tanggal: ' + today + ' • ' + rows.length + ' baris';
-      $('dashStats').innerHTML = '' +
-        '<div class="stat-card"><div class="s-label">Unit</div><div class="s-value">' + totalUnit + '</div></div>' +
-        '<div class="stat-card blue"><div class="s-label">Tips</div><div class="s-value">' + rupiah(totalTips) + '</div></div>' +
-        '<div class="stat-card gold"><div class="s-label">Bonus</div><div class="s-value">' + rupiah(totalBonus) + '</div></div>' +
-        '<div class="stat-card green"><div class="s-label">Net Total</div><div class="s-value">' + rupiah(totalNet) + '</div></div>';
+  /* =========================================================
+     RENDER: PENDAPATAN (FORM INPUT)
+     ========================================================= */
+  let submissionId = null;
+  function genSubmissionId(){
+    return 'SUB-'+Date.now()+'-'+Math.random().toString(36).slice(2,10);
+  }
 
-      var detail = '<h2>Detail Hari Ini</h2>';
-      if(rows.length === 0){
-        detail += '<div class="empty-state"><div class="big">📭</div>Belum ada data hari ini</div>';
-      }else{
-        detail += '<div class="table-wrap"><table><thead><tr>' +
-          '<th>Nama</th><th>Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th><th>WiFi</th><th>Total</th>' +
-          '</tr></thead><tbody>';
-        rows.forEach(function(r){
-          detail += '<tr>' +
-            '<td>' + esc(safe(r.nama_karyawan)) + '</td>' +
-            '<td>' + num(r.unit) + '</td>' +
-            '<td>' + num(r.tips) + '</td>' +
-            '<td class="' + (num(r.bonus) > 0 ? 'bonus-cell' : '') + '">' + num(r.bonus) + '</td>' +
-            '<td>' + num(r.kasbon) + '</td>' +
-            '<td>' + (num(r.wifi) || 1000) + '</td>' +
-            '<td><strong>' + rupiah(num(r.total) || hitungTotal(r)) + '</strong></td>' +
-          '</tr>';
-        });
-        detail += '</tbody></table></div>';
+  async function renderPendapatan(){
+    const session = CURRENT_SESSION;
+    const role = getRoleFromJabatan(session.user_jabatan);
+    const content = $('appContent');
+    content.innerHTML =
+      '<button class="back-btn" data-back>← Kembali</button>'+
+      '<div class="page-title">💵 Input Pendapatan</div>'+
+      '<div class="page-sub">Catat pendapatan harian karyawan</div>'+
+      '<div id="formPendapatan"></div>'+
+      '<div class="card"><div class="card-title">Daftar Pendapatan</div><div id="listPendapatan"><div class="empty-state"><span class="ic">⏳</span>Memuat...</div></div></div>';
+    content.querySelector('[data-back]').onclick = () => navigateTo('home');
+
+    submissionId = genSubmissionId();
+
+    const [resCabang, resUsers, resPend, resSet] = await Promise.all([
+      ambilData('Target_Cabang'),
+      ambilData('Users'),
+      ambilData('Pendapatan_Harian'),
+      ambilData('Pengaturan')
+    ]);
+    const cabang = (resCabang && resCabang.ok && Array.isArray(resCabang.data)) ? resCabang.data : [];
+    const users = (resUsers && resUsers.ok && Array.isArray(resUsers.data)) ? resUsers.data : [];
+    const pend = (resPend && resPend.ok && Array.isArray(resPend.data)) ? resPend.data : [];
+    const setting = (resSet && resSet.ok && Array.isArray(resSet.data)) ? resSet.data : [];
+    const wifiHarian = (setting.find(s => s.key==='wifi_harian')?.value) || 1000;
+
+    // Render form
+    const f = $('formPendapatan');
+    f.innerHTML =
+      '<div class="card">'+
+        '<div class="card-title">Form Pendapatan</div>'+
+        '<div class="field"><label>Tanggal</label><input type="date" id="inpTgl" value="'+todayStr()+'"></div>'+
+        '<div class="field"><label>Cabang</label><select id="inpCabang"><option value="">-- Pilih Cabang --</option>'+
+          cabang.map(c => '<option value="'+escapeHtml(c.kode_cabang)+'">'+escapeHtml(c.nama_cabang||c.kode_cabang)+'</option>').join('')+
+        '</select></div>'+
+        '<div class="field"><label>Karyawan</label><select id="inpKaryawan"><option value="">-- Pilih Cabang dulu --</option></select></div>'+
+        '<div class="toggle-group">'+
+          '<button type="button" class="toggle-btn active" id="btnMasuk">Masuk Kerja</button>'+
+          '<button type="button" class="toggle-btn" id="btnTidak">Tidak Masuk</button>'+
+        '</div>'+
+        '<div id="areaMasuk">'+
+          '<div class="row2">'+
+            '<div class="field"><label>Unit</label><input type="number" id="inpUnit" value="0" min="0"></div>'+
+            '<div class="field"><label>Tips</label><input type="number" id="inpTips" value="0" min="0"></div>'+
+          '</div>'+
+          '<div class="row2">'+
+            '<div class="field"><label>Kasbon</label><input type="number" id="inpKasbon" value="0" min="0"></div>'+
+            '<div class="field"><label>WiFi</label><input type="number" id="inpWifi" value="'+wifiHarian+'" readonly></div>'+
+          '</div>'+
+        '</div>'+
+        '<div id="areaTidak" style="display:none">'+
+          '<div class="field"><label>Alasan</label><select id="inpAlasan">'+
+            '<option value="izin_istirahat">Izin Istirahat</option>'+
+            '<option value="izin_sakit">Izin Sakit</option>'+
+            '<option value="libur">Libur</option>'+
+            '<option value="mangkir">Mangkir</option>'+
+            '<option value="lainnya">Lainnya</option>'+
+          '</select></div>'+
+          '<div class="field"><label>Kasbon</label><input type="number" id="inpKasbon2" value="0" min="0"></div>'+
+          '<div class="field"><label>WiFi</label><input type="number" id="inpWifi2" value="'+wifiHarian+'" readonly></div>'+
+        '</div>'+
+        '<div class="preview-box"><div class="lbl">Estimasi Total</div><div class="val" id="previewTotal">Rp 0</div></div>'+
+        '<div id="formBtnWrap"></div>'+
+      '</div>';
+
+    // Isi karyawan saat cabang dipilih
+    const selCabang = $('inpCabang');
+    const selKar = $('inpKaryawan');
+    selCabang.addEventListener('change', () => {
+      const k = selCabang.value;
+      const list = users.filter(u => String(u.kode_cabang)===k && (String(u.jabatan).toLowerCase().includes('karyawan')||String(u.jabatan).toLowerCase().includes('kepala')) && u.status==='aktif' && u.dihapus!==true);
+      selKar.innerHTML = '<option value="">-- Pilih Karyawan --</option>'+
+        list.map(u => '<option value="'+escapeHtml(u.id)+'">'+escapeHtml(u.nama)+' ('+escapeHtml(u.jabatan)+')</option>').join('');
+    });
+
+    // Toggle masuk/tidak
+    let modeMasuk = true;
+    $('btnMasuk').onclick = () => { modeMasuk=true; $('btnMasuk').classList.add('active'); $('btnTidak').classList.remove('active'); $('areaMasuk').style.display=''; $('areaTidak').style.display='none'; updatePreview(); };
+    $('btnTidak').onclick = () => { modeMasuk=false; $('btnTidak').classList.add('active'); $('btnTidak').classList.add('gray'); $('btnMasuk').classList.remove('active'); $('areaMasuk').style.display='none'; $('areaTidak').style.display=''; updatePreview(); };
+
+    function updatePreview(){
+      let total = 0;
+      if (modeMasuk){
+        total = (Number($('inpUnit').value)||0) + (Number($('inpTips').value)||0) - (Number($('inpKasbon').value)||0) - (Number($('inpWifi').value)||0);
+      } else {
+        total = 0 - (Number($('inpKasbon2').value)||0) - (Number($('inpWifi2').value)||0);
       }
-      $('dashDetail').innerHTML = detail;
-    }).catch(function(err){
-      $('dashSub').textContent = '';
-      $('dashDetail').innerHTML = '<div class="empty-state"><div class="big">⚠️</div>' + esc(err.message) + '</div>';
+      const el = $('previewTotal');
+      el.textContent = rupiah(total);
+      el.className = 'val' + (total < 0 ? ' neg' : '');
+    }
+    ['inpUnit','inpTips','inpKasbon','inpKasbon2'].forEach(id => {
+      const el = $(id); if (el) el.addEventListener('input', updatePreview);
     });
+    updatePreview();
+
+    // Tombol submit
+    const btnWrap = $('formBtnWrap');
+    const btnSubmit = tombolAksi('SIMPAN PENDAPATAN', () => submitPendapatan(wifiHarian), 'btn-primary btn-block');
+    btnWrap.appendChild(btnSubmit);
+
+    // Render daftar pendapatan
+    renderListPendapatan(pend);
   }
 
-  /* =====================================================
-     INPUT PENDAPATAN
-     ===================================================== */
-  var submissionId = null;
+  function renderListPendapatan(pend){
+    const el = $('listPendapatan');
+    if (!el) return;
+    const today = todayStr();
+    const list = pend.filter(p => String(p.tanggal||'').slice(0,10) === today);
+    if (list.length === 0){
+      el.innerHTML = '<div class="empty-state"><span class="ic">📭</span>Belum ada pendapatan hari ini</div>';
+      return;
+    }
+    let html = '<div class="table-wrap"><table><thead><tr>'+
+      '<th>Tanggal</th><th>Nama</th><th>Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th><th>WiFi</th><th>Total</th>'+
+    '</tr></thead><tbody>';
+    list.forEach(p => {
+      const unit = Number(p.unit)||0;
+      const tips = Number(p.tips)||0;
+      const bonus = Number(p.bonus)||0;
+      const kasbon = Number(p.kasbon)||0;
+      const wifi = Number(p.wifi)||0;
+      const total = unit + tips + bonus - kasbon - wifi;
+      const tembus = String(p.tembus_target).toLowerCase()==='ya';
+      html += '<tr>';
+      html += '<td>'+escapeHtml(String(p.tanggal||'').slice(0,10))+'</td>';
+      html += '<td>'+escapeHtml(val(p.nama_karyawan))+(tembus?' <span class="badge badge-tembus">TEMBUS</span>':'')+'</td>';
+      html += '<td>'+unit+'</td>';
+      html += '<td>'+rupiah(tips)+'</td>';
+      html += '<td class="'+(bonus>0?'cell-bonus-pos':'')+'">'+rupiah(bonus)+'</td>';
+      html += '<td>'+rupiah(kasbon)+'</td>';
+      html += '<td>'+rupiah(wifi)+'</td>';
+      html += '<td><b>'+rupiah(total)+'</b></td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+    el.innerHTML = html;
+  }
 
-  function renderInputPendapatan(){
-    submissionId = uuidv4();
+  async function submitPendapatan(wifiHarian){
+    const session = CURRENT_SESSION;
+    const tgl = $('inpTgl').value;
+    const kodeCabang = $('inpCabang').value;
+    const idKar = $('inpKaryawan').value;
+    if (!tgl || !kodeCabang || !idKar){ showToast('Lengkapi tanggal, cabang, dan karyawan','error'); return; }
 
-    $('appContent').innerHTML = '' +
-      '<button class="back-btn" id="btnBack">← Kembali</button>' +
-      '<div class="page-title">🧾 Input Pendapatan</div>' +
-      '<div class="page-sub">Isi data harian karyawan</div>' +
-      '<div class="card">' +
-        '<div class="form-group"><label>Tanggal</label><input type="date" id="inpTanggal" value="' + todayStr() + '"></div>' +
-        '<div class="form-group"><label>Cabang</label><select id="inpCabang"><option value="">-- pilih cabang --</option></select></div>' +
-        '<div class="form-group"><label>Karyawan</label><select id="inpKaryawan"><option value="">-- pilih karyawan --</option></select></div>' +
-        '<div class="form-group"><label>Status Masuk</label>' +
-          '<div class="toggle-group">' +
-            '<button type="button" class="toggle-btn active green" id="btnMasuk">✅ Masuk Kerja</button>' +
-            '<button type="button" class="toggle-btn red" id="btnTidakMasuk">❌ Tidak Masuk</button>' +
-          '</div>' +
-        '</div>' +
-        '<div id="wrapMasuk">' +
-          '<div class="form-row">' +
-            '<div class="form-group"><label>Unit</label><input type="number" id="inpUnit" value="0" min="0"></div>' +
-            '<div class="form-group"><label>Tips</label><input type="number" id="inpTips" value="0" min="0"></div>' +
-          '</div>' +
-        '</div>' +
-        '<div id="wrapTidakMasuk" style="display:none">' +
-          '<div class="form-group"><label>Alasan Tidak Masuk</label>' +
-            '<select id="inpAlasan">' +
-              '<option value="izin_istirahat">Izin Istirahat (max 1 hari)</option>' +
-              '<option value="izin_sakit">Izin Sakit (max 3 hari)</option>' +
-              '<option value="libur">Libur</option>' +
-              '<option value="mangkir">Mangkir</option>' +
-              '<option value="lainnya">Lainnya</option>' +
-            '</select>' +
-          '</div>' +
-        '</div>' +
-        '<div class="form-group"><label>Kasbon (Rp)</label><input type="number" id="inpKasbon" value="0" min="0"></div>' +
-        '<div class="form-group"><label>WiFi (Rp)</label><input type="number" id="inpWifi" value="1000" disabled></div>' +
-        '<div class="preview-box">' +
-          '<div class="pv-label">Perkiraan Total</div>' +
-          '<div class="pv-value" id="pvTotal">Rp 0</div>' +
-        '</div>' +
-        '<button class="btn btn-primary" id="btnSimpan">💾 Simpan Pendapatan</button>' +
-      '</div>' +
-      '<div class="card" id="listHariIni"><h2>📋 Pendapatan Hari Ini</h2><div class="loading-box"><div class="spinner"></div><div>Memuat...</div></div></div>';
+    const modeMasuk = $('btnMasuk').classList.contains('active');
+    const unit = modeMasuk ? (Number($('inpUnit').value)||0) : 0;
+    const tips = modeMasuk ? (Number($('inpTips').value)||0) : 0;
+    const kasbon = modeMasuk ? (Number($('inpKasbon').value)||0) : (Number($('inpKasbon2').value)||0);
+    const wifi = modeMasuk ? (Number($('inpWifi').value)||wifiHarian) : (Number($('inpWifi2').value)||wifiHarian);
 
-    $('btnBack').onclick = function(){ go('menu'); };
+    // Ambil nama karyawan
+    const resUsers = await ambilData('Users');
+    const users = (resUsers && resUsers.ok && Array.isArray(resUsers.data)) ? resUsers.data : [];
+    const user = users.find(u => String(u.id)===String(idKar));
+    const namaKar = user ? user.nama : '-';
+    const jabatanKar = user ? String(user.jabatan||'').toLowerCase() : '';
 
-    var statusMasuk = 'ya';
-    var cabangSel = $('inpCabang');
-    var karSel = $('inpKaryawan');
-
-    function refreshPreview(){
-      var total = hitungTotal({
-        status_masuk: statusMasuk,
-        unit: $('inpUnit').value,
-        tips: $('inpTips').value,
-        bonus: 0,
-        kasbon: $('inpKasbon').value,
-        wifi: 1000
-      });
-      $('pvTotal').textContent = rupiah(total);
+    // Anti-dobel: cek kombinasi
+    const resPend = await ambilData('Pendapatan_Harian');
+    const pend = (resPend && resPend.ok && Array.isArray(resPend.data)) ? resPend.data : [];
+    const dupe = pend.find(p => String(p.tanggal||'').slice(0,10)===tgl && String(p.kode_cabang)===kodeCabang && String(p.id_karyawan)===String(idKar));
+    if (dupe){
+      showToast('Data '+namaKar+' tanggal '+tgl+' sudah ada','error');
+      return;
     }
 
-    $('btnMasuk').onclick = function(){
-      statusMasuk = 'ya';
-      $('btnMasuk').classList.add('active','green');
-      $('btnTidakMasuk').classList.remove('active','red');
-      $('wrapMasuk').style.display = '';
-      $('wrapTidakMasuk').style.display = 'none';
-      $('inpUnit').disabled = false;
-      $('inpTips').disabled = false;
-      refreshPreview();
+    // Cek Log_Submisi
+    const resLog = await ambilData('Log_Submisi');
+    const logs = (resLog && resLog.ok && Array.isArray(resLog.data)) ? resLog.data : [];
+    if (logs.find(l => String(l.submission_id)===submissionId)){
+      showToast('Duplikat submisi terdeteksi','error');
+      return;
+    }
+
+    const dataBaru = {
+      tanggal: tgl,
+      kode_cabang: kodeCabang,
+      id_karyawan: idKar,
+      nama_karyawan: namaKar,
+      status_masuk: modeMasuk ? 'ya' : 'tidak',
+      unit: unit,
+      tips: tips,
+      bonus: 0,
+      kasbon: kasbon,
+      wifi: wifi,
+      tembus_target: 'tidak',
+      alasan: modeMasuk ? '' : ($('inpAlasan') ? $('inpAlasan').value : ''),
+      submission_id: submissionId
     };
-    $('btnTidakMasuk').onclick = function(){
-      statusMasuk = 'tidak';
-      $('btnTidakMasuk').classList.add('active','red');
-      $('btnMasuk').classList.remove('active','green');
-      $('wrapMasuk').style.display = 'none';
-      $('wrapTidakMasuk').style.display = '';
-      $('inpUnit').value = 0;
-      $('inpTips').value = 0;
-      refreshPreview();
-    };
 
-    ['inpUnit','inpTips','inpKasbon'].forEach(function(id){
-      $(id).addEventListener('input', refreshPreview);
-    });
+    // Nonaktifkan tombol
+    const btns = $('formBtnWrap').querySelectorAll('button');
+    btns.forEach(b => { b.disabled = true; b.textContent = 'Menyimpan...'; });
 
-    // Load cabang + karyawan
-    Promise.all([ baca('Target_Cabang'), baca('Users') ]).then(function(arr){
-      var resC = arr[0], resU = arr[1];
-      var cabangs = (resC && resC.ok && Array.isArray(resC.data)) ? resC.data : [];
-      var users = (resU && resU.ok && Array.isArray(resU.data)) ? resU.data : [];
+    const res = await simpanData('Pendapatan_Harian', dataBaru);
+    if (!res || !res.ok){
+      showToast(res && res.pesan ? res.pesan : 'Gagal menyimpan','error');
+      btns.forEach(b => { b.disabled = false; b.textContent = 'SIMPAN PENDAPATAN'; });
+      return;
+    }
 
-      var myCab = STATE.user.user_kode_cabang;
-      if(!canEdit() && myCab && myCab !== '-'){
-        cabangs = cabangs.filter(function(c){ return String(c.kode_cabang||'') === String(myCab); });
+    // Tulis log
+    await simpanData('Log_Submisi', { submission_id: submissionId, waktu: new Date().toISOString() });
+
+    showToast('Berhasil disimpan','success');
+
+    // Hitung bonus tembus target
+    await hitungBonusTembus(tgl, kodeCabang);
+
+    // Reload daftar
+    const resPend2 = await ambilData('Pendapatan_Harian');
+    const pend2 = (resPend2 && resPend2.ok && Array.isArray(resPend2.data)) ? resPend2.data : [];
+    renderListPendapatan(pend2);
+
+    // Reset
+    submissionId = genSubmissionId();
+    btns.forEach(b => { b.disabled = false; b.textContent = 'SIMPAN PENDAPATAN'; });
+  }
+
+  async function hitungBonusTembus(tgl, kodeCabang){
+    const resPend = await ambilData('Pendapatan_Harian');
+    const pend = (resPend && resPend.ok && Array.isArray(resPend.data)) ? resPend.data : [];
+    const filter = pend.filter(p => String(p.tanggal||'').slice(0,10)===tgl && String(p.kode_cabang)===kodeCabang);
+    const totalUnit = filter.reduce((a,p)=>a+(Number(p.unit)||0),0);
+
+    const resTarget = await ambilData('Target_Cabang');
+    const target = (resTarget && resTarget.ok && Array.isArray(resTarget.data)) ? resTarget.data : [];
+    const t = target.find(x => String(x.kode_cabang)===kodeCabang);
+    const tgt = t ? (Number(t.target_harian)||0) : 0;
+
+    const resSet = await ambilData('Pengaturan');
+    const setting = (resSet && resSet.ok && Array.isArray(resSet.data)) ? resSet.data : [];
+    const bonusKT = Number(setting.find(s=>s.key==='bonus_kepala_toko')?.value)||10000;
+    const bonusKar = Number(setting.find(s=>s.key==='bonus_karyawan')?.value)||5000;
+
+    const tembus = tgt > 0 && totalUnit >= tgt;
+
+    for (const p of filter){
+      const jabatan = String(p.jabatan||'').toLowerCase();
+      let bonus = 0;
+      if (tembus && String(p.status_masuk).toLowerCase()==='ya'){
+        if (jabatan.includes('kepala')) bonus = bonusKT;
+        else bonus = bonusKar;
       }
-
-      var optC = '<option value="">-- pilih cabang --</option>';
-      cabangs.forEach(function(c){
-        optC += '<option value="' + esc(c.kode_cabang) + '">' + esc(c.kode_cabang) + ' - ' + esc(c.nama_cabang || '') + '</option>';
-      });
-      cabangSel.innerHTML = optC;
-      if(cabangs.length === 1){
-        cabangSel.value = cabangs[0].kode_cabang;
-        cabangSel.dispatchEvent(new Event('change'));
+      const row = p._row || p.row;
+      if (row){
+        await updateData('Pendapatan_Harian', row, {
+          bonus: bonus,
+          tembus_target: tembus ? 'ya' : 'tidak'
+        });
       }
+    }
+    if (tembus){
+      showToast('🎉 Tembus target! Bonus Rp '+(bonusKT+bonusKar)+'','success');
+    }
+  }
 
-      cabangSel.addEventListener('change', function(){
-        var kode = cabangSel.value;
-        var filtered = users.filter(function(u){
-          var jab = String(u.jabatan||'').toLowerCase();
-          var del = String(u.dihapus||'').toLowerCase();
-          var isDel = (del === 'true' || del === 'ya' || del === '1');
-          var status = String(u.status||'').toLowerCase();
-          if(status !== 'aktif' || isDel) return false;
-          if(jab.indexOf('karyawan') === -1 && jab.indexOf('kepala') === -1) return false;
-          if(!kode) return true;
-          return String(u.kode_cabang||'') === String(kode);
-        });
-        var optU = '<option value="">-- pilih karyawan --</option>';
-        filtered.forEach(function(u){
-          optU += '<option value="' + esc(u.id) + '" data-nama="' + esc(u.nama) + '">' + esc(u.id) + ' - ' + esc(u.nama) + ' (' + esc(u.jabatan) + ')</option>';
-        });
-        karSel.innerHTML = optU;
-      });
-    }).catch(function(err){
-      toast('Gagal load data: ' + err.message, 'error');
+  /* =========================================================
+     RENDER: MANAJEMEN MANUSIA
+     ========================================================= */
+  async function renderManusia(){
+    const content = $('appContent');
+    content.innerHTML =
+      '<button class="back-btn" data-back>← Kembali</button>'+
+      '<div class="page-title">👥 Manajemen Manusia</div>'+
+      '<div class="page-sub">Kelola data pengguna</div>'+
+      '<div class="card"><div class="card-title">Daftar Pengguna</div><div id="tabelUsers"><div class="empty-state"><span class="ic">⏳</span>Memuat...</div></div></div>';
+    content.querySelector('[data-back]').onclick = () => navigateTo('home');
+
+    const res = await ambilData('Users');
+    const users = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
+    const el = $('tabelUsers');
+    if (users.length === 0){
+      el.innerHTML = '<div class="empty-state"><span class="ic">📭</span>Tidak ada data pengguna</div>';
+      return;
+    }
+    let html = '<div class="table-wrap"><table><thead><tr><th>ID</th><th>Nama</th><th>Jabatan</th><th>Cabang</th><th>Status</th><th>Aksi</th></tr></thead><tbody>';
+    users.forEach(u => {
+      const row = u._row || u.row;
+      html += '<tr>';
+      html += '<td>'+escapeHtml(u.id)+'</td>';
+      html += '<td>'+escapeHtml(u.nama)+'</td>';
+      html += '<td>'+escapeHtml(u.jabatan)+'</td>';
+      html += '<td>'+escapeHtml(val(u.kode_cabang))+'</td>';
+      html += '<td><span class="badge '+(String(u.status).toLowerCase()==='aktif'?'badge-aktif':'badge-nonaktif')+'">'+escapeHtml(u.status)+'</span></td>';
+      html += '<td><button class="btn-ghost btn-sm" data-edit="'+row+'">✏️</button></td>';
+      html += '</tr>';
     });
+    html += '</tbody></table></div>';
+    el.innerHTML = html;
 
-    refreshPreview();
-    loadListHariIni();
-
-    /* ----- SIMPAN ----- */
-    $('btnSimpan').onclick = function(){
-      var btn = $('btnSimpan');
-      var tanggal = $('inpTanggal').value;
-      var kodeCab = cabangSel.value;
-      var idKar = karSel.value;
-
-      if(!tanggal){ toast('Tanggal wajib diisi', 'error'); return; }
-      if(!kodeCab){ toast('Pilih cabang', 'error'); return; }
-      if(!idKar){ toast('Pilih karyawan', 'error'); return; }
-
-      var selOpt = karSel.options[karSel.selectedIndex];
-      var namaKar = selOpt.getAttribute('data-nama') || '';
-
-      var payloadBase = {
-        tanggal: tanggal,
-        kode_cabang: kodeCab,
-        id_karyawan: String(idKar).trim(),
-        nama_karyawan: String(namaKar).trim(),
-        status_masuk: statusMasuk,
-        unit: statusMasuk === 'ya' ? num($('inpUnit').value) : 0,
-        tips: statusMasuk === 'ya' ? num($('inpTips').value) : 0,
-        bonus: 0,
-        kasbon: num($('inpKasbon').value),
-        wifi: 1000,
-        alasan: statusMasuk === 'ya' ? '' : $('inpAlasan').value,
-        tembus_target: 'tidak',
-        submission_id: submissionId
+    el.querySelectorAll('[data-edit]').forEach(b => {
+      b.onclick = () => {
+        const row = b.dataset.edit;
+        const u = users.find(x => String(x._row||x.row)===String(row));
+        if (!u) return;
+        openModal(
+          '<h3>Edit Pengguna</h3>'+
+          '<div class="field"><label>ID (tidak bisa diubah)</label><input type="text" id="editId" value="'+escapeHtml(u.id)+'" disabled></div>'+
+          '<div class="field"><label>Nama</label><input type="text" id="editNama" value="'+escapeHtml(u.nama)+'"></div>'+
+          '<div class="field"><label>Jabatan</label><select id="editJabatan">'+
+            ['Owner','Admin','Kepala Toko','Karyawan'].map(j => '<option '+(String(u.jabatan)===j?'selected':'')+'>'+j+'</option>').join('')+
+          '</select></div>'+
+          '<div class="field"><label>Cabang</label><input type="text" id="editCabang" value="'+escapeHtml(u.kode_cabang||'')+'"></div>'+
+          '<div class="field"><label>Status</label><select id="editStatus">'+
+            ['aktif','nonaktif'].map(s => '<option '+(String(u.status)===s?'selected':'')+'>'+s+'</option>').join('')+
+          '</select></div>'+
+          '<div class="modal-actions">'+
+            '<button class="btn-ghost" id="modalCancel">Batal</button>'+
+            '<button class="btn-primary" id="modalSave">Simpan</button>'+
+          '</div>'
+        );
+        $('modalCancel').onclick = closeModal;
+        $('modalSave').onclick = async () => {
+          const data = {
+            nama: $('editNama').value.trim(),
+            jabatan: $('editJabatan').value,
+            kode_cabang: $('editCabang').value.trim(),
+            status: $('editStatus').value
+          };
+          const r = await updateData('Users', row, data);
+          if (r && r.ok){ showToast('Berhasil diperbarui','success'); closeModal(); renderManusia(); }
+          else { showToast(r && r.pesan ? r.pesan : 'Gagal','error'); }
+        };
       };
-      payloadBase.total = hitungTotal(payloadBase);
-
-      btn.disabled = true;
-      btn.textContent = 'Menyimpan...';
-
-      // 1. cek Log_Submisi
-      baca('Log_Submisi').then(function(resLog){
-        var logs = (resLog && resLog.ok && Array.isArray(resLog.data)) ? resLog.data : [];
-        var dup = logs.some(function(l){
-          return String(l.submission_id||'') === submissionId;
-        });
-        if(dup){
-          throw new Error('Submisi ini sudah pernah diproses (anti-dobel).');
-        }
-        // 2. cek Pendapatan_Harian kombinasi tanggal+cabang+karyawan
-        return baca('Pendapatan_Harian');
-      }).then(function(resP){
-        var rows = (resP && resP.ok && Array.isArray(resP.data)) ? resP.data : [];
-        var dup2 = rows.some(function(r){
-          return String(r.tanggal||'').slice(0,10) === tanggal &&
-                 String(r.kode_cabang||'').trim() === String(kodeCab).trim() &&
-                 String(r.id_karyawan||'').trim() === String(idKar).trim();
-        });
-        if(dup2){
-          throw new Error('Data untuk karyawan ini di tanggal & cabang yang sama sudah ada.');
-        }
-        // 3. tulis
-        return tulis('Pendapatan_Harian', payloadBase);
-      }).then(function(res){
-        if(!res || !res.ok){
-          throw new Error((res && res.pesan) || 'Gagal menyimpan.');
-        }
-        // 4. log submission
-        return tulis('Log_Submisi', {
-          submission_id: submissionId,
-          timestamp: new Date().toISOString(),
-          user_id: STATE.user.user_id,
-          sheet: 'Pendapatan_Harian'
-        });
-      }).then(function(){
-        toast('Data pendapatan tersimpan!', 'success');
-        return cekBonusTembus(tanggal, kodeCab);
-      }).then(function(){
-        submissionId = uuidv4();
-        $('inpUnit').value = 0;
-        $('inpTips').value = 0;
-        $('inpKasbon').value = 0;
-        refreshPreview();
-        loadListHariIni();
-        btn.disabled = false;
-        btn.textContent = '💾 Simpan Pendapatan';
-      }).catch(function(err){
-        toast(err.message || 'Terjadi kesalahan.', 'error');
-        btn.disabled = false;
-        btn.textContent = '💾 Simpan Pendapatan';
-      });
-    };
-  }
-
-  function cekBonusTembus(tanggal, kodeCab){
-    return Promise.all([ baca('Pendapatan_Harian'), baca('Target_Cabang') ]).then(function(arr){
-      var resP = arr[0], resT = arr[1];
-      var rows = (resP && resP.ok && Array.isArray(resP.data)) ? resP.data : [];
-      var targets = (resT && resT.ok && Array.isArray(resT.data)) ? resT.data : [];
-
-      var targetRow = targets.find(function(t){
-        return String(t.kode_cabang||'').trim() === String(kodeCab).trim();
-      });
-      if(!targetRow){ return; }
-      var target = num(targetRow.target_harian);
-      if(target <= 0) return;
-
-      var filtered = rows.filter(function(r){
-        return String(r.tanggal||'').slice(0,10) === tanggal &&
-               String(r.kode_cabang||'').trim() === String(kodeCab).trim();
-      });
-      var sumUnit = filtered.reduce(function(a,b){ return a + num(b.unit); }, 0);
-
-      if(sumUnit < target) return;
-
-      // tembus: update semua
-      var bonusKT = 10000, bonusKar = 5000;
-      // coba ambil dari Pengaturan (opsional)
-      baca('Pengaturan').then(function(resSet){
-        var sets = (resSet && resSet.ok && Array.isArray(resSet.data)) ? resSet.data : [];
-        sets.forEach(function(s){
-          var k = String(s.kunci||'').toLowerCase();
-          if(k === 'bonus_kt') bonusKT = num(s.nilai);
-          if(k === 'bonus_karyawan') bonusKar = num(s.nilai);
-        });
-        applyBonus(filtered, bonusKT, bonusKar);
-      }).catch(function(){
-        applyBonus(filtered, bonusKT, bonusKar);
-      });
-
-      function applyBonus(rowsToUpdate, bKT, bKar){
-        var promises = [];
-        rowsToUpdate.forEach(function(r){
-          var jab = String(r.nama_karyawan||'').toLowerCase();
-          // Bonus berdasarkan jabatan di Users lebih akurat — untuk demo, pakai 5000 default
-          var bonus = bKar;
-          var masuk = String(r.status_masuk||'').toLowerCase();
-          if(masuk !== 'ya') bonus = 0;
-          var newData = {
-            bonus: bonus,
-            tembus_target: 'ya',
-            total: hitungTotal(Object.assign({}, r, { bonus: bonus }))
-          };
-          promises.push(update('Pendapatan_Harian', r._row, newData));
-        });
-        return Promise.all(promises).then(function(){
-          var totalBonus = rowsToUpdate.length * bKar;
-          toast('🎉 TEMBUS TARGET! Total bonus Rp ' + totalBonus.toLocaleString('id-ID'), 'gold');
-        });
-      }
     });
   }
 
-  function loadListHariIni(){
-    baca('Pendapatan_Harian').then(function(res){
-      var rows = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
-      var today = todayStr();
-      var cab = STATE.user.user_kode_cabang;
-      var filtered = rows.filter(function(r){
-        if(String(r.tanggal||'').slice(0,10) !== today) return false;
-        if(canEdit()) return true;
-        if(cab && cab !== '-') return String(r.kode_cabang||'') === String(cab);
-        return true;
+  /* =========================================================
+     RENDER: PAYROLL
+     ========================================================= */
+  async function renderPayroll(){
+    const session = CURRENT_SESSION;
+    const role = getRoleFromJabatan(session.user_jabatan);
+    const content = $('appContent');
+    content.innerHTML =
+      '<button class="back-btn" data-back>← Kembali</button>'+
+      '<div class="page-title">💰 Payroll</div>'+
+      '<div class="page-sub">'+(role==='karyawan'||role==='kepala_toko'?'Payroll Anda':'Kelola payroll karyawan')+'</div>'+
+      '<div id="payrollContent"><div class="empty-state"><span class="ic">⏳</span>Memuat...</div></div>';
+    content.querySelector('[data-back]').onclick = () => navigateTo('home');
+
+    const res = await ambilData('Payroll');
+    const data = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
+    const el = $('payrollContent');
+
+    let list = data;
+    if (role === 'karyawan' || role === 'kepala_toko'){
+      list = data.filter(p => String(p.id_karyawan)===String(session.user_id));
+    }
+
+    let html = '';
+    if (role === 'owner' || role === 'admin'){
+      html += '<div class="card"><div class="card-title">Generate Payroll</div>'+
+        '<div class="field"><label>Periode</label><input type="text" id="inpPeriode" placeholder="2026-01-P1" value="'+new Date().toISOString().slice(0,7)+'-P1"></div>'+
+        '<div id="btnGenWrap"></div></div>';
+    }
+    html += '<div class="card"><div class="card-title">Data Payroll</div>';
+    if (list.length === 0){
+      html += '<div class="empty-state"><span class="ic">📭</span>Belum ada data payroll</div>';
+    } else {
+      html += '<div class="table-wrap"><table><thead><tr><th>Periode</th><th>ID</th><th>Nama</th><th>Total</th><th>Status</th></tr></thead><tbody>';
+      list.forEach(p => {
+        html += '<tr><td>'+escapeHtml(p.periode)+'</td><td>'+escapeHtml(p.id_karyawan)+'</td><td>'+escapeHtml(p.nama_karyawan)+'</td><td><b>'+rupiah(p.total_payroll)+'</b></td><td><span class="badge '+(String(p.status)==='dibayar'?'badge-ok':'badge-warn')+'">'+escapeHtml(p.status)+'</span></td></tr>';
       });
-      var html = '<h2>📋 Pendapatan Hari Ini</h2>';
-      if(filtered.length === 0){
-        html += '<div class="empty-state"><div class="big">📭</div>Belum ada data hari ini</div>';
-      }else{
-        html += '<div class="table-wrap"><table><thead><tr>' +
-          '<th>Nama</th><th>Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th><th>WiFi</th><th>Total</th><th>Status</th>' +
-          '</tr></thead><tbody>';
-        filtered.forEach(function(r){
-          var bonus = num(r.bonus);
-          var tembus = String(r.tembus_target||'').toLowerCase() === 'ya';
-          html += '<tr>' +
-            '<td>' + esc(safe(r.nama_karyawan)) + '</td>' +
-            '<td>' + num(r.unit) + '</td>' +
-            '<td>' + num(r.tips) + '</td>' +
-            '<td class="' + (bonus > 0 ? 'bonus-cell' : '') + '">' + bonus + '</td>' +
-            '<td>' + num(r.kasbon) + '</td>' +
-            '<td>' + (num(r.wifi) || 1000) + '</td>' +
-            '<td><strong>' + rupiah(num(r.total) || hitungTotal(r)) + '</strong></td>' +
-            '<td>' + (tembus ? '<span class="badge badge-green">TEMBUS</span>' : (String(r.status_masuk||'') === 'ya' ? '<span class="badge badge-blue">Masuk</span>' : '<span class="badge badge-red">Tidak</span>')) + '</td>' +
-          '</tr>';
-        });
-        html += '</tbody></table></div>';
-      }
-      var el = $('listHariIni');
-      if(el) el.innerHTML = html;
-    }).catch(function(err){
-      var el = $('listHariIni');
-      if(el) el.innerHTML = '<h2>📋 Pendapatan Hari Ini</h2><div class="empty-state"><div class="big">⚠️</div>' + esc(err.message) + '</div>';
-    });
+      html += '</tbody></table></div>';
+    }
+    html += '</div>';
+    el.innerHTML = html;
+
+    if (role === 'owner' || role === 'admin'){
+      const btn = tombolAksi('GENERATE PAYROLL', () => generatePayroll($('inpPeriode').value), 'btn-primary btn-block');
+      $('btnGenWrap').appendChild(btn);
+    }
   }
 
-  /* =====================================================
-     INPUT PENGELUARAN
-     ===================================================== */
-  function renderInputPengeluaran(){
-    $('appContent').innerHTML = '' +
-      '<button class="back-btn" id="btnBack">← Kembali</button>' +
-      '<div class="page-title">💸 Input Pengeluaran</div>' +
-      '<div class="page-sub">Catat pengeluaran operasional</div>' +
-      '<div class="card">' +
-        '<div class="form-group"><label>Tanggal</label><input type="date" id="pglTanggal" value="' + todayStr() + '"></div>' +
-        '<div class="form-group"><label>Cabang</label><select id="pglCabang"><option value="">-- pilih --</option></select></div>' +
-        '<div class="form-group"><label>Kategori</label>' +
-          '<select id="pglKategori">' +
-            '<option value="operasional">Operasional</option>' +
-            '<option value="gaji">Gaji</option>' +
-            '<option value="sewa">Sewa</option>' +
-            '<option value="listrik">Listrik/Air</option>' +
-            '<option value="lainnya">Lainnya</option>' +
-          '</select>' +
-        '</div>' +
-        '<div class="form-group"><label>Keterangan</label><input type="text" id="pglKet" placeholder="Deskripsi singkat"></div>' +
-        '<div class="form-group"><label>Jumlah (Rp)</label><input type="number" id="pglJumlah" value="0" min="0"></div>' +
-        '<button class="btn btn-primary" id="btnSimpanPgl">💾 Simpan Pengeluaran</button>' +
-      '</div>' +
-      '<div class="card" id="listPgl"><h2>📋 Pengeluaran Hari Ini</h2><div class="loading-box"><div class="spinner"></div><div>Memuat...</div></div></div>';
-
-    $('btnBack').onclick = function(){ go('menu'); };
-
-    baca('Target_Cabang').then(function(res){
-      var cabangs = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
-      var opt = '<option value="">-- pilih --</option>';
-      cabangs.forEach(function(c){
-        opt += '<option value="' + esc(c.kode_cabang) + '">' + esc(c.kode_cabang) + '</option>';
-      });
-      $('pglCabang').innerHTML = opt;
-      if(STATE.user.user_kode_cabang && STATE.user.user_kode_cabang !== '-'){
-        $('pglCabang').value = STATE.user.user_kode_cabang;
-      }
+  async function generatePayroll(periode){
+    if (!periode){ showToast('Isi periode dulu','error'); return; }
+    showToast('Memproses payroll...','info');
+    const resUsers = await ambilData('Users');
+    const users = (resUsers && resUsers.ok && Array.isArray(resUsers.data)) ? resUsers.data : [];
+    const target = users.filter(u => {
+      const j = String(u.jabatan||'').toLowerCase();
+      return (j.includes('karyawan')||j.includes('kepala')) && String(u.status).toLowerCase()==='aktif' && u.dihapus!==true;
     });
+    const resPend = await ambilData('Pendapatan_Harian');
+    const pend = (resPend && resPend.ok && Array.isArray(resPend.data)) ? resPend.data : [];
 
-    $('btnSimpanPgl').onclick = function(){
-      var btn = $('btnSimpanPgl');
-      var data = {
-        tanggal: $('pglTanggal').value,
-        kode_cabang: $('pglCabang').value,
-        kategori: $('pglKategori').value,
-        keterangan: $('pglKet').value,
-        jumlah: num($('pglJumlah').value),
-        user_id: STATE.user.user_id,
-        timestamp: new Date().toISOString()
+    for (const u of target){
+      const milik = pend.filter(p => String(p.id_karyawan)===String(u.id));
+      const sum = milik.reduce((a,p) => {
+        return a + (Number(p.unit)||0) + (Number(p.tips)||0) + (Number(p.bonus)||0) - (Number(p.kasbon)||0) - (Number(p.wifi)||0);
+      }, 0);
+      await simpanData('Payroll', {
+        periode: periode,
+        id_karyawan: u.id,
+        nama_karyawan: u.nama,
+        total_payroll: sum,
+        status: 'draft'
+      });
+    }
+    showToast('Payroll berhasil digenerate','success');
+    renderPayroll();
+  }
+
+  /* =========================================================
+     RENDER: KASBON
+     ========================================================= */
+  async function renderKasbon(){
+    const session = CURRENT_SESSION;
+    const role = getRoleFromJabatan(session.user_jabatan);
+    const content = $('appContent');
+    content.innerHTML =
+      '<button class="back-btn" data-back>← Kembali</button>'+
+      '<div class="page-title">🏦 Kasbon</div>'+
+      '<div class="page-sub">'+(role==='karyawan'||role==='kepala_toko'?'Ajukan & lihat riwayat kasbon':'Kelola pengajuan kasbon')+'</div>'+
+      '<div id="kasbonContent"><div class="empty-state"><span class="ic">⏳</span>Memuat...</div></div>';
+    content.querySelector('[data-back]').onclick = () => navigateTo('home');
+
+    const res = await ambilData('Pengajuan_Kasbon');
+    const data = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
+    const el = $('kasbonContent');
+
+    let list = data;
+    if (role === 'karyawan' || role === 'kepala_toko'){
+      list = data.filter(k => String(k.id_karyawan)===String(session.user_id));
+    }
+
+    let html = '';
+    if (role === 'karyawan' || role === 'kepala_toko'){
+      html += '<div class="card"><div class="card-title">Ajukan Kasbon</div>'+
+        '<div class="field"><label>Jumlah Kasbon</label><input type="number" id="inpJumlahKasbon" value="0" min="0"></div>'+
+        '<div id="btnKasbonWrap"></div></div>';
+    }
+    html += '<div class="card"><div class="card-title">Riwayat Kasbon</div>';
+    if (list.length === 0){
+      html += '<div class="empty-state"><span class="ic">📭</span>Belum ada pengajuan</div>';
+    } else {
+      html += '<div class="table-wrap"><table><thead><tr><th>ID</th><th>Tanggal</th><th>Nama</th><th>Jumlah</th><th>Status</th><th>Aksi</th></tr></thead><tbody>';
+      list.forEach(k => {
+        const row = k._row || k.row;
+        const bisaAcc = (role==='admin'||role==='owner') && String(k.status)==='menunggu_acc';
+        html += '<tr><td>'+escapeHtml(k.id_pengajuan)+'</td><td>'+escapeHtml(String(k.tanggal_pengajuan||'').slice(0,10))+'</td><td>'+escapeHtml(k.nama_karyawan)+'</td><td>'+rupiah(k.jumlah_kasbon)+'</td><td><span class="badge '+(String(k.status)==='ditolak'?'badge-err':'badge-ok')+'">'+escapeHtml(k.status)+'</span></td><td>'+(bisaAcc?'<button class="btn-primary btn-sm" data-acc="'+row+'">ACC</button>':'-')+'</td></tr>';
+      });
+      html += '</tbody></table></div>';
+    }
+    html += '</div>';
+    el.innerHTML = html;
+
+    if (role === 'karyawan' || role === 'kepala_toko'){
+      const btn = tombolAksi('AJUKAN KASBON', () => ajukanKasbon(session), 'btn-primary btn-block');
+      $('btnKasbonWrap').appendChild(btn);
+    }
+    el.querySelectorAll('[data-acc]').forEach(b => {
+      b.onclick = async () => {
+        const r = await updateData('Pengajuan_Kasbon', b.dataset.acc, { status:'disetujui' });
+        if (r && r.ok){ showToast('Kasbon disetujui','success'); renderKasbon(); }
+        else showToast(r && r.pesan ? r.pesan : 'Gagal','error');
       };
-      if(!data.tanggal || !data.kode_cabang || data.jumlah <= 0){
-        toast('Lengkapi data dengan benar.', 'error');
-        return;
-      }
-      btn.disabled = true;
-      tulis('Pengeluaran', data).then(function(res){
-        if(!res || !res.ok) throw new Error((res && res.pesan) || 'Gagal simpan.');
-        toast('Pengeluaran tersimpan!', 'success');
-        $('pglKet').value = '';
-        $('pglJumlah').value = 0;
-        btn.disabled = false;
-        loadListPgl();
-      }).catch(function(err){
-        toast(err.message, 'error');
-        btn.disabled = false;
-      });
-    };
-
-    loadListPgl();
-
-    function loadListPgl(){
-      baca('Pengeluaran').then(function(res){
-        var rows = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
-        var today = todayStr();
-        var filtered = rows.filter(function(r){ return String(r.tanggal||'').slice(0,10) === today; });
-        var html = '<h2>📋 Pengeluaran Hari Ini</h2>';
-        if(filtered.length === 0){
-          html += '<div class="empty-state"><div class="big">📭</div>Belum ada pengeluaran</div>';
-        }else{
-          html += '<div class="table-wrap"><table><thead><tr><th>Kategori</th><th>Keterangan</th><th>Jumlah</th></tr></thead><tbody>';
-          filtered.forEach(function(r){
-            html += '<tr><td>' + esc(safe(r.kategori)) + '</td><td>' + esc(safe(r.keterangan)) + '</td><td><strong>' + rupiah(num(r.jumlah)) + '</strong></td></tr>';
-          });
-          html += '</tbody></table></div>';
-        }
-        $('listPgl').innerHTML = html;
-      }).catch(function(err){
-        $('listPgl').innerHTML = '<h2>📋 Pengeluaran Hari Ini</h2><div class="empty-state"><div class="big">⚠️</div>' + esc(err.message) + '</div>';
-      });
-    }
-  }
-
-  /* =====================================================
-     KASBON
-     ===================================================== */
-  function renderKasbon(mode){
-    var isSaya = mode === 'kasbon_saya';
-    $('appContent').innerHTML = '' +
-      '<button class="back-btn" id="btnBack">← Kembali</button>' +
-      '<div class="page-title">🏦 ' + (isSaya ? 'Kasbon Saya' : 'Kasbon') + '</div>' +
-      '<div class="page-sub">Ajukan kasbon harian</div>' +
-      '<div class="card">' +
-        '<div class="form-group"><label>Jumlah Kasbon (Rp)</label><input type="number" id="kbJumlah" value="0" min="0"></div>' +
-        '<div class="form-group"><label>Keterangan</label><input type="text" id="kbKet" placeholder="Alasan kasbon"></div>' +
-        '<button class="btn btn-primary" id="btnAjukanKb">📤 Ajukan Kasbon</button>' +
-      '</div>' +
-      '<div class="card" id="listKb"><h2>📋 Riwayat Kasbon</h2><div class="loading-box"><div class="spinner"></div><div>Memuat...</div></div></div>';
-
-    $('btnBack').onclick = function(){ go('menu'); };
-
-    $('btnAjukanKb').onclick = function(){
-      var btn = $('btnAjukanKb');
-      var jumlah = num($('kbJumlah').value);
-      if(jumlah <= 0){ toast('Jumlah kasbon harus > 0', 'error'); return; }
-      btn.disabled = true;
-
-      var today = todayStr();
-      baca('Pengajuan_Kasbon').then(function(res){
-        var rows = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
-        var todayRows = rows.filter(function(r){
-          return String(r.id_karyawan||'').trim() === String(STATE.user.user_id).trim() &&
-                 String(r.tanggal||'').slice(0,10) === today;
-        });
-        var totalApprove = todayRows.filter(function(r){
-          var st = String(r.status||'').toLowerCase();
-          return st === 'auto_disetujui' || st === 'disetujui';
-        }).reduce(function(a,b){ return a + num(b.jumlah); }, 0);
-
-        var totalBaru = totalApprove + jumlah;
-        var status;
-        if(totalBaru <= 20000){
-          status = 'auto_disetujui';
-        }else{
-          // cek pendapatan belum dibayar
-          status = 'menunggu_acc';
-        }
-
-        return tulis('Pengajuan_Kasbon', {
-          tanggal: today,
-          id_karyawan: STATE.user.user_id,
-          nama_karyawan: STATE.user.user_nama,
-          kode_cabang: STATE.user.user_kode_cabang,
-          jumlah: jumlah,
-          keterangan: $('kbKet').value,
-          status: status,
-          timestamp: new Date().toISOString()
-        });
-      }).then(function(res){
-        if(!res || !res.ok) throw new Error((res && res.pesan) || 'Gagal mengajukan.');
-        toast('Kasbon diajukan!', 'success');
-        $('kbJumlah').value = 0;
-        $('kbKet').value = '';
-        btn.disabled = false;
-        loadKb();
-      }).catch(function(err){
-        toast(err.message, 'error');
-        btn.disabled = false;
-      });
-    };
-
-    loadKb();
-
-    function loadKb(){
-      baca('Pengajuan_Kasbon').then(function(res){
-        var rows = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
-        var filtered = rows;
-        if(!canEdit()){
-          filtered = rows.filter(function(r){
-            return String(r.id_karyawan||'').trim() === String(STATE.user.user_id).trim();
-          });
-        }else if(STATE.user.user_kode_cabang && STATE.user.user_kode_cabang !== '-'){
-          filtered = rows.filter(function(r){
-            return String(r.kode_cabang||'') === String(STATE.user.user_kode_cabang);
-          });
-        }
-        var html = '<h2>📋 Riwayat Kasbon</h2>';
-        if(filtered.length === 0){
-          html += '<div class="empty-state"><div class="big">📭</div>Belum ada kasbon</div>';
-        }else{
-          html += '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Jumlah</th><th>Status</th>' + (canEdit() ? '<th>Aksi</th>' : '') + '</tr></thead><tbody>';
-          filtered.forEach(function(r){
-            var st = String(r.status||'').toLowerCase();
-            var badge = st === 'auto_disetujui' ? 'badge-green' : st === 'disetujui' ? 'badge-green' : st === 'ditolak' ? 'badge-red' : 'badge-gold';
-            html += '<tr>' +
-              '<td>' + esc(String(r.tanggal||'').slice(0,10)) + '</td>' +
-              '<td>' + esc(safe(r.nama_karyawan)) + '</td>' +
-              '<td><strong>' + rupiah(num(r.jumlah)) + '</strong></td>' +
-              '<td><span class="badge ' + badge + '">' + esc(safe(r.status)) + '</span></td>';
-            if(canEdit()){
-              html += '<td>' +
-                '<button class="btn btn-sm btn-gold" data-acc="' + r._row + '">ACC</button> ' +
-                '<button class="btn btn-sm btn-danger" data-tolak="' + r._row + '">Tolak</button>' +
-              '</td>';
-            }
-            html += '</tr>';
-          });
-          html += '</tbody></table></div>';
-        }
-        $('listKb').innerHTML = html;
-
-        if(canEdit()){
-          $('listKb').querySelectorAll('[data-acc]').forEach(function(b){
-            b.onclick = function(){
-              update('Pengajuan_Kasbon', b.getAttribute('data-acc'), { status: 'disetujui' })
-                .then(function(){ toast('Kasbon disetujui!', 'success'); loadKb(); })
-                .catch(function(e){ toast(e.message, 'error'); });
-            };
-          });
-          $('listKb').querySelectorAll('[data-tolak]').forEach(function(b){
-            b.onclick = function(){
-              update('Pengajuan_Kasbon', b.getAttribute('data-tolak'), { status: 'ditolak' })
-                .then(function(){ toast('Kasbon ditolak', 'info'); loadKb(); })
-                .catch(function(e){ toast(e.message, 'error'); });
-            };
-          });
-        }
-      }).catch(function(err){
-        $('listKb').innerHTML = '<h2>📋 Riwayat Kasbon</h2><div class="empty-state"><div class="big">⚠️</div>' + esc(err.message) + '</div>';
-      });
-    }
-  }
-
-  /* =====================================================
-     IZIN
-     ===================================================== */
-  function renderIzin(mode){
-    var isSaya = mode === 'izin_saya';
-    $('appContent').innerHTML = '' +
-      '<button class="back-btn" id="btnBack">← Kembali</button>' +
-      '<div class="page-title">📅 ' + (isSaya ? 'Izin Saya' : 'Izin') + '</div>' +
-      '<div class="page-sub">Ajukan izin istirahat / sakit</div>' +
-      '<div class="card">' +
-        '<div class="form-group"><label>Jenis Izin</label>' +
-          '<select id="izJenis">' +
-            '<option value="istirahat">Istirahat (max 1 hari)</option>' +
-            '<option value="sakit">Sakit (max 3 hari)</option>' +
-          '</select>' +
-        '</div>' +
-        '<div class="form-row">' +
-          '<div class="form-group"><label>Dari</label><input type="date" id="izDari" value="' + todayStr() + '"></div>' +
-          '<div class="form-group"><label>Sampai</label><input type="date" id="izSampai" value="' + todayStr() + '"></div>' +
-        '</div>' +
-        '<div class="form-group"><label>Alasan</label><textarea id="izAlasan" rows="3" placeholder="Jelaskan alasan izin"></textarea></div>' +
-        '<button class="btn btn-primary" id="btnAjukanIz">📤 Ajukan Izin</button>' +
-      '</div>' +
-      '<div class="card" id="listIz"><h2>📋 Riwayat Izin</h2><div class="loading-box"><div class="spinner"></div><div>Memuat...</div></div></div>';
-
-    $('btnBack').onclick = function(){ go('menu'); };
-
-    $('btnAjukanIz').onclick = function(){
-      var btn = $('btnAjukanIz');
-      var jenis = $('izJenis').value;
-      var dari = $('izDari').value;
-      var sampai = $('izSampai').value;
-      if(!dari || !sampai){ toast('Lengkapi tanggal', 'error'); return; }
-      var d1 = new Date(dari), d2 = new Date(sampai);
-      var hari = Math.round((d2 - d1) / 86400000) + 1;
-      var max = jenis === 'istirahat' ? 1 : 3;
-      if(hari < 1 || hari > max){
-        toast('Durasi izin ' + jenis + ' max ' + max + ' hari', 'error');
-        return;
-      }
-      btn.disabled = true;
-      tulis('Izin', {
-        tanggal: todayStr(),
-        id_karyawan: STATE.user.user_id,
-        nama_karyawan: STATE.user.user_nama,
-        kode_cabang: STATE.user.user_kode_cabang,
-        jenis: jenis,
-        dari: dari,
-        sampai: sampai,
-        jumlah_hari: hari,
-        alasan: $('izAlasan').value,
-        status: 'menunggu_kt',
-        timestamp: new Date().toISOString()
-      }).then(function(res){
-        if(!res || !res.ok) throw new Error((res && res.pesan) || 'Gagal mengajukan.');
-        toast('Izin diajukan ke Kepala Toko', 'success');
-        btn.disabled = false;
-        $('izAlasan').value = '';
-        loadIz();
-      }).catch(function(err){
-        toast(err.message, 'error');
-        btn.disabled = false;
-      });
-    };
-
-    loadIz();
-
-    function loadIz(){
-      baca('Izin').then(function(res){
-        var rows = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
-        var filtered = rows;
-        if(!canEdit()){
-          filtered = rows.filter(function(r){
-            return String(r.id_karyawan||'').trim() === String(STATE.user.user_id).trim();
-          });
-        }else if(STATE.user.user_kode_cabang && STATE.user.user_kode_cabang !== '-'){
-          filtered = rows.filter(function(r){
-            return String(r.kode_cabang||'') === String(STATE.user.user_kode_cabang);
-          });
-        }
-        var html = '<h2>📋 Riwayat Izin</h2>';
-        if(filtered.length === 0){
-          html += '<div class="empty-state"><div class="big">📭</div>Belum ada izin</div>';
-        }else{
-          html += '<div class="table-wrap"><table><thead><tr><th>Nama</th><th>Jenis</th><th>Dari</th><th>Sampai</th><th>Status</th>' + ((canEdit() || isKT()) ? '<th>Aksi</th>' : '') + '</tr></thead><tbody>';
-          filtered.forEach(function(r){
-            var st = String(r.status||'').toLowerCase();
-            var badge = st.indexOf('disetujui') !== -1 ? 'badge-green' : st.indexOf('ditolak') !== -1 ? 'badge-red' : 'badge-gold';
-            html += '<tr>' +
-              '<td>' + esc(safe(r.nama_karyawan)) + '</td>' +
-              '<td>' + esc(safe(r.jenis)) + '</td>' +
-              '<td>' + esc(String(r.dari||'').slice(0,10)) + '</td>' +
-              '<td>' + esc(String(r.sampai||'').slice(0,10)) + '</td>' +
-              '<td><span class="badge ' + badge + '">' + esc(safe(r.status)) + '</span></td>';
-            if(canEdit() || isKT()){
-              html += '<td>';
-              if(st === 'menunggu_kt' && isKT()){
-                html += '<button class="btn btn-sm btn-gold" data-kt="' + r._row + '">Setujui KT</button>';
-              }else if(st === 'menunggu_admin' && canEdit()){
-                html += '<button class="btn btn-sm btn-gold" data-acc="' + r._row + '">Final ACC</button>';
-              }else if(st === 'menunggu_kt' && canEdit()){
-                html += '<button class="btn btn-sm btn-gold" data-acc="' + r._row + '">ACC</button>';
-              }
-              html += ' <button class="btn btn-sm btn-danger" data-tolak="' + r._row + '">Tolak</button></td>';
-            }
-            html += '</tr>';
-          });
-          html += '</tbody></table></div>';
-        }
-        $('listIz').innerHTML = html;
-
-        $('listIz').querySelectorAll('[data-kt]').forEach(function(b){
-          b.onclick = function(){
-            update('Izin', b.getAttribute('data-kt'), { status: 'menunggu_admin' })
-              .then(function(){ toast('Diteruskan ke Admin', 'success'); loadIz(); })
-              .catch(function(e){ toast(e.message, 'error'); });
-          };
-        });
-        $('listIz').querySelectorAll('[data-acc]').forEach(function(b){
-          b.onclick = function(){
-            update('Izin', b.getAttribute('data-acc'), { status: 'disetujui' })
-              .then(function(){ toast('Izin disetujui', 'success'); loadIz(); })
-              .catch(function(e){ toast(e.message, 'error'); });
-          };
-        });
-        $('listIz').querySelectorAll('[data-tolak]').forEach(function(b){
-          b.onclick = function(){
-            update('Izin', b.getAttribute('data-tolak'), { status: 'ditolak' })
-              .then(function(){ toast('Izin ditolak', 'info'); loadIz(); })
-              .catch(function(e){ toast(e.message, 'error'); });
-          };
-        });
-      }).catch(function(err){
-        $('listIz').innerHTML = '<h2>📋 Riwayat Izin</h2><div class="empty-state"><div class="big">⚠️</div>' + esc(err.message) + '</div>';
-      });
-    }
-  }
-
-  /* =====================================================
-     CEK PAYROLL
-     ===================================================== */
-  function renderCekPayroll(){
-    $('appContent').innerHTML = '' +
-      '<button class="back-btn" id="btnBack">← Kembali</button>' +
-      '<div class="page-title">💰 Cek Payroll</div>' +
-      '<div class="page-sub">Generate & lihat payroll karyawan</div>' +
-      '<div class="card">' +
-        '<div class="form-row">' +
-          '<div class="form-group"><label>Dari</label><input type="date" id="prDari" value="' + todayStr() + '"></div>' +
-          '<div class="form-group"><label>Sampai</label><input type="date" id="prSampai" value="' + todayStr() + '"></div>' +
-        '</div>' +
-        '<button class="btn btn-gold" id="btnGenerate" style="width:100%">⚙️ Generate Payroll</button>' +
-      '</div>' +
-      '<div class="card" id="listPr"><h2>📋 Data Payroll</h2><div class="loading-box"><div class="spinner"></div><div>Memuat...</div></div></div>';
-
-    $('btnBack').onclick = function(){ go('menu'); };
-
-    $('btnGenerate').onclick = function(){
-      var btn = $('btnGenerate');
-      var dari = $('prDari').value;
-      var sampai = $('prSampai').value;
-      if(!dari || !sampai){ toast('Lengkapi tanggal', 'error'); return; }
-      btn.disabled = true;
-      btn.textContent = 'Memproses...';
-
-      Promise.all([ baca('Users'), baca('Pendapatan_Harian') ]).then(function(arr){
-        var users = (arr[0] && arr[0].ok) ? arr[0].data : [];
-        var pend = (arr[1] && arr[1].ok) ? arr[1].data : [];
-
-        var cabang = STATE.user.user_kode_cabang;
-        var target = users.filter(function(u){
-          var jab = String(u.jabatan||'').toLowerCase();
-          var st = String(u.status||'').toLowerCase();
-          var del = String(u.dihapus||'').toLowerCase();
-          var isDel = (del === 'true' || del === 'ya' || del === '1');
-          if(st !== 'aktif' || isDel) return false;
-          if(jab.indexOf('karyawan') === -1 && jab.indexOf('kepala') === -1) return false;
-          if(canEdit() && cabang && cabang !== '-'){
-            return String(u.kode_cabang||'') === String(cabang);
-          }
-          if(!canEdit() && cabang && cabang !== '-'){
-            return String(u.kode_cabang||'') === String(cabang);
-          }
-          return true;
-        });
-
-        var jobs = target.map(function(u){
-          var rows = pend.filter(function(r){
-            var t = String(r.tanggal||'').slice(0,10);
-            return String(r.id_karyawan||'').trim() === String(u.id).trim() &&
-                   t >= dari && t <= sampai;
-          });
-          var sumUnit = rows.reduce(function(a,b){ return a + num(b.unit); }, 0);
-          var sumTips = rows.reduce(function(a,b){ return a + num(b.tips); }, 0);
-          var sumBonus = rows.reduce(function(a,b){ return a + num(b.bonus); }, 0);
-          var sumKasbon = rows.reduce(function(a,b){ return a + num(b.kasbon); }, 0);
-          var sumWifi = rows.reduce(function(a,b){ return a + (num(b.wifi) || 1000); }, 0);
-          var total = sumUnit + sumTips + sumBonus - sumKasbon - sumWifi;
-
-          return tulis('Payroll', {
-            periode_dari: dari,
-            periode_sampai: sampai,
-            id_karyawan: String(u.id),
-            nama_karyawan: u.nama,
-            jabatan: u.jabatan,
-            kode_cabang: u.kode_cabang,
-            total_unit: sumUnit,
-            total_tips: sumTips,
-            total_bonus: sumBonus,
-            total_kasbon: sumKasbon,
-            total_wifi: sumWifi,
-            total_gaji: total,
-            status: 'draft',
-            timestamp: new Date().toISOString()
-          });
-        });
-
-        return Promise.all(jobs);
-      }).then(function(){
-        toast('Payroll berhasil digenerate!', 'success');
-        btn.disabled = false;
-        btn.textContent = '⚙️ Generate Payroll';
-        loadPr();
-      }).catch(function(err){
-        toast(err.message, 'error');
-        btn.disabled = false;
-        btn.textContent = '⚙️ Generate Payroll';
-      });
-    };
-
-    loadPr();
-
-    function loadPr(){
-      baca('Payroll').then(function(res){
-        var rows = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
-        var filtered = rows;
-        if(STATE.user.user_kode_cabang && STATE.user.user_kode_cabang !== '-' && !canEdit()){
-          filtered = rows.filter(function(r){ return String(r.kode_cabang||'') === String(STATE.user.user_kode_cabang); });
-        }
-        filtered = filtered.slice(-50).reverse();
-        var html = '<h2>📋 Data Payroll</h2>';
-        if(filtered.length === 0){
-          html += '<div class="empty-state"><div class="big">📭</div>Belum ada payroll</div>';
-        }else{
-          html += '<div class="table-wrap"><table><thead><tr><th>Periode</th><th>Nama</th><th>Unit</th><th>Total Gaji</th><th>Status</th></tr></thead><tbody>';
-          filtered.forEach(function(r){
-            html += '<tr>' +
-              '<td>' + esc(String(r.periode_dari||'').slice(0,10)) + ' s/d ' + esc(String(r.periode_sampai||'').slice(0,10)) + '</td>' +
-              '<td>' + esc(safe(r.nama_karyawan)) + '</td>' +
-              '<td>' + num(r.total_unit) + '</td>' +
-              '<td><strong>' + rupiah(num(r.total_gaji)) + '</strong></td>' +
-              '<td><span class="badge badge-gray">' + esc(safe(r.status)) + '</span></td>' +
-            '</tr>';
-          });
-          html += '</tbody></table></div>';
-        }
-        $('listPr').innerHTML = html;
-      }).catch(function(err){
-        $('listPr').innerHTML = '<h2>📋 Data Payroll</h2><div class="empty-state"><div class="big">⚠️</div>' + esc(err.message) + '</div>';
-      });
-    }
-  }
-
-  /* =====================================================
-     PAYROLL SAYA
-     ===================================================== */
-  function renderPayrollSaya(){
-    $('appContent').innerHTML = '' +
-      '<button class="back-btn" id="btnBack">← Kembali</button>' +
-      '<div class="page-title">💰 Payroll Saya</div>' +
-      '<div class="card" id="prSaya"><div class="loading-box"><div class="spinner"></div><div>Memuat...</div></div></div>';
-
-    $('btnBack').onclick = function(){ go('menu'); };
-
-    baca('Payroll').then(function(res){
-      var rows = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
-      var mine = rows.filter(function(r){
-        return String(r.id_karyawan||'').trim() === String(STATE.user.user_id).trim();
-      }).reverse();
-
-      var html = '<h2>📋 Riwayat Payroll</h2>';
-      if(mine.length === 0){
-        html += '<div class="empty-state"><div class="big">📭</div>Belum ada payroll</div>';
-      }else{
-        mine.forEach(function(r){
-          html += '<div class="card" style="box-shadow:none;border:1px solid #E5E7EB;margin-bottom:10px;padding:12px">' +
-            '<div class="info-row"><span class="lbl">Periode</span><span class="val">' + esc(String(r.periode_dari||'').slice(0,10)) + ' s/d ' + esc(String(r.periode_sampai||'').slice(0,10)) + '</span></div>' +
-            '<div class="info-row"><span class="lbl">Unit</span><span class="val">' + num(r.total_unit) + '</span></div>' +
-            '<div class="info-row"><span class="lbl">Tips</span><span class="val">' + rupiah(num(r.total_tips)) + '</span></div>' +
-            '<div class="info-row"><span class="lbl">Bonus</span><span class="val bonus-cell">' + rupiah(num(r.total_bonus)) + '</span></div>' +
-            '<div class="info-row"><span class="lbl">Kasbon</span><span class="val">-' + rupiah(num(r.total_kasbon)) + '</span></div>' +
-            '<div class="info-row"><span class="lbl">WiFi</span><span class="val">-' + rupiah(num(r.total_wifi)) + '</span></div>' +
-            '<div class="info-row"><span class="lbl">TOTAL</span><span class="val" style="color:var(--merah);font-size:15px">' + rupiah(num(r.total_gaji)) + '</span></div>' +
-          '</div>';
-        });
-      }
-      $('prSaya').innerHTML = html;
-    }).catch(function(err){
-      $('prSaya').innerHTML = '<div class="empty-state"><div class="big">⚠️</div>' + esc(err.message) + '</div>';
     });
   }
 
-  /* =====================================================
-     LAPORAN CABANG
-     ===================================================== */
-  function renderLaporanCabang(){
-    $('appContent').innerHTML = '' +
-      '<button class="back-btn" id="btnBack">← Kembali</button>' +
-      '<div class="page-title">🏪 Laporan Cabang</div>' +
-      '<div class="page-sub">Rekap data cabang</div>' +
-      '<div class="card" id="laporanCab"><div class="loading-box"><div class="spinner"></div><div>Memuat...</div></div></div>';
+  async function ajukanKasbon(session){
+    const jumlah = Number($('inpJumlahKasbon').value)||0;
+    if (jumlah <= 0){ showToast('Isi jumlah kasbon','error'); return; }
+    const idPeng = 'KSB-'+Date.now();
+    const data = {
+      id_pengajuan: idPeng,
+      tanggal_pengajuan: todayStr(),
+      id_karyawan: session.user_id,
+      nama_karyawan: session.user_nama,
+      jumlah_kasbon: jumlah,
+      status: jumlah <= 20000 ? 'auto_disetujui' : 'menunggu_acc'
+    };
+    const r = await simpanData('Pengajuan_Kasbon', data);
+    if (r && r.ok){ showToast('Kasbon diajukan','success'); renderKasbon(); }
+    else showToast(r && r.pesan ? r.pesan : 'Gagal','error');
+  }
 
-    $('btnBack').onclick = function(){ go('menu'); };
+  /* =========================================================
+     RENDER: IZIN
+     ========================================================= */
+  async function renderIzin(){
+    const session = CURRENT_SESSION;
+    const role = getRoleFromJabatan(session.user_jabatan);
+    const content = $('appContent');
+    content.innerHTML =
+      '<button class="back-btn" data-back>← Kembali</button>'+
+      '<div class="page-title">📅 Izin</div>'+
+      '<div class="page-sub">'+(role==='karyawan'||role==='kepala_toko'?'Ajukan & lihat izin':'Kelola izin karyawan')+'</div>'+
+      '<div id="izinContent"><div class="empty-state"><span class="ic">⏳</span>Memuat...</div></div>';
+    content.querySelector('[data-back]').onclick = () => navigateTo('home');
 
-    Promise.all([ baca('Target_Cabang'), baca('Pendapatan_Harian') ]).then(function(arr){
-      var cabangs = (arr[0] && arr[0].ok) ? arr[0].data : [];
-      var pend = (arr[1] && arr[1].ok) ? arr[1].data : [];
-      var today = todayStr();
+    const res = await ambilData('Izin_Istirahat');
+    const data = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
+    const el = $('izinContent');
 
-      var html = '<h2>📊 Rekap per Cabang (Hari Ini)</h2>';
-      cabangs.forEach(function(c){
-        var rows = pend.filter(function(r){
-          return String(r.kode_cabang||'') === String(c.kode_cabang||'') &&
-                 String(r.tanggal||'').slice(0,10) === today;
-        });
-        var totalUnit = rows.reduce(function(a,b){ return a + num(b.unit); }, 0);
-        var target = num(c.target_harian);
-        var persen = target > 0 ? Math.min(100, Math.round(totalUnit / target * 100)) : 0;
-        var tembus = target > 0 && totalUnit >= target;
+    let list = data;
+    if (role === 'karyawan' || role === 'kepala_toko'){
+      list = data.filter(i => String(i.id_karyawan)===String(session.user_id));
+    }
 
-        html += '<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed #E5E7EB">' +
-          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
-            '<strong style="font-size:13px">' + esc(c.kode_cabang) + ' - ' + esc(safe(c.nama_cabang)) + '</strong>' +
-            (tembus ? '<span class="badge badge-green">TEMBUS</span>' : '') +
-          '</div>' +
-          '<div class="info-row"><span class="lbl">Unit</span><span class="val">' + totalUnit + ' / ' + target + '</span></div>' +
-          '<div class="info-row"><span class="lbl">Progress</span><span class="val">' + persen + '%</span></div>' +
-          '<div style="height:8px;background:#E5E7EB;border-radius:4px;margin-top:6px;overflow:hidden">' +
-            '<div style="height:100%;width:' + persen + '%;background:linear-gradient(90deg,var(--merah),var(--emas));border-radius:4px"></div>' +
-          '</div>' +
+    let html = '';
+    if (role === 'karyawan' || role === 'kepala_toko'){
+      html += '<div class="card"><div class="card-title">Ajukan Izin</div>'+
+        '<div class="field"><label>Tanggal Izin</label><input type="date" id="inpTglIzin" value="'+todayStr()+'"></div>'+
+        '<div class="field"><label>Jenis Izin</label><select id="inpJenisIzin"><option value="istirahat">Istirahat (maks 1 hari)</option><option value="sakit">Sakit (maks 3 hari)</option></select></div>'+
+        '<div class="field"><label>Keterangan</label><textarea id="inpKetIzin" rows="2" placeholder="Opsional"></textarea></div>'+
+        '<div id="btnIzinWrap"></div></div>';
+    }
+    html += '<div class="card"><div class="card-title">Riwayat Izin</div>';
+    if (list.length === 0){
+      html += '<div class="empty-state"><span class="ic">📭</span>Belum ada izin</div>';
+    } else {
+      html += '<div class="table-wrap"><table><thead><tr><th>ID</th><th>Tanggal</th><th>Jenis</th><th>Nama</th><th>Status</th></tr></thead><tbody>';
+      list.forEach(i => {
+        html += '<tr><td>'+escapeHtml(i.id_izin)+'</td><td>'+escapeHtml(String(i.tanggal_izin||'').slice(0,10))+'</td><td>'+escapeHtml(i.jenis_izin)+'</td><td>'+escapeHtml(i.nama_karyawan)+'</td><td><span class="badge '+(String(i.status)==='disetujui'?'badge-ok':String(i.status)==='ditolak'?'badge-err':'badge-warn')+'">'+escapeHtml(i.status)+'</span></td></tr>';
+      });
+      html += '</tbody></table></div>';
+    }
+    html += '</div>';
+    el.innerHTML = html;
+
+    if (role === 'karyawan' || role === 'kepala_toko'){
+      const btn = tombolAksi('AJUKAN IZIN', () => ajukanIzin(session), 'btn-primary btn-block');
+      $('btnIzinWrap').appendChild(btn);
+    }
+  }
+
+  async function ajukanIzin(session){
+    const tgl = $('inpTglIzin').value;
+    const jenis = $('inpJenisIzin').value;
+    const ket = $('inpKetIzin').value;
+    if (!tgl){ showToast('Pilih tanggal','error'); return; }
+    const data = {
+      id_izin: 'IZ-'+Date.now(),
+      tanggal_izin: tgl,
+      jenis_izin: jenis,
+      id_karyawan: session.user_id,
+      nama_karyawan: session.user_nama,
+      keterangan: ket,
+      status: 'menunggu'
+    };
+    const r = await simpanData('Izin_Istirahat', data);
+    if (r && r.ok){ showToast('Izin diajukan','success'); renderIzin(); }
+    else showToast(r && r.pesan ? r.pesan : 'Gagal','error');
+  }
+
+  /* =========================================================
+     RENDER: LAPORAN
+     ========================================================= */
+  async function renderLaporan(){
+    const session = CURRENT_SESSION;
+    const role = getRoleFromJabatan(session.user_jabatan);
+    const content = $('appContent');
+    content.innerHTML =
+      '<button class="back-btn" data-back>← Kembali</button>'+
+      '<div class="page-title">📝 Laporan Cabang</div>'+
+      '<div class="page-sub">Laporan dari cabang</div>'+
+      '<div id="laporanContent"><div class="empty-state"><span class="ic">⏳</span>Memuat...</div></div>';
+    content.querySelector('[data-back]').onclick = () => navigateTo('home');
+
+    const res = await ambilData('Laporan_Cabang');
+    const data = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
+    const el = $('laporanContent');
+
+    let html = '';
+    if (role === 'kepala_toko' || role === 'owner' || role === 'admin'){
+      html += '<div class="card"><div class="card-title">Buat Laporan</div>'+
+        '<div class="field"><label>Judul</label><input type="text" id="inpJudulLap" placeholder="Judul laporan"></div>'+
+        '<div class="field"><label>Isi</label><textarea id="inpIsiLap" rows="3" placeholder="Isi laporan"></textarea></div>'+
+        '<div id="btnLapWrap"></div></div>';
+    }
+    html += '<div class="card"><div class="card-title">Daftar Laporan</div>';
+    if (data.length === 0){
+      html += '<div class="empty-state"><span class="ic">📭</span>Belum ada laporan</div>';
+    } else {
+      data.forEach(l => {
+        html += '<div style="padding:10px;border-bottom:1px solid #F3F4F6">'+
+          '<b style="font-size:13px">'+escapeHtml(l.judul)+'</b> '+
+          '<span class="badge '+(String(l.status)==='selesai'?'badge-ok':'badge-warn')+'">'+escapeHtml(l.status)+'</span>'+
+          '<div style="font-size:11px;color:var(--text-light);margin-top:2px">'+escapeHtml(l.kode_cabang||'-')+' · '+escapeHtml(String(l.tanggal||'').slice(0,10))+'</div>'+
+          '<div style="font-size:12px;margin-top:4px">'+escapeHtml(l.isi)+'</div>'+
         '</div>';
       });
-
-      $('laporanCab').innerHTML = html;
-    }).catch(function(err){
-      $('laporanCab').innerHTML = '<div class="empty-state"><div class="big">⚠️</div>' + esc(err.message) + '</div>';
-    });
-  }
-
-  /* =====================================================
-     MANAJEMEN MANUSIA (OWNER)
-     ===================================================== */
-  function renderManajemenManusia(){
-    $('appContent').innerHTML = '' +
-      '<button class="back-btn" id="btnBack">← Kembali</button>' +
-      '<div class="page-title">👥 Manajemen Manusia</div>' +
-      '<div class="page-sub">Kelola data karyawan</div>' +
-      '<button class="btn btn-primary" id="btnAddUser" style="margin-bottom:14px">➕ Tambah User</button>' +
-      '<div class="card" id="listUsers"><div class="loading-box"><div class="spinner"></div><div>Memuat...</div></div></div>';
-
-    $('btnBack').onclick = function(){ go('menu'); };
-    $('btnAddUser').onclick = function(){ formUser(null); };
-
-    loadUsers();
-
-    function loadUsers(){
-      baca('Users').then(function(res){
-        var users = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
-        var html = '<h2>📋 Daftar User</h2>';
-        if(users.length === 0){
-          html += '<div class="empty-state"><div class="big">📭</div>Belum ada user</div>';
-        }else{
-          html += '<div class="table-wrap"><table><thead><tr><th>ID</th><th>Nama</th><th>Jabatan</th><th>Cabang</th><th>Status</th><th>Aksi</th></tr></thead><tbody>';
-          users.forEach(function(u){
-            var del = String(u.dihapus||'').toLowerCase();
-            var isDel = (del === 'true' || del === 'ya' || del === '1');
-            if(isDel) return;
-            html += '<tr>' +
-              '<td><strong>' + esc(safe(u.id)) + '</strong></td>' +
-              '<td>' + esc(safe(u.nama)) + '</td>' +
-              '<td>' + esc(safe(u.jabatan)) + '</td>' +
-              '<td>' + esc(safe(u.kode_cabang)) + '</td>' +
-              '<td><span class="badge ' + (String(u.status||'').toLowerCase() === 'aktif' ? 'badge-green' : 'badge-red') + '">' + esc(safe(u.status)) + '</span></td>' +
-              '<td style="white-space:nowrap">' +
-                '<button class="btn btn-sm btn-ghost" data-edit="' + esc(u.id) + '">✏️</button> ' +
-                '<button class="btn btn-sm btn-danger" data-del="' + u._row + '">🗑️</button>' +
-              '</td>' +
-            '</tr>';
-          });
-          html += '</tbody></table></div>';
-        }
-        $('listUsers').innerHTML = html;
-
-        $('listUsers').querySelectorAll('[data-edit]').forEach(function(b){
-          b.onclick = function(){
-            var uid = b.getAttribute('data-edit');
-            var u = users.find(function(x){ return String(x.id) === String(uid); });
-            if(u) formUser(u);
-          };
-        });
-        $('listUsers').querySelectorAll('[data-del]').forEach(function(b){
-          b.onclick = function(){
-            if(!confirm('Yakin hapus user ini? (soft delete)')) return;
-            update('Users', b.getAttribute('data-del'), { dihapus: 'true' })
-              .then(function(){ toast('User dihapus', 'info'); loadUsers(); })
-              .catch(function(e){ toast(e.message, 'error'); });
-          };
-        });
-      }).catch(function(err){
-        $('listUsers').innerHTML = '<div class="empty-state"><div class="big">⚠️</div>' + esc(err.message) + '</div>';
-      });
     }
+    html += '</div>';
+    el.innerHTML = html;
 
-    function formUser(u){
-      var isEdit = !!u;
-      var idVal = isEdit ? String(u.id) : '';
-      var namaVal = isEdit ? String(u.nama||'') : '';
-      var jabVal = isEdit ? String(u.jabatan||'') : 'Karyawan';
-      var cabVal = isEdit ? String(u.kode_cabang||'') : '';
-      var passVal = '';
-      var statusVal = isEdit ? String(u.status||'aktif') : 'aktif';
-
-      openModal('' +
-        '<h3>' + (isEdit ? '✏️ Edit User' : '➕ Tambah User') + '</h3>' +
-        '<div class="form-group"><label>ID ' + (isEdit ? '(read-only)' : '') + '</label>' +
-          '<input type="text" id="muId" value="' + esc(idVal) + '" ' + (isEdit ? 'disabled' : '') + '></div>' +
-        '<div class="form-group"><label>Nama</label><input type="text" id="muNama" value="' + esc(namaVal) + '"></div>' +
-        '<div class="form-group"><label>Jabatan</label>' +
-          '<select id="muJabatan">' +
-            '<option value="Owner"' + (jabVal==='Owner'?' selected':'') + '>Owner</option>' +
-            '<option value="Admin"' + (jabVal==='Admin'?' selected':'') + '>Admin</option>' +
-            '<option value="Kepala Toko"' + (jabVal==='Kepala Toko'?' selected':'') + '>Kepala Toko</option>' +
-            '<option value="Karyawan"' + (jabVal==='Karyawan'?' selected':'') + '>Karyawan</option>' +
-          '</select></div>' +
-        '<div class="form-group"><label>Kode Cabang</label><input type="text" id="muCabang" value="' + esc(cabVal) + '"></div>' +
-        '<div class="form-group"><label>Password ' + (isEdit ? '(kosongkan jika tidak diubah)' : '(min 6 karakter)') + '</label>' +
-          '<input type="text" id="muPass" value="' + esc(passVal) + '"></div>' +
-        '<div class="form-group"><label>Status</label>' +
-          '<select id="muStatus">' +
-            '<option value="aktif"' + (statusVal==='aktif'?' selected':'') + '>Aktif</option>' +
-            '<option value="nonaktif"' + (statusVal==='nonaktif'?' selected':'') + '>Nonaktif</option>' +
-          '</select></div>' +
-        '<div class="modal-actions">' +
-          '<button class="btn btn-ghost" id="muCancel">Batal</button>' +
-          '<button class="btn btn-primary" id="muSave">Simpan</button>' +
-        '</div>'
-      );
-
-      $('muCancel').onclick = closeModal;
-      $('muSave').onclick = function(){
-        var id = isEdit ? idVal : $('muId').value.trim();
-        var nama = $('muNama').value.trim();
-        var jabatan = $('muJabatan').value;
-        var cabang = $('muCabang').value.trim();
-        var pass = $('muPass').value.trim();
-        var status = $('muStatus').value;
-
-        if(!id || !nama){ toast('ID & Nama wajib', 'error'); return; }
-        if(!isEdit && pass.length < 6){ toast('Password min 6 karakter', 'error'); return; }
-        if(isEdit && pass && pass.length < 6){ toast('Password min 6 karakter', 'error'); return; }
-
-        var data = {
-          id: id, nama: nama, jabatan: jabatan,
-          kode_cabang: cabang, status: status
-        };
-        if(pass) data.password = pass;
-
-        var p;
-        if(isEdit){
-          p = update('Users', u._row, data);
-        }else{
-          data.tanggal_masuk = todayStr();
-          data.dihapus = 'false';
-          p = tulis('Users', data);
-        }
-        p.then(function(res){
-          if(!res || !res.ok) throw new Error((res && res.pesan) || 'Gagal simpan.');
-          toast('User disimpan!', 'success');
-          closeModal();
-          loadUsers();
-        }).catch(function(err){ toast(err.message, 'error'); });
-      };
+    if (role === 'kepala_toko' || role === 'owner' || role === 'admin'){
+      const btn = tombolAksi('KIRIM LAPORAN', () => kirimLaporan(session), 'btn-primary btn-block');
+      $('btnLapWrap').appendChild(btn);
     }
   }
 
-  /* =====================================================
-     PENGATURAN (OWNER)
-     ===================================================== */
-  function renderPengaturan(){
-    $('appContent').innerHTML = '' +
-      '<button class="back-btn" id="btnBack">← Kembali</button>' +
-      '<div class="page-title">⚙️ Pengaturan</div>' +
-      '<div class="page-sub">Konfigurasi global</div>' +
-      '<div class="card">' +
-        '<h2>💰 Bonus & WiFi</h2>' +
-        '<div class="form-group"><label>Bonus Kepala Toko (Rp)</label><input type="number" id="setBonusKT" value="10000"></div>' +
-        '<div class="form-group"><label>Bonus Karyawan (Rp)</label><input type="number" id="setBonusKar" value="5000"></div>' +
-        '<div class="form-group"><label>WiFi Harian (Rp)</label><input type="number" id="setWifi" value="1000"></div>' +
-        '<button class="btn btn-primary" id="btnSimpanSet" style="width:100%">💾 Simpan Pengaturan</button>' +
-      '</div>' +
-      '<div class="card" id="setCabang"><h2>🏪 Target Cabang</h2><div class="loading-box"><div class="spinner"></div><div>Memuat...</div></div></div>';
-
-    $('btnBack').onclick = function(){ go('menu'); };
-
-    // load Pengaturan
-    baca('Pengaturan').then(function(res){
-      var sets = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
-      sets.forEach(function(s){
-        var k = String(s.kunci||'').toLowerCase();
-        if(k === 'bonus_kt') $('setBonusKT').value = num(s.nilai);
-        if(k === 'bonus_karyawan') $('setBonusKar').value = num(s.nilai);
-        if(k === 'wifi_harian') $('setWifi').value = num(s.nilai);
-      });
-    }).catch(function(){});
-
-    $('btnSimpanSet').onclick = function(){
-      var btn = $('btnSimpanSet');
-      btn.disabled = true;
-      var jobs = [
-        simpanPengaturan('bonus_kt', num($('setBonusKT').value)),
-        simpanPengaturan('bonus_karyawan', num($('setBonusKar').value)),
-        simpanPengaturan('wifi_harian', num($('setWifi').value))
-      ];
-      Promise.all(jobs).then(function(){
-        toast('Pengaturan tersimpan!', 'success');
-        btn.disabled = false;
-      }).catch(function(err){
-        toast(err.message, 'error');
-        btn.disabled = false;
-      });
+  async function kirimLaporan(session){
+    const judul = $('inpJudulLap').value.trim();
+    const isi = $('inpIsiLap').value.trim();
+    if (!judul || !isi){ showToast('Lengkapi judul dan isi','error'); return; }
+    const data = {
+      tanggal: todayStr(),
+      kode_cabang: session.user_kode_cabang || '-',
+      judul: judul,
+      isi: isi,
+      status: 'baru'
     };
-
-    function simpanPengaturan(kunci, nilai){
-      return baca('Pengaturan').then(function(res){
-        var sets = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
-        var found = sets.find(function(s){ return String(s.kunci||'').toLowerCase() === kunci; });
-        if(found){
-          return update('Pengaturan', found._row, { kunci: kunci, nilai: nilai });
-        }else{
-          return tulis('Pengaturan', { kunci: kunci, nilai: nilai });
-        }
-      });
-    }
-
-    // Target cabang
-    baca('Target_Cabang').then(function(res){
-      var cabs = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
-      var html = '<h2>🏪 Target Cabang</h2>';
-      if(cabs.length === 0){
-        html += '<div class="empty-state"><div class="big">📭</div>Belum ada cabang</div>';
-      }else{
-        cabs.forEach(function(c){
-          html += '<div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:10px">' +
-            '<div style="flex:1"><label style="font-size:11px;color:var(--abu);font-weight:600">' + esc(safe(c.kode_cabang)) + ' - ' + esc(safe(c.nama_cabang)) + '</label>' +
-            '<input type="number" class="target-input" data-row="' + c._row + '" value="' + num(c.target_harian) + '" style="width:100%;padding:9px;border:1.5px solid #E5E7EB;border-radius:9px;font-family:inherit;font-size:14px"></div>' +
-            '<button class="btn btn-sm btn-gold target-save" data-row="' + c._row + '">💾</button>' +
-          '</div>';
-        });
-      }
-      $('setCabang').innerHTML = html;
-
-      $('setCabang').querySelectorAll('.target-save').forEach(function(b){
-        b.onclick = function(){
-          var row = b.getAttribute('data-row');
-          var input = $('setCabang').querySelector('.target-input[data-row="' + row + '"]');
-          update('Target_Cabang', row, { target_harian: num(input.value) })
-            .then(function(){ toast('Target diperbarui', 'success'); })
-            .catch(function(e){ toast(e.message, 'error'); });
-        };
-      });
-    }).catch(function(err){
-      $('setCabang').innerHTML = '<h2>🏪 Target Cabang</h2><div class="empty-state"><div class="big">⚠️</div>' + esc(err.message) + '</div>';
-    });
+    const r = await simpanData('Laporan_Cabang', data);
+    if (r && r.ok){ showToast('Laporan terkirim','success'); renderLaporan(); }
+    else showToast(r && r.pesan ? r.pesan : 'Gagal','error');
   }
 
-  /* =====================================================
+  /* =========================================================
+     RENDER: PENGELUARAN
+     ========================================================= */
+  async function renderPengeluaran(){
+    const session = CURRENT_SESSION;
+    const content = $('appContent');
+    content.innerHTML =
+      '<button class="back-btn" data-back>← Kembali</button>'+
+      '<div class="page-title">📤 Input Pengeluaran</div>'+
+      '<div class="page-sub">Catat pengeluaran operasional</div>'+
+      '<div class="card"><div class="card-title">Form Pengeluaran</div>'+
+        '<div class="field"><label>Tanggal</label><input type="date" id="inpTglPeng" value="'+todayStr()+'"></div>'+
+        '<div class="field"><label>Cabang</label><input type="text" id="inpCabangPeng" value="'+escapeHtml(session.user_kode_cabang||'')+'"></div>'+
+        '<div class="field"><label>Kategori</label><input type="text" id="inpKategoriPeng" placeholder="Operasional, dll"></div>'+
+        '<div class="field"><label>Jumlah</label><input type="number" id="inpJumlahPeng" value="0" min="0"></div>'+
+        '<div class="field"><label>Keterangan</label><textarea id="inpKetPeng" rows="2"></textarea></div>'+
+        '<div id="btnPengWrap"></div>'+
+      '</div>'+
+      '<div class="card"><div class="card-title">Daftar Pengeluaran</div><div id="listPeng"><div class="empty-state"><span class="ic">⏳</span>Memuat...</div></div></div>';
+    content.querySelector('[data-back]').onclick = () => navigateTo('home');
+
+    const btn = tombolAksi('SIMPAN PENGELUARAN', () => simpanPengeluaran(), 'btn-primary btn-block');
+    $('btnPengWrap').appendChild(btn);
+
+    const res = await ambilData('Pengeluaran');
+    const data = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
+    const el = $('listPeng');
+    if (data.length === 0){
+      el.innerHTML = '<div class="empty-state"><span class="ic">📭</span>Belum ada pengeluaran</div>';
+    } else {
+      let html = '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Cabang</th><th>Kategori</th><th>Jumlah</th><th>Ket</th></tr></thead><tbody>';
+      data.forEach(p => {
+        html += '<tr><td>'+escapeHtml(String(p.tanggal||'').slice(0,10))+'</td><td>'+escapeHtml(p.kode_cabang)+'</td><td>'+escapeHtml(p.kategori)+'</td><td>'+rupiah(p.jumlah)+'</td><td>'+escapeHtml(p.keterangan)+'</td></tr>';
+      });
+      html += '</tbody></table></div>';
+      el.innerHTML = html;
+    }
+  }
+
+  async function simpanPengeluaran(){
+    const data = {
+      tanggal: $('inpTglPeng').value,
+      kode_cabang: $('inpCabangPeng').value.trim(),
+      kategori: $('inpKategoriPeng').value.trim(),
+      jumlah: Number($('inpJumlahPeng').value)||0,
+      keterangan: $('inpKetPeng').value.trim()
+    };
+    if (!data.tanggal || !data.kategori || data.jumlah <= 0){ showToast('Lengkapi data','error'); return; }
+    const r = await simpanData('Pengeluaran', data);
+    if (r && r.ok){ showToast('Pengeluaran disimpan','success'); renderPengeluaran(); }
+    else showToast(r && r.pesan ? r.pesan : 'Gagal','error');
+  }
+
+  /* =========================================================
+     RENDER: PENGATURAN
+     ========================================================= */
+  async function renderPengaturan(){
+    const content = $('appContent');
+    content.innerHTML =
+      '<button class="back-btn" data-back>← Kembali</button>'+
+      '<div class="page-title">⚙️ Pengaturan</div>'+
+      '<div class="page-sub">Konfigurasi sistem</div>'+
+      '<div id="settingContent"><div class="empty-state"><span class="ic">⏳</span>Memuat...</div></div>';
+    content.querySelector('[data-back]').onclick = () => navigateTo('home');
+
+    const res = await ambilData('Pengaturan');
+    const data = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
+    const el = $('settingContent');
+
+    let html = '<div class="card"><div class="card-title">Pengaturan Umum</div>';
+    ['bonus_kepala_toko','bonus_karyawan','wifi_harian'].forEach(key => {
+      const item = data.find(d => d.key === key);
+      html += '<div class="field"><label>'+key.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())+'</label>'+
+        '<input type="number" id="set_'+key+'" value="'+(item?item.value:0)+'"></div>';
+    });
+    html += '<div id="btnSettingWrap"></div></div>';
+
+    html += '<div class="card"><div class="card-title">Target Cabang</div>';
+    const resTarget = await ambilData('Target_Cabang');
+    const targets = (resTarget && resTarget.ok && Array.isArray(resTarget.data)) ? resTarget.data : [];
+    if (targets.length === 0){
+      html += '<div class="empty-state"><span class="ic">📭</span>Belum ada target</div>';
+    } else {
+      html += '<div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama</th><th>Target Harian</th></tr></thead><tbody>';
+      targets.forEach(t => {
+        html += '<tr><td>'+escapeHtml(t.kode_cabang)+'</td><td>'+escapeHtml(t.nama_cabang)+'</td><td>'+escapeHtml(t.target_harian)+'</td></tr>';
+      });
+      html += '</tbody></table></div>';
+    }
+    html += '</div>';
+    el.innerHTML = html;
+
+    const btn = tombolAksi('SIMPAN PENGATURAN', () => simpanPengaturan(), 'btn-primary btn-block');
+    $('btnSettingWrap').appendChild(btn);
+  }
+
+  async function simpanPengaturan(){
+    const keys = ['bonus_kepala_toko','bonus_karyawan','wifi_harian'];
+    for (const key of keys){
+      const el = $('set_'+key);
+      if (!el) continue;
+      const nilai = el.value;
+      const res = await ambilData('Pengaturan');
+      const data = (res && res.ok && Array.isArray(res.data)) ? res.data : [];
+      const existing = data.find(d => d.key === key);
+      if (existing){
+        const row = existing._row || existing.row;
+        if (row) await updateData('Pengaturan', row, { value: nilai });
+      } else {
+        await simpanData('Pengaturan', { key: key, value: nilai });
+      }
+    }
+    showToast('Pengaturan disimpan','success');
+  }
+
+  /* =========================================================
+     RENDER: PROFIL
+     ========================================================= */
+  async function renderProfil(){
+    const session = CURRENT_SESSION;
+    const content = $('appContent');
+    content.innerHTML =
+      '<button class="back-btn" data-back>← Kembali</button>'+
+      '<div class="page-title">👤 Profil</div>'+
+      '<div class="page-sub">Informasi akun Anda</div>'+
+      '<div class="card"><div class="card-title">Data Akun</div>'+
+        '<div class="field"><label>ID</label><input type="text" value="'+escapeHtml(session.user_id)+'" readonly></div>'+
+        '<div class="field"><label>Nama</label><input type="text" value="'+escapeHtml(session.user_nama)+'" readonly></div>'+
+        '<div class="field"><label>Jabatan</label><input type="text" value="'+escapeHtml(session.user_jabatan)+'" readonly></div>'+
+        '<div class="field"><label>Cabang</label><input type="text" value="'+escapeHtml(session.user_kode_cabang||'-')+'" readonly></div>'+
+        (session.is_demo?'<div style="text-align:center;padding:8px"><span class="badge-demo">MODE DEMO</span></div>':'')+
+      '</div>'+
+      '<div id="profilExtra"></div>';
+    content.querySelector('[data-back]').onclick = () => navigateTo('home');
+
+    // Riwayat payroll
+    const resPay = await ambilData('Payroll');
+    const payroll = (resPay && resPay.ok && Array.isArray(resPay.data)) ? resPay.data.filter(p => String(p.id_karyawan)===String(session.user_id)) : [];
+    const resKas = await ambilData('Pengajuan_Kasbon');
+    const kasbon = (resKas && resKas.ok && Array.isArray(resKas.data)) ? resKas.data.filter(k => String(k.id_karyawan)===String(session.user_id)) : [];
+    const resIzin = await ambilData('Izin_Istirahat');
+    const izin = (resIzin && resIzin.ok && Array.isArray(resIzin.data)) ? resIzin.data.filter(i => String(i.id_karyawan)===String(session.user_id)) : [];
+
+    let extra = '';
+    extra += '<div class="card"><div class="card-title">Riwayat Payroll</div>';
+    extra += payroll.length===0 ? '<div class="empty-state"><span class="ic">📭</span>Tidak ada</div>' :
+      '<div class="table-wrap"><table><thead><tr><th>Periode</th><th>Total</th><th>Status</th></tr></thead><tbody>'+
+      payroll.map(p => '<tr><td>'+escapeHtml(p.periode)+'</td><td>'+rupiah(p.total_payroll)+'</td><td>'+escapeHtml(p.status)+'</td></tr>').join('')+
+      '</tbody></table></div>';
+    extra += '</div>';
+
+    extra += '<div class="card"><div class="card-title">Riwayat Kasbon</div>';
+    extra += kasbon.length===0 ? '<div class="empty-state"><span class="ic">📭</span>Tidak ada</div>' :
+      '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Jumlah</th><th>Status</th></tr></thead><tbody>'+
+      kasbon.map(k => '<tr><td>'+escapeHtml(String(k.tanggal_pengajuan||'').slice(0,10))+'</td><td>'+rupiah(k.jumlah_kasbon)+'</td><td>'+escapeHtml(k.status)+'</td></tr>').join('')+
+      '</tbody></table></div>';
+    extra += '</div>';
+
+    extra += '<div class="card"><div class="card-title">Riwayat Izin</div>';
+    extra += izin.length===0 ? '<div class="empty-state"><span class="ic">📭</span>Tidak ada</div>' :
+      '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th>Status</th></tr></thead><tbody>'+
+      izin.map(i => '<tr><td>'+escapeHtml(String(i.tanggal_izin||'').slice(0,10))+'</td><td>'+escapeHtml(i.jenis_izin)+'</td><td>'+escapeHtml(i.status)+'</td></tr>').join('')+
+      '</tbody></table></div>';
+    extra += '</div>';
+
+    $('profilExtra').innerHTML = extra;
+  }
+
+  /* =========================================================
+     RENDER DASHBOARD (ENTRY POINT)
+     ========================================================= */
+  function renderDashboard(session){
+    CURRENT_SESSION = session;
+    renderHeader(session);
+    navigateTo('home');
+  }
+
+  /* =========================================================
      BOOT
-     ===================================================== */
-  renderHeader();
-  renderNav();
-  go('menu');
+     ========================================================= */
+  document.addEventListener('DOMContentLoaded', () => {
+    const session = getSession();
+    if (!session){
+      localStorage.removeItem(SESSION_KEY);
+      window.location.replace('index.html');
+      return;
+    }
+    renderDashboard(session);
+  });
 
 })();
 </script>

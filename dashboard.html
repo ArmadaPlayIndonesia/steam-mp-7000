@@ -98,11 +98,19 @@ body{
   justify-content:center;
 }
 .menu-card:active{transform:scale(0.97);border-color:#F59E0B}
+.menu-card.owner-highlight{
+  background:linear-gradient(135deg,#FFFBEB,#FEF3C7);
+  border:1.5px solid #F59E0B;
+}
 .menu-ico{
   width:44px;height:44px;border-radius:12px;
   background:linear-gradient(135deg,#C8102E,#8B0000);
   color:#FBBF24;font-size:22px;
   display:flex;align-items:center;justify-content:center;
+}
+.menu-card.owner-highlight .menu-ico{
+  background:linear-gradient(135deg,#F59E0B,#D97706);
+  color:#fff;
 }
 .menu-name{font-size:12px;font-weight:700;color:#1F2937;line-height:1.3}
 .menu-desc{font-size:10px;color:#9CA3AF;line-height:1.2}
@@ -267,6 +275,40 @@ tr:hover td{background:#FAFAFA}
   border-radius:8px;outline:none;background:#fff;min-height:44px;
 }
 .search-bar input:focus,.search-bar select:focus{border-color:#C8102E}
+/* Stat cards */
+.stat-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;
+}
+.stat-card{
+  background:#fff;border-radius:12px;padding:14px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.06);
+  border-left:4px solid #C8102E;
+}
+.stat-card.gold{border-left-color:#F59E0B}
+.stat-card.green{border-left-color:#059669}
+.stat-card.blue{border-left-color:#2563EB}
+.stat-card .sc-lbl{font-size:10px;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.stat-card .sc-val{font-size:18px;font-weight:800;color:#1F2937;margin-top:4px;line-height:1.2}
+.stat-card .sc-sub{font-size:10px;color:#9CA3AF;margin-top:2px}
+.total-banner{
+  background:linear-gradient(135deg,#C8102E,#8B0000);
+  color:#fff;border-radius:12px;padding:18px;
+  text-align:center;margin-bottom:14px;
+  box-shadow:0 6px 20px rgba(200,16,46,0.3);
+}
+.total-banner .tb-lbl{font-size:11px;opacity:0.85;font-weight:600;letter-spacing:0.5px}
+.total-banner .tb-val{font-size:30px;font-weight:800;color:#FBBF24;margin:4px 0;line-height:1.1}
+.total-banner .tb-sub{font-size:11px;opacity:0.85}
+.cabang-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px;border-radius:10px;background:#F9FAFB;
+  margin-bottom:8px;border-left:3px solid #C8102E;
+}
+.cabang-row .cr-info{flex:1;min-width:0}
+.cabang-row .cr-nama{font-size:13px;font-weight:700;color:#1F2937}
+.cabang-row .cr-detail{font-size:11px;color:#6B7280;margin-top:2px}
+.cabang-row .cr-total{font-size:15px;font-weight:800;color:#C8102E;text-align:right;white-space:nowrap;margin-left:8px}
+.cabang-row .cr-unit{font-size:10px;color:#9CA3AF;text-align:right}
 /* ===== RESPONSIVE ===== */
 @media(min-width:641px){
   body{padding-top:72px;padding-bottom:20px}
@@ -276,9 +318,10 @@ tr:hover td{background:#FAFAFA}
   #appContent{padding:24px}
   .menu-grid{grid-template-columns:repeat(3,1fr);gap:14px}
   .modal-overlay{align-items:center;padding:16px}
-  .modal{border-radius:16px;max-width:520px;border-radius:16px}
+  .modal{border-radius:16px;max-width:520px}
   #bottomNav{display:none}
   .modal-close{width:40px;height:40px}
+  .stat-grid{grid-template-columns:repeat(4,1fr)}
 }
 @media(min-width:1025px){
   body{padding-top:76px}
@@ -303,6 +346,7 @@ tr:hover td{background:#FAFAFA}
 var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwWiWeesEtkkzsbZrEb4I1WYAj8LPVY73H5ZZo1kB8UjWCcL2v5IbH3WvfZqblkEhMu/exec';
 var TOKEN = 'steam-mp-7000-2026';
 var SESSION_KEY = 'steam_mp_session';
+var HARGA_PER_UNIT = 4000; // 1 unit = Rp 4.000
 
 /* ============================================================
    DUMMY DATA (MODE DEMO)
@@ -313,13 +357,22 @@ var DUMMY_DATA = {
     {id:'4001',nama:'Demo Karyawan',jabatan:'Karyawan',kode_cabang:'GROBOGAN',status:'aktif',_row:3}
   ],
   'Target_Cabang': [
-    {kode_cabang:'GROBOGAN',nama_cabang:'Grobogan',target_harian:100},
-    {kode_cabang:'PALIS',nama_cabang:'Palis',target_harian:50}
+    {kode_cabang:'GROBOGAN',nama_cabang:'Grobogan',target_harian:100,_row:2},
+    {kode_cabang:'PALIS',nama_cabang:'Palis',target_harian:50,_row:3}
   ],
   'Pendapatan_Harian': [
     {tanggal:'2026-01-15',kode_cabang:'GROBOGAN',id_karyawan:'4001',
      nama_karyawan:'Karyawan A',status_masuk:'ya',unit:50,tips:1000,
-     bonus:5000,kasbon:0,wifi:1000,tembus_target:'ya',_row:2}
+     bonus:5000,kasbon:0,wifi:1000,tembus_target:'ya',_row:2},
+    {tanggal:'2026-01-15',kode_cabang:'PALIS',id_karyawan:'4002',
+     nama_karyawan:'Karyawan B',status_masuk:'ya',unit:30,tips:500,
+     bonus:0,kasbon:0,wifi:1000,tembus_target:'tidak',_row:3},
+    {tanggal:'2026-01-16',kode_cabang:'GROBOGAN',id_karyawan:'4001',
+     nama_karyawan:'Karyawan A',status_masuk:'ya',unit:120,tips:2000,
+     bonus:5000,kasbon:0,wifi:1000,tembus_target:'ya',_row:4},
+    {tanggal:'2026-01-16',kode_cabang:'PALIS',id_karyawan:'4002',
+     nama_karyawan:'Karyawan B',status_masuk:'ya',unit:45,tips:800,
+     bonus:0,kasbon:0,wifi:1000,tembus_target:'tidak',_row:5}
   ],
   'Pengajuan_Kasbon': [
     {id_pengajuan:'KSB-001',tanggal_pengajuan:'2026-01-15',
@@ -339,7 +392,12 @@ var DUMMY_DATA = {
     {key:'bonus_karyawan',value:'5000',_row:3},
     {key:'wifi_harian',value:'1000',_row:4}
   ],
-  'Pengeluaran':[],
+  'Pengeluaran': [
+    {tanggal:'2026-01-15',kode_cabang:'GROBOGAN',kategori:'operasional',
+     jumlah:50000,keterangan:'Beli oli',_row:2},
+    {tanggal:'2026-01-16',kode_cabang:'PALIS',kategori:'lain',
+     jumlah:25000,keterangan:'Parkir',_row:3}
+  ],
   'Log_Submisi':[],
   'Laporan':[]
 };
@@ -373,21 +431,6 @@ function isDemo() {
 function isOwner() {
   var s = getSession();
   return s && s.user_jabatan === 'Owner';
-}
-
-function isAdmin() {
-  var s = getSession();
-  return s && s.user_jabatan === 'Admin';
-}
-
-function isKepalaToko() {
-  var s = getSession();
-  return s && s.user_jabatan === 'Kepala Toko';
-}
-
-function isKaryawan() {
-  var s = getSession();
-  return s && s.user_jabatan === 'Karyawan';
 }
 
 function bisaIklan() {
@@ -438,15 +481,6 @@ function updateData(sheet, row, data) {
 function hapusData(sheet, row) {
   if (isDemo()) { showToast('Mode demo — tidak bisa menghapus','warning'); return Promise.resolve({ok:false}); }
   return apiPost('hapus', { sheet: sheet, row: row });
-}
-
-function cariData(sheet, kolom, nilai) {
-  if (isDemo()) {
-    var arr = DUMMY_DATA[sheet] || [];
-    var hasil = arr.filter(function(item){ return String(item[kolom]) === String(nilai); });
-    return Promise.resolve({ ok:true, data: hasil });
-  }
-  return apiPost('cari', { sheet: sheet, kolom: kolom, nilai: nilai });
 }
 
 /* ============================================================
@@ -518,9 +552,8 @@ function fmtRupiah(n) {
   return 'Rp ' + n.toLocaleString('id-ID');
 }
 
-function modalClose() {
-  var ov = document.querySelector('.modal-overlay.show');
-  if (ov) ov.classList.remove('show');
+function hitungTotalUnit(unit) {
+  return (parseInt(unit) || 0) * HARGA_PER_UNIT;
 }
 
 /* ============================================================
@@ -528,13 +561,14 @@ function modalClose() {
 ============================================================ */
 function getMenuByRole(jabatan) {
   var all = [
+    {id:'pendapatan_owner', nama:'Pendapatan Owner', desc:'Rekap semua cabang (1 unit = 4rb)', ico:'📈', roles:['Owner'], highlight:true},
     {id:'pendapatan', nama:'Pendapatan', desc:'Input pendapatan harian', ico:'💰', roles:['Owner','Admin','Kepala Toko','Karyawan']},
     {id:'riwayat_pendapatan', nama:'Riwayat', desc:'Riwayat pendapatan', ico:'📋', roles:['Owner','Admin','Kepala Toko','Karyawan']},
     {id:'kasbon', nama:'Kasbon', desc:'Pengajuan kasbon', ico:'💸', roles:['Owner','Admin','Kepala Toko','Karyawan']},
     {id:'izin', nama:'Izin', desc:'Ajukan izin istirahat/sakit', ico:'📅', roles:['Owner','Admin','Kepala Toko','Karyawan']},
     {id:'profil', nama:'Profil', desc:'Data & riwayat saya', ico:'👤', roles:['Owner','Admin','Kepala Toko','Karyawan']},
     {id:'payroll', nama:'Payroll', desc:'Generate & bayar gaji', ico:'💵', roles:['Owner','Admin','Kepala Toko']},
-    {id:'pengeluaran', nama:'Pengeluaran', desc:'Catat pengeluaran', ico:'📉', roles:['Owner','Admin','Kepala Toko']},
+    {id:'pengeluaran', nama:'Pengeluaran', desc:'Catat pengeluaran cabang', ico:'📉', roles:['Owner','Admin','Kepala Toko']},
     {id:'laporan', nama:'Laporan', desc:'Buat & lihat laporan', ico:'📊', roles:['Owner','Admin','Kepala Toko']},
     {id:'target', nama:'Target Cabang', desc:'Target harian cabang', ico:'🎯', roles:['Owner','Admin','Kepala Toko']},
     {id:'manusia', nama:'Manajemen Manusia', desc:'Kelola anggota', ico:'👥', roles:['Owner']},
@@ -544,17 +578,11 @@ function getMenuByRole(jabatan) {
 }
 
 function getBottomNavByRole(jabatan) {
-  var base = [
-    {id:'home', nama:'Beranda', ico:'🏠'},
-    {id:'pendapatan', nama:'Pendapatan', ico:'💰'},
-    {id:'riwayat_pendapatan', nama:'Riwayat', ico:'📋'},
-    {id:'profil', nama:'Profil', ico:'👤'}
-  ];
   if (jabatan === 'Owner') {
     return [
       {id:'home', nama:'Beranda', ico:'🏠'},
+      {id:'pendapatan_owner', nama:'Rekap', ico:'📈'},
       {id:'manusia', nama:'Manusia', ico:'👥'},
-      {id:'payroll', nama:'Payroll', ico:'💵'},
       {id:'pengaturan', nama:'Atur', ico:'⚙️'}
     ];
   }
@@ -563,10 +591,15 @@ function getBottomNavByRole(jabatan) {
       {id:'home', nama:'Beranda', ico:'🏠'},
       {id:'pendapatan', nama:'Pendapatan', ico:'💰'},
       {id:'payroll', nama:'Payroll', ico:'💵'},
-      {id:'laporan', nama:'Laporan', ico:'📊'}
+      {id:'pengeluaran', nama:'Keluar', ico:'📉'}
     ];
   }
-  return base;
+  return [
+    {id:'home', nama:'Beranda', ico:'🏠'},
+    {id:'pendapatan', nama:'Pendapatan', ico:'💰'},
+    {id:'riwayat_pendapatan', nama:'Riwayat', ico:'📋'},
+    {id:'profil', nama:'Profil', ico:'👤'}
+  ];
 }
 
 /* ============================================================
@@ -631,6 +664,7 @@ function navigasi(pageId) {
   renderBottomNav(session, pageId);
   switch(pageId) {
     case 'home': renderHome(session); break;
+    case 'pendapatan_owner': renderPendapatanOwner(session); break;
     case 'pendapatan': renderPendapatan(session); break;
     case 'riwayat_pendapatan': renderRiwayatPendapatan(session); break;
     case 'kasbon': renderKasbon(session); break;
@@ -671,13 +705,14 @@ function renderHome(session) {
   if (session.is_demo) {
     html += '<div class="card" style="background:#FFFBEB;border:1.5px solid #F59E0B">';
     html += '<h3 style="color:#B45309">⚠️ Mode Demo</h3>';
-    html += '<p style="font-size:12px;color:#92400E;line-height:1.5">Anda menggunakan data dummy. Aksi simpan, edit, hapus dinonaktifkan. Keluar dan login dengan akun asli untuk mengakses data sebenarnya.</p>';
+    html += '<p style="font-size:12px;color:#92400E;line-height:1.5">Anda menggunakan data dummy. Aksi simpan, edit, hapus dinonaktifkan.</p>';
     html += '</div>';
   }
 
   html += '<div class="menu-grid">';
   menu.forEach(function(m){
-    html += '<div class="menu-card" data-menu="' + m.id + '">';
+    var cls = 'menu-card' + (m.highlight ? ' owner-highlight' : '');
+    html += '<div class="' + cls + '" data-menu="' + m.id + '">';
     html += '<div class="menu-ico">' + m.ico + '</div>';
     html += '<div class="menu-name">' + m.nama + '</div>';
     html += '<div class="menu-desc">' + m.desc + '</div>';
@@ -695,7 +730,209 @@ function renderHome(session) {
 }
 
 /* ============================================================
-   HALAMAN: PENDAPATAN
+   HALAMAN: PENDAPATAN OWNER KESELURUHAN (BARU)
+============================================================ */
+function renderPendapatanOwner(session) {
+  var el = document.getElementById('appContent');
+  el.innerHTML = '<div class="page-title">📈 Pendapatan Owner</div>' +
+    '<div class="page-sub">Rekap semua cabang • 1 unit = ' + fmtRupiah(HARGA_PER_UNIT) + '</div>' +
+    '<div id="poBody"><div class="empty"><div class="ei">⏳</div>Memuat rekap...</div></div>';
+
+  // Default filter: bulan ini
+  var now = new Date();
+  var firstDay = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-01';
+  var lastDay = todayStr();
+
+  Promise.all([
+    ambilData('Pendapatan_Harian'),
+    ambilData('Target_Cabang'),
+    ambilData('Pengeluaran')
+  ]).then(function(results){
+    var pendapatan = results[0].ok ? results[0].data : [];
+    var target = results[1].ok ? results[1].data : [];
+    var pengeluaran = results[2].ok ? results[2].data : [];
+
+    // ---- Render UI filter ----
+    var html = '';
+    html += '<div class="card" style="padding:12px">';
+    html += '<div class="frow">';
+    html += '<div class="fgroup" style="margin-bottom:0"><label>Dari Tanggal</label><input type="date" id="poDari" value="' + firstDay + '"></div>';
+    html += '<div class="fgroup" style="margin-bottom:0"><label>Sampai Tanggal</label><input type="date" id="poSampai" value="' + lastDay + '"></div>';
+    html += '</div>';
+    html += '<div class="btn-row" style="margin-top:10px">';
+    html += '<button class="btn btn-sm btn-gray" data-quick="hari">Hari Ini</button>';
+    html += '<button class="btn btn-sm btn-gray" data-quick="minggu">7 Hari</button>';
+    html += '<button class="btn btn-sm btn-gray" data-quick="bulan">Bulan Ini</button>';
+    html += '<button class="btn btn-sm btn-gray" data-quick="all">Semua</button>';
+    html += '</div>';
+    html += '</div>';
+    html += '<div id="poHasil"></div>';
+
+    document.getElementById('poBody').innerHTML = html;
+
+    // Event filter
+    var btnQuick = document.querySelectorAll('[data-quick]');
+    btnQuick.forEach(function(b){
+      b.addEventListener('click', function(){
+        var q = this.getAttribute('data-quick');
+        var d1, d2 = todayStr();
+        var n = new Date();
+        if (q === 'hari') {
+          d1 = todayStr();
+        } else if (q === 'minggu') {
+          var w = new Date(n.getTime() - 6*24*60*60*1000);
+          d1 = w.getFullYear() + '-' + String(w.getMonth()+1).padStart(2,'0') + '-' + String(w.getDate()).padStart(2,'0');
+        } else if (q === 'bulan') {
+          d1 = n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-01';
+        } else {
+          d1 = '2000-01-01';
+        }
+        document.getElementById('poDari').value = d1;
+        document.getElementById('poSampai').value = d2;
+        hitungRekapOwner(pendapatan, target, pengeluaran, d1, d2);
+      });
+    });
+    document.getElementById('poDari').addEventListener('change', function(){
+      hitungRekapOwner(pendapatan, target, pengeluaran, this.value, document.getElementById('poSampai').value);
+    });
+    document.getElementById('poSampai').addEventListener('change', function(){
+      hitungRekapOwner(pendapatan, target, pengeluaran, document.getElementById('poDari').value, this.value);
+    });
+
+    hitungRekapOwner(pendapatan, target, pengeluaran, firstDay, lastDay);
+  });
+}
+
+function hitungRekapOwner(pendapatan, target, pengeluaran, dari, sampai) {
+  // Filter range tanggal
+  var filtered = pendapatan.filter(function(d){
+    return d.tanggal >= dari && d.tanggal <= sampai;
+  });
+
+  // Group by cabang
+  var perCabang = {};
+  filtered.forEach(function(d){
+    var k = d.kode_cabang || '-';
+    if (!perCabang[k]) {
+      perCabang[k] = {
+        kode: k, unit: 0, tips: 0, bonus: 0, kasbon: 0, wifi: 0, totalHari: 0, hariSet: {}
+      };
+    }
+    perCabang[k].unit += parseInt(d.unit) || 0;
+    perCabang[k].tips += parseInt(d.tips) || 0;
+    perCabang[k].bonus += parseInt(d.bonus) || 0;
+    perCabang[k].kasbon += parseInt(d.kasbon) || 0;
+    perCabang[k].wifi += parseInt(d.wifi) || 0;
+    perCabang[k].hariSet[d.tanggal] = true;
+  });
+
+  // Target cabang map
+  var targetMap = {};
+  target.forEach(function(t){ targetMap[t.kode_cabang] = t; });
+
+  // Hitung total
+  var totalUnit = 0, totalPendapatanKotor = 0, totalPengeluaran = 0;
+  var totalTips = 0, totalBonus = 0, totalKasbon = 0, totalWifi = 0;
+
+  var cabangList = Object.keys(perCabang).map(function(k){
+    var c = perCabang[k];
+    c.totalHari = Object.keys(c.hariSet).length;
+    // Konversi unit ke rupiah (1 unit = Rp 4.000)
+    c.rupiahUnit = c.unit * HARGA_PER_UNIT;
+    // Total kotor = (unit * 4000) + tips + bonus - kasbon - wifi
+    c.totalKotor = c.rupiahUnit + c.tips + c.bonus - c.kasbon - c.wifi;
+    var tg = targetMap[k];
+    c.targetHarian = tg ? parseInt(tg.target_harian) || 0 : 0;
+    c.nama = tg ? (tg.nama_cabang || k) : k;
+    c.targetTotal = c.targetHarian * c.totalHari;
+    c.tembus = c.targetTotal > 0 && c.unit >= c.targetTotal;
+
+    totalUnit += c.unit;
+    totalPendapatanKotor += c.totalKotor;
+    totalTips += c.tips;
+    totalBonus += c.bonus;
+    totalKasbon += c.kasbon;
+    totalWifi += c.wifi;
+
+    return c;
+  });
+
+  // Pengeluaran per cabang dalam range
+  var pengeluaranFiltered = pengeluaran.filter(function(p){
+    return p.tanggal >= dari && p.tanggal <= sampai;
+  });
+  var pengeluaranPerCabang = {};
+  pengeluaranFiltered.forEach(function(p){
+    var k = p.kode_cabang || '-';
+    if (!pengeluaranPerCabang[k]) pengeluaranPerCabang[k] = 0;
+    pengeluaranPerCabang[k] += parseInt(p.jumlah) || 0;
+    totalPengeluaran += parseInt(p.jumlah) || 0;
+  });
+
+  // Sort by pendapatan kotor desc
+  cabangList.sort(function(a,b){ return b.totalKotor - a.totalKotor; });
+
+  var totalBersih = totalPendapatanKotor - totalPengeluaran;
+
+  // ---- Render hasil ----
+  var html = '';
+  // Banner total
+  html += '<div class="total-banner">';
+  html += '<div class="tb-lbl">TOTAL PENDAPATAN KOTOR (SEMUA CABANG)</div>';
+  html += '<div class="tb-val">' + fmtRupiah(totalPendapatanKotor) + '</div>';
+  html += '<div class="tb-sub">Periode ' + dari + ' s/d ' + sampai + ' • ' + totalUnit.toLocaleString('id-ID') + ' unit</div>';
+  html += '</div>';
+
+  // Stat grid
+  html += '<div class="stat-grid">';
+  html += '<div class="stat-card"><div class="sc-lbl">Unit Terjual</div><div class="sc-val">' + totalUnit.toLocaleString('id-ID') + '</div><div class="sc-sub">@ ' + fmtRupiah(HARGA_PER_UNIT) + '</div></div>';
+  html += '<div class="stat-card gold"><div class="sc-lbl">Pendapatan Unit</div><div class="sc-val">' + fmtRupiah(totalUnit * HARGA_PER_UNIT) + '</div><div class="sc-sub">unit × 4.000</div></div>';
+  html += '<div class="stat-card green"><div class="sc-lbl">Tips + Bonus</div><div class="sc-val">' + fmtRupiah(totalTips + totalBonus) + '</div><div class="sc-sub">Tips ' + fmtRupiah(totalTips) + ' • Bonus ' + fmtRupiah(totalBonus) + '</div></div>';
+  html += '<div class="stat-card blue"><div class="sc-lbl">Total Bersih</div><div class="sc-val">' + fmtRupiah(totalBersih) + '</div><div class="sc-sub">Kotor - Pengeluaran</div></div>';
+  html += '</div>';
+
+  // Detail pengeluaran global
+  html += '<div class="card">';
+  html += '<h3>Ringkasan Global</h3>';
+  html += '<div class="info-row"><span class="lbl">Pendapatan Kotor</span><span class="val" style="color:#059669">' + fmtRupiah(totalPendapatanKotor) + '</span></div>';
+  html += '<div class="info-row"><span class="lbl">— Unit (' + totalUnit + ' × 4rb)</span><span class="val">' + fmtRupiah(totalUnit * HARGA_PER_UNIT) + '</span></div>';
+  html += '<div class="info-row"><span class="lbl">— Tips</span><span class="val">' + fmtRupiah(totalTips) + '</span></div>';
+  html += '<div class="info-row"><span class="lbl">— Bonus</span><span class="val">' + fmtRupiah(totalBonus) + '</span></div>';
+  html += '<div class="info-row"><span class="lbl">— Kasbon</span><span class="val" style="color:#DC2626">-' + fmtRupiah(totalKasbon) + '</span></div>';
+  html += '<div class="info-row"><span class="lbl">— WiFi</span><span class="val" style="color:#DC2626">-' + fmtRupiah(totalWifi) + '</span></div>';
+  html += '<div class="info-row"><span class="lbl">Pengeluaran</span><span class="val" style="color:#DC2626">-' + fmtRupiah(totalPengeluaran) + '</span></div>';
+  html += '<div class="info-row" style="border-top:2px solid #C8102E;margin-top:4px;padding-top:10px"><span class="lbl" style="font-weight:700;color:#1F2937">PENDAPATAN BERSIH</span><span class="val" style="color:#C8102E;font-size:16px">' + fmtRupiah(totalBersih) + '</span></div>';
+  html += '</div>';
+
+  // Per cabang
+  html += '<div class="card">';
+  html += '<h3>Rekap Per Cabang (' + cabangList.length + ')</h3>';
+  if (cabangList.length === 0) {
+    html += '<div class="empty"><div class="ei">📭</div>Belum ada data di periode ini</div>';
+  } else {
+    cabangList.forEach(function(c){
+      var peng = pengeluaranPerCabang[c.kode] || 0;
+      var bersihCabang = c.totalKotor - peng;
+      html += '<div class="cabang-row">';
+      html += '<div class="cr-info">';
+      html += '<div class="cr-nama">' + esc(c.nama) + ' <span class="badge ' + (c.tembus ? 'badge-gold' : 'badge-gray') + '">' + (c.tembus ? 'TEMBUS' : 'BELUM') + '</span></div>';
+      html += '<div class="cr-detail">' + c.unit + ' unit × 4rb = ' + fmtRupiah(c.rupiahUnit) + ' • ' + c.totalHari + ' hari</div>';
+      if (peng > 0) html += '<div class="cr-detail" style="color:#DC2626">Pengeluaran: -' + fmtRupiah(peng) + '</div>';
+      html += '</div>';
+      html += '<div>';
+      html += '<div class="cr-total">' + fmtRupiah(bersihCabang) + '</div>';
+      html += '<div class="cr-unit">bersih</div>';
+      html += '</div>';
+      html += '</div>';
+    });
+  }
+  html += '</div>';
+
+  document.getElementById('poHasil').innerHTML = html;
+}
+
+/* ============================================================
+   HALAMAN: PENDAPATAN (INPUT)
 ============================================================ */
 function renderPendapatan(session) {
   var el = document.getElementById('appContent');
@@ -763,7 +1000,6 @@ function renderPendapatan(session) {
 
     el.innerHTML = html;
 
-    // Event listeners
     var masukSel = document.getElementById('pdMasuk');
     masukSel.addEventListener('change', function(){
       var isMasuk = this.value === 'ya';
@@ -800,24 +1036,26 @@ function renderPendapatan(session) {
       btn.innerHTML = 'Menyimpan...';
 
       var tanggal = document.getElementById('pdTanggal').value;
-      var cabang = document.getElementById('pdCabang').value;
+      var cabangVal = document.getElementById('pdCabang').value;
       var idKar = document.getElementById('pdKaryawan').value;
       var namaKar = document.getElementById('pdKaryawan').options[document.getElementById('pdKaryawan').selectedIndex].text.split(' (')[0];
       var statusMasuk = document.getElementById('pdMasuk').value;
 
-      if (!tanggal || !cabang || !idKar) {
+      if (!tanggal || !cabangVal || !idKar) {
         showToast('Lengkapi semua field','error');
         btn.disabled = false; btn.textContent = 'Simpan Pendapatan';
         return;
       }
 
       var data;
+      var unitVal = 0;
       if (statusMasuk === 'ya') {
         var unit = parseInt(document.getElementById('pdUnit').value) || 0;
         var tips = parseInt(document.getElementById('pdTips').value) || 0;
         var kasbon = parseInt(document.getElementById('pdKasbon').value) || 0;
+        unitVal = unit;
         data = {
-          tanggal: tanggal, kode_cabang: cabang,
+          tanggal: tanggal, kode_cabang: cabangVal,
           id_karyawan: idKar, nama_karyawan: namaKar,
           status_masuk: 'ya', unit: unit, tips: tips,
           bonus: 0, kasbon: kasbon, wifi: 1000, tembus_target: 'tidak'
@@ -836,7 +1074,7 @@ function renderPendapatan(session) {
           return;
         }
         data = {
-          tanggal: tanggal, kode_cabang: cabang,
+          tanggal: tanggal, kode_cabang: cabangVal,
           id_karyawan: idKar, nama_karyawan: namaKar,
           status_masuk: 'tidak', unit: 0, tips: 0,
           bonus: 0, kasbon: kasbonT, wifi: 1000, tembus_target: 'tidak',
@@ -853,9 +1091,8 @@ function renderPendapatan(session) {
             tampilkanIklan('interstitial');
           }
           showToast('Pendapatan berhasil disimpan','success');
-          // Cek bonus tembus target
-          cekBonusTembus(tanggal, cabang, unit, data);
-          muatDaftarPendapatan(tanggal, cabang);
+          cekBonusTembus(tanggal, cabangVal, unitVal, data);
+          muatDaftarPendapatan(tanggal, cabangVal);
         } else {
           showToast(res.pesan || 'Gagal menyimpan','error');
         }
@@ -878,13 +1115,14 @@ function muatDaftarPendapatan(tanggal, cabang) {
       return;
     }
     var html = '<div class="table-wrap"><table><thead><tr>';
-    html += '<th>Karyawan</th><th>Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th><th>Status</th>';
+    html += '<th>Karyawan</th><th>Unit</th><th>Nilai Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th><th>Status</th>';
     html += '</tr></thead><tbody>';
     data.forEach(function(d){
       var isBonus = parseInt(d.bonus) > 0;
       html += '<tr' + (isBonus ? ' style="background:#FFFBEB"' : '') + '>';
       html += '<td>' + esc(d.nama_karyawan) + '</td>';
       html += '<td>' + esc(d.unit) + '</td>';
+      html += '<td>' + fmtRupiah((parseInt(d.unit)||0) * HARGA_PER_UNIT) + '</td>';
       html += '<td>' + fmtRupiah(d.tips) + '</td>';
       html += '<td>' + fmtRupiah(d.bonus) + '</td>';
       html += '<td>' + fmtRupiah(d.kasbon) + '</td>';
@@ -907,7 +1145,6 @@ function cekBonusTembus(tanggal, cabang, unitBaru, dataBaru) {
     });
     var totalUnit = 0;
     hariIni.forEach(function(d){ totalUnit += parseInt(d.unit) || 0; });
-    // tambah unit baru kalau belum masuk (optimistic)
     if (dataBaru && dataBaru.status_masuk === 'ya') totalUnit += unitBaru;
 
     ambilData('Target_Cabang').then(function(res2){
@@ -918,7 +1155,6 @@ function cekBonusTembus(tanggal, cabang, unitBaru, dataBaru) {
         if (t.kode_cabang === cabang) target = parseInt(t.target_harian) || 0;
       });
       if (totalUnit >= target && target > 0) {
-        // Update semua baris dengan bonus
         ambilData('Pengaturan').then(function(res3){
           var bonusKT = 10000, bonusKar = 5000;
           if (res3.ok) {
@@ -927,7 +1163,6 @@ function cekBonusTembus(tanggal, cabang, unitBaru, dataBaru) {
               if (p.key === 'bonus_karyawan') bonusKar = parseInt(p.value) || 5000;
             });
           }
-          // Update semua baris hari ini
           hariIni.forEach(function(d){
             if (String(d.tembus_target) !== 'ya') {
               var b = (d.id_karyawan && d.id_karyawan.indexOf('1001') === 0) ? bonusKT : bonusKar;
@@ -952,7 +1187,6 @@ function renderRiwayatPendapatan(session) {
 
   ambilData('Pendapatan_Harian').then(function(res){
     var data = res.ok ? res.data : [];
-    // Filter berdasarkan role
     if (session.user_jabatan === 'Karyawan') {
       data = data.filter(function(d){ return String(d.id_karyawan) === String(session.user_id); });
     } else if (session.user_jabatan === 'Kepala Toko') {
@@ -966,7 +1200,7 @@ function renderRiwayatPendapatan(session) {
       return;
     }
     var html = '<div class="table-wrap"><table><thead><tr>';
-    html += '<th>Tanggal</th><th>Cabang</th><th>Karyawan</th><th>Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th>';
+    html += '<th>Tanggal</th><th>Cabang</th><th>Karyawan</th><th>Unit</th><th>Nilai Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th>';
     html += '</tr></thead><tbody>';
     data.slice(0, 100).forEach(function(d){
       html += '<tr>';
@@ -974,6 +1208,7 @@ function renderRiwayatPendapatan(session) {
       html += '<td>' + esc(d.kode_cabang) + '</td>';
       html += '<td>' + esc(d.nama_karyawan) + '</td>';
       html += '<td>' + esc(d.unit) + '</td>';
+      html += '<td>' + fmtRupiah((parseInt(d.unit)||0) * HARGA_PER_UNIT) + '</td>';
       html += '<td>' + fmtRupiah(d.tips) + '</td>';
       html += '<td>' + fmtRupiah(d.bonus) + '</td>';
       html += '<td>' + fmtRupiah(d.kasbon) + '</td>';
@@ -1120,7 +1355,6 @@ function renderIzin(session) {
    HALAMAN: PAYROLL
 ============================================================ */
 function renderPayroll(session) {
-  // Trigger interstitial sekali per sesi
   if (!sessionStorage.getItem('payroll_ad')) {
     tampilkanIklan('interstitial');
     sessionStorage.setItem('payroll_ad','1');
@@ -1164,38 +1398,154 @@ function muatPayroll() {
 }
 
 /* ============================================================
-   HALAMAN: PENGELUARAN
+   HALAMAN: PENGELUARAN (UPDATED — DENGAN DROPDOWN CABANG)
 ============================================================ */
 function renderPengeluaran(session) {
   var el = document.getElementById('appContent');
-  var html = '';
-  html += '<div class="page-title">📉 Pengeluaran</div>';
-  html += '<div class="page-sub">Catat pengeluaran operasional</div>';
-  html += '<div class="card"><h3>Form Pengeluaran</h3>';
-  html += '<div class="fgroup"><label>Tanggal</label><input type="date" id="pgTanggal" value="' + todayStr() + '"></div>';
-  html += '<div class="fgroup"><label>Kategori</label><select id="pgKategori"><option value="operasional">Operasional</option><option value="gaji">Gaji</option><option value="lain">Lainnya</option></select></div>';
-  html += '<div class="fgroup"><label>Jumlah</label><input type="number" id="pgJumlah" value="0" min="0"></div>';
-  html += '<div class="fgroup"><label>Keterangan</label><input type="text" id="pgKet" placeholder="Keterangan"></div>';
-  html += '<button class="btn btn-primary" id="pgSubmit">Simpan Pengeluaran</button>';
-  html += '</div>';
-  el.innerHTML = html;
+  el.innerHTML = '<div class="page-title">📉 Pengeluaran</div>' +
+    '<div class="page-sub">Catat pengeluaran per cabang</div>' +
+    '<div id="pgBody"><div class="empty"><div class="ei">⏳</div>Memuat cabang...</div></div>';
 
-  document.getElementById('pgSubmit').addEventListener('click', function(){
-    if (isDemo()) { showToast('Mode demo','warning'); return; }
-    var btn = this;
-    btn.disabled = true;
-    var data = {
-      tanggal: document.getElementById('pgTanggal').value,
-      kategori: document.getElementById('pgKategori').value,
-      jumlah: parseInt(document.getElementById('pgJumlah').value) || 0,
-      keterangan: document.getElementById('pgKet').value || '-'
-    };
-    simpanData('Pengeluaran', data).then(function(res){
-      btn.disabled = false;
-      if (res && res.ok) showToast('Pengeluaran disimpan','success');
-      else showToast(res.pesan || 'Gagal','error');
+  Promise.all([
+    ambilData('Target_Cabang'),
+    ambilData('Pengeluaran')
+  ]).then(function(results){
+    var cabang = results[0].ok ? results[0].data : [];
+    var pengeluaran = results[1].ok ? results[1].data : [];
+
+    var html = '';
+
+    // ===== FORM =====
+    html += '<div class="card"><h3>Form Pengeluaran</h3>';
+    html += '<div class="fgroup"><label>Tanggal</label><input type="date" id="pgTanggal" value="' + todayStr() + '"></div>';
+
+    // Dropdown cabang — WAJIB
+    html += '<div class="fgroup"><label>Cabang <span style="color:#DC2626">*</span></label>';
+    html += '<select id="pgCabang">';
+    html += '<option value="">-- Pilih Cabang --</option>';
+    cabang.forEach(function(c){
+      var sel = (session.kode_cabang === c.kode_cabang) ? ' selected' : '';
+      html += '<option value="' + esc(c.kode_cabang) + '"' + sel + '>' + esc(c.nama_cabang || c.kode_cabang) + ' (' + esc(c.kode_cabang) + ')</option>';
+    });
+    html += '</select></div>';
+
+    html += '<div class="fgroup"><label>Kategori</label><select id="pgKategori">';
+    html += '<option value="operasional">Operasional</option>';
+    html += '<option value="gaji">Gaji</option>';
+    html += '<option value="sewa">Sewa</option>';
+    html += '<option value="listrik">Listrik / Air</option>';
+    html += '<option value="lain">Lainnya</option>';
+    html += '</select></div>';
+
+    html += '<div class="fgroup"><label>Jumlah (Rp)</label><input type="number" id="pgJumlah" value="0" min="0"></div>';
+    html += '<div class="fgroup"><label>Keterangan</label><input type="text" id="pgKet" placeholder="Keterangan pengeluaran"></div>';
+    html += '<button class="btn btn-primary" id="pgSubmit">Simpan Pengeluaran</button>';
+    html += '</div>';
+
+    // ===== RIWAYAT =====
+    html += '<div class="card"><h3>Riwayat Pengeluaran</h3>';
+    html += '<div class="search-bar">';
+    html += '<select id="pgFilterCabang"><option value="">Semua Cabang</option>';
+    cabang.forEach(function(c){
+      html += '<option value="' + esc(c.kode_cabang) + '">' + esc(c.nama_cabang || c.kode_cabang) + '</option>';
+    });
+    html += '</select>';
+    html += '<input type="month" id="pgFilterBulan" value="' + todayStr().slice(0,7) + '">';
+    html += '</div>';
+    html += '<div id="pgList"><div class="empty">Memuat...</div></div>';
+    html += '</div>';
+
+    document.getElementById('pgBody').innerHTML = html;
+
+    muatRiwayatPengeluaran(pengeluaran, cabang);
+
+    document.getElementById('pgFilterCabang').addEventListener('change', function(){
+      muatRiwayatPengeluaran(pengeluaran, cabang);
+    });
+    document.getElementById('pgFilterBulan').addEventListener('change', function(){
+      muatRiwayatPengeluaran(pengeluaran, cabang);
+    });
+
+    // ===== SUBMIT =====
+    document.getElementById('pgSubmit').addEventListener('click', function(){
+      if (isDemo()) { showToast('Mode demo — tidak bisa menyimpan','warning'); return; }
+      var cabangVal = document.getElementById('pgCabang').value;
+      var jumlah = parseInt(document.getElementById('pgJumlah').value) || 0;
+
+      if (!cabangVal) { showToast('Pilih cabang terlebih dahulu','error'); return; }
+      if (jumlah <= 0) { showToast('Jumlah harus lebih dari 0','error'); return; }
+
+      var btn = this;
+      btn.disabled = true; btn.textContent = 'Menyimpan...';
+
+      var data = {
+        tanggal: document.getElementById('pgTanggal').value,
+        kode_cabang: cabangVal,
+        kategori: document.getElementById('pgKategori').value,
+        jumlah: jumlah,
+        keterangan: document.getElementById('pgKet').value || '-',
+        dicatat_oleh: session.user_nama
+      };
+
+      simpanData('Pengeluaran', data).then(function(res){
+        btn.disabled = false; btn.textContent = 'Simpan Pengeluaran';
+        if (res && res.ok) {
+          showToast('Pengeluaran disimpan','success');
+          document.getElementById('pgJumlah').value = 0;
+          document.getElementById('pgKet').value = '';
+          // Refresh riwayat
+          ambilData('Pengeluaran').then(function(r2){
+            muatRiwayatPengeluaran(r2.ok ? r2.data : [], cabang);
+          });
+        } else {
+          showToast(res.pesan || 'Gagal','error');
+        }
+      });
     });
   });
+}
+
+function muatRiwayatPengeluaran(data, cabang) {
+  var listEl = document.getElementById('pgList');
+  if (!listEl) return;
+  var fCab = document.getElementById('pgFilterCabang') ? document.getElementById('pgFilterCabang').value : '';
+  var fBulan = document.getElementById('pgFilterBulan') ? document.getElementById('pgFilterBulan').value : '';
+
+  var filtered = data.filter(function(d){
+    if (fCab && d.kode_cabang !== fCab) return false;
+    if (fBulan && String(d.tanggal).slice(0,7) !== fBulan) return false;
+    return true;
+  });
+
+  filtered.sort(function(a,b){ return String(b.tanggal).localeCompare(String(a.tanggal)); });
+
+  if (filtered.length === 0) {
+    listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada pengeluaran</div>';
+    return;
+  }
+
+  var total = 0;
+  filtered.forEach(function(d){ total += parseInt(d.jumlah) || 0; });
+
+  var h = '<div style="background:#FEF2F2;border-radius:8px;padding:10px 12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">';
+  h += '<span style="font-size:12px;font-weight:600;color:#991B1B">TOTAL</span>';
+  h += '<span style="font-size:16px;font-weight:800;color:#DC2626">' + fmtRupiah(total) + '</span>';
+  h += '</div>';
+
+  h += '<div class="table-wrap"><table><thead><tr>';
+  h += '<th>Tanggal</th><th>Cabang</th><th>Kategori</th><th>Jumlah</th><th>Keterangan</th>';
+  h += '</tr></thead><tbody>';
+  filtered.slice(0, 100).forEach(function(d){
+    h += '<tr>';
+    h += '<td>' + esc(d.tanggal) + '</td>';
+    h += '<td><span class="badge badge-blue">' + esc(d.kode_cabang) + '</span></td>';
+    h += '<td>' + esc(d.kategori) + '</td>';
+    h += '<td style="color:#DC2626;font-weight:700">' + fmtRupiah(d.jumlah) + '</td>';
+    h += '<td>' + esc(d.keterangan) + '</td>';
+    h += '</tr>';
+  });
+  h += '</tbody></table></div>';
+  listEl.innerHTML = h;
 }
 
 /* ============================================================
@@ -1282,7 +1632,6 @@ function muatManusia() {
     var listEl = document.getElementById('mhList');
     if (!listEl) return;
     var data = res.ok ? res.data : [];
-    // Isi filter cabang
     var cabSet = {};
     data.forEach(function(d){ if (d.kode_cabang) cabSet[d.kode_cabang] = true; });
     var cabSel = document.getElementById('mhFilterCabang');
@@ -1402,11 +1751,12 @@ function bukaFormAnggota(item) {
       data.tanggal_masuk = todayStr();
     }
 
-    var promise;
     if (isEdit) {
-      promise = updateData('Users', item._row, data);
+      updateData('Users', item._row, data).then(function(res){
+        if (res && res.ok) { showToast('Data diperbarui','success'); ov.remove(); muatManusia(); }
+        else showToast(res.pesan || 'Gagal','error');
+      });
     } else {
-      // Cek ID unik
       ambilData('Users').then(function(res){
         var exists = (res.data || []).some(function(u){ return String(u.id) === String(id); });
         if (exists) { showToast('ID sudah digunakan','error'); return; }
@@ -1415,12 +1765,7 @@ function bukaFormAnggota(item) {
           else showToast(r.pesan || 'Gagal','error');
         });
       });
-      return;
     }
-    promise.then(function(res){
-      if (res && res.ok) { showToast('Data diperbarui','success'); ov.remove(); muatManusia(); }
-      else showToast(res.pesan || 'Gagal','error');
-    });
   });
 }
 
@@ -1483,9 +1828,7 @@ function renderPengaturan(session) {
           key: inp.getAttribute('data-key'), value: inp.value
         }));
       });
-      Promise.all(promises).then(function(){
-        showToast('Pengaturan disimpan','success');
-      });
+      Promise.all(promises).then(function(){ showToast('Pengaturan disimpan','success'); });
     });
   });
 }
@@ -1497,7 +1840,7 @@ function renderTarget(session) {
   var el = document.getElementById('appContent');
   var html = '';
   html += '<div class="page-title">🎯 Target Cabang</div>';
-  html += '<div class="page-sub">Atur target harian per cabang</div>';
+  html += '<div class="page-sub">Atur target harian per cabang (unit)</div>';
   html += '<div class="card"><div id="tgList"><div class="empty">Memuat...</div></div></div>';
   el.innerHTML = html;
 
@@ -1561,7 +1904,6 @@ document.addEventListener('DOMContentLoaded', function(){
     return;
   }
   renderDashboard(session);
-  // Handle resize untuk bottom nav
   window.addEventListener('resize', function(){
     var s = getSession();
     if (s) renderBottomNav(s, currentPage);

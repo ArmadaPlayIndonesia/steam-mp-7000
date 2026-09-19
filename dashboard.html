@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>STEAM MP 7000 — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --merah: #C8102E; --merah-hover: #DC2626; --putih: #FFFFFF; --bg: #F9FAFB;
+  --emas: #F59E0B; --emas-terang: #FBBF24; --hitam: #1F2937; --hitam-pekat: #111827;
+  --abu: #6B7280; --abu-terang: #E5E7EB; --radius: 14px;
+  --shadow: 0 4px 6px rgba(0,0,0,0.1); --shadow-lg: 0 10px 25px rgba(0,0,0,0.12);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg); color: var(--hitam);
+  -webkit-tap-highlight-color: transparent; min-height: 100vh;
+}
+button { font-family: inherit; cursor: pointer; }
+input, select, textarea { font-family: inherit; }
+
+/* ============ BUTTONS ============ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; padding: 10px 20px; border: none;
+  border-radius: var(--radius); font-size: 15px; font-weight: 600;
+  transition: all 0.2s ease; text-decoration: none; gap: 8px;
+}
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-primary { background: var(--merah); color: var(--putih); box-shadow: 0 4px 12px rgba(200,16,46,0.3); }
+.btn-primary:hover:not(:disabled) { background: var(--merah-hover); transform: translateY(-1px); }
+.btn-secondary { background: var(--abu-terang); color: var(--hitam); }
+.btn-secondary:hover:not(:disabled) { background: #D1D5DB; }
+.btn-outline { background: transparent; color: var(--merah); border: 2px solid var(--merah); }
+.btn-outline:hover:not(:disabled) { background: var(--merah); color: var(--putih); }
+.btn-success { background: #16A34A; color: #fff; }
+.btn-success:hover:not(:disabled) { background: #15803D; }
+.btn-danger { background: var(--merah); color: #fff; }
+.btn-block { width: 100%; }
+.btn-sm { min-height: 36px; padding: 6px 14px; font-size: 13px; }
+
+/* ============ FORM ============ */
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--hitam); margin-bottom: 6px; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; min-height: 44px; padding: 10px 14px;
+  border: 1.5px solid var(--abu-terang); border-radius: var(--radius);
+  font-size: 15px; background: var(--putih); color: var(--hitam); transition: border-color 0.2s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none; border-color: var(--merah); box-shadow: 0 0 0 3px rgba(200,16,46,0.1);
+}
+.form-group textarea { min-height: 80px; resize: vertical; }
+
+/* ============ TOAST ============ */
+.toast-container {
+  position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 9999; display: flex; flex-direction: column; gap: 8px;
+  width: calc(100% - 32px); max-width: 380px; pointer-events: none;
+}
+.toast {
+  padding: 12px 18px; border-radius: 12px; font-size: 14px; font-weight: 500;
+  color: #fff; box-shadow: var(--shadow-lg); animation: toastIn 0.3s ease; text-align: center;
+}
+.toast-success { background: #16A34A; }
+.toast-error { background: var(--merah); }
+.toast-info { background: #2563EB; }
+.toast-warning { background: var(--emas); }
+.toast-hide { opacity: 0; transform: translateY(-10px); transition: all 0.3s; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ============ MODAL ============ */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 9000;
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.modal-box {
+  background: var(--putih); border-radius: 18px; width: 100%; max-width: 480px;
+  max-height: 90vh; overflow: hidden; display: flex; flex-direction: column;
+  box-shadow: var(--shadow-lg); animation: modalIn 0.25s ease;
+}
+@keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid var(--abu-terang);
+}
+.modal-header h3 { font-size: 17px; font-weight: 600; }
+.modal-close { width: 36px; height: 36px; border: none; background: transparent; font-size: 24px; border-radius: 8px; color: var(--abu); line-height: 1; }
+.modal-body { padding: 20px; overflow-y: auto; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+
+/* ============ LOADING ============ */
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(255,255,255,0.85); z-index: 9998;
+  display: none; align-items: center; justify-content: center;
+}
+.loading-spinner {
+  width: 48px; height: 48px; border: 4px solid var(--abu-terang);
+  border-top-color: var(--merah); border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============ DASHBOARD LAYOUT ============ */
+.dashboard-body { padding-top: 64px; padding-bottom: 76px; min-height: 100vh; background: var(--bg); }
+.app-header {
+  position: fixed; top: 0; left: 0; right: 0; height: 64px;
+  background: linear-gradient(135deg, var(--merah), #9B0B22);
+  color: var(--putih); display: flex; align-items: center;
+  padding: 0 14px; gap: 10px; z-index: 100;
+  box-shadow: 0 2px 12px rgba(200,16,46,0.35);
+}
+.header-logo {
+  width: 40px; height: 40px; background: var(--putih); color: var(--merah);
+  border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 15px; flex-shrink: 0;
+}
+.header-info { flex: 1; min-width: 0; }
+.header-title { font-size: 14px; font-weight: 700; letter-spacing: 0.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.header-user { font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.header-badge-demo {
+  background: var(--emas-terang); color: var(--hitam-pekat);
+  font-size: 9px; font-weight: 700; padding: 3px 7px;
+  border-radius: 6px; letter-spacing: 0.5px; flex-shrink: 0;
+}
+.header-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.header-btn {
+  width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.15);
+  color: var(--putih); border-radius: 12px; font-size: 17px;
+  display: flex; align-items: center; justify-content: center; transition: background 0.2s;
+}
+.header-btn:hover { background: rgba(255,255,255,0.28); }
+
+.app-content { padding: 18px 16px 24px; max-width: 1024px; margin: 0 auto; }
+.page-title { font-size: 19px; font-weight: 700; color: var(--hitam-pekat); margin-bottom: 4px; }
+.page-subtitle { font-size: 13px; color: var(--abu); margin-bottom: 20px; }
+
+.menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.menu-card {
+  background: var(--putih); border-radius: var(--radius); padding: 18px 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; cursor: pointer; box-shadow: var(--shadow);
+  transition: transform 0.18s, box-shadow 0.18s; min-height: 110px;
+  border: 2px solid transparent;
+}
+.menu-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.12); }
+.menu-card:active { transform: scale(0.97); }
+.menu-card.highlight {
+  background: linear-gradient(135deg, var(--merah), #9B0B22);
+  color: var(--putih); border-color: var(--emas);
+}
+.menu-card.highlight .menu-label { color: var(--putih); }
+.menu-icon { font-size: 30px; line-height: 1; }
+.menu-label { font-size: 12px; font-weight: 600; text-align: center; color: var(--hitam); line-height: 1.3; }
+
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 64px;
+  background: var(--putih); display: flex; border-top: 1px solid var(--abu-terang);
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.06); z-index: 100;
+}
+.bottom-nav-item {
+  flex: 1; border: none; background: transparent;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; color: var(--abu); font-size: 10px; font-weight: 600;
+  transition: color 0.2s; padding: 8px 0;
+}
+.bottom-nav-item.active { color: var(--merah); }
+.bottom-nav-icon { font-size: 20px; line-height: 1; }
+.bottom-nav-label { font-size: 10px; }
+
+.form-card {
+  background: var(--putih); border-radius: var(--radius); padding: 18px;
+  box-shadow: var(--shadow); margin-bottom: 16px;
+}
+.form-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 14px; color: var(--hitam-pekat); }
+
+.preview-box {
+  background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+  border-radius: var(--radius); padding: 14px; margin: 14px 0;
+  border-left: 4px solid var(--emas);
+}
+.preview-row { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; }
+.preview-row.total {
+  font-weight: 700; font-size: 15px; border-top: 1px dashed #D97706;
+  margin-top: 8px; padding-top: 8px; color: #92400E;
+}
+
+.toggle-group { display: flex; background: var(--abu-terang); border-radius: 12px; padding: 4px; margin-bottom: 16px; }
+.toggle-btn {
+  flex: 1; border: none; background: transparent; padding: 10px;
+  border-radius: 9px; font-size: 13px; font-weight: 600;
+  color: var(--abu); transition: all 0.2s;
+}
+.toggle-btn.active { background: var(--putih); color: var(--merah); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+
+table.data-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+  background: var(--putih); border-radius: var(--radius);
+  overflow: hidden; box-shadow: var(--shadow);
+}
+table.data-table th {
+  background: var(--merah); color: var(--putih);
+  padding: 10px 12px; text-align: left; font-weight: 600;
+  font-size: 12px; white-space: nowrap;
+}
+table.data-table td { padding: 10px 12px; border-bottom: 1px solid var(--abu-terang); vertical-align: middle; }
+table.data-table tr:last-child td { border-bottom: none; }
+table.data-table tr:hover td { background: #FEF2F2; }
+
+.empty-state { text-align: center; padding: 40px 20px; color: var(--abu); font-size: 14px; }
+.empty-state .empty-icon { font-size: 44px; margin-bottom: 10px; opacity: 0.5; }
+
+.badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+.badge-success { background: #D1FAE5; color: #065F46; }
+.badge-warning { background: #FEF3C7; color: #92400E; }
+.badge-danger { background: #FEE2E2; color: #991B1B; }
+.badge-info { background: #DBEAFE; color: #1E40AF; }
+.badge-gray { background: var(--abu-terang); color: var(--hitam); }
+
+.text-center { text-align: center; }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-16 { margin-bottom: 16px; }
+
+@media (min-width: 640px) { .menu-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) {
+  .menu-grid { grid-template-columns: repeat(4, 1fr); }
+  .app-content { padding: 24px 32px 40px; }
+}
+</style>
+</head>
+<body class="dashboard-body">
+<header id="appHeader" class="app-header"></header>
+<main id="appContent" class="app-content"></main>
+<nav id="bottomNav" class="bottom-nav"></nav>
+
+<script>
+/* ================= CONFIG ================= */
+const CONFIG = {
+  BACKEND_URL: 'https://script.google.com/macros/s/AKfycbz3wQy6XT-57z0NkTs5eIHai2wXpyR672NJ_rhC0Zi9csmWmFlrVvgv7DmU4Bh33wFUbg/exec',
+  TOKEN: 'steam-mp-7000-2026',
+  APP_NAME: 'STEAM MP 7000',
+  TAGLINE: 'Jujur Disiplin Tanggung Jawab HARGA MATI !',
+  FOOTER: 'Steam MP Manajemen',
+  TIMEOUT: 30000,
+  SESSION_KEY: 'steam_mp_session',
+  SESSION_EXPIRY_USER: 8 * 60 * 60 * 1000,
+  SESSION_EXPIRY_DEMO: 15 * 60 * 1000
+};
+
+/* ================= UTILS ================= */
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+function escapeHtml(text) {
+  if (text === null || text === undefined) return '';
+  return String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+function formatRupiah(angka) {
+  const n = Number(angka);
+  if (isNaN(n)) return 'Rp 0';
+  return 'Rp ' + n.toLocaleString('id-ID');
+}
+function formatTanggalISO(date) {
+  if (!date) return '-';
+  const d = (date instanceof Date) ? date : new Date(date);
+  if (isNaN(d.getTime())) return '-';
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function formatTanggal(date) {
+  if (!date) return '-';
+  const d = (date instanceof Date) ? date : new Date(date);
+  if (isNaN(d.getTime())) return '-';
+  const b = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  return `${d.getDate()} ${b[d.getMonth()]} ${d.getFullYear()}`;
+}
+function showToast(pesan, tipe = 'info') {
+  let c = document.getElementById('toastContainer');
+  if (!c) { c = document.createElement('div'); c.id = 'toastContainer'; c.className = 'toast-container'; document.body.appendChild(c); }
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + tipe;
+  t.textContent = pesan;
+  c.appendChild(t);
+  setTimeout(() => { t.classList.add('toast-hide'); setTimeout(() => t.remove(), 300); }, 3000);
+}
+function showLoading() {
+  let el = document.getElementById('loadingOverlay');
+  if (!el) { el = document.createElement('div'); el.id='loadingOverlay'; el.className='loading-overlay'; el.innerHTML='<div class="loading-spinner"></div>'; document.body.appendChild(el); }
+  el.style.display = 'flex';
+}
+function hideLoading() { const el = document.getElementById('loadingOverlay'); if (el) el.style.display = 'none'; }
+function showModal(judul, konten, opsi = {}) {
+  const ex = document.getElementById('globalModal'); if (ex) ex.remove();
+  const m = document.createElement('div');
+  m.id = 'globalModal'; m.className = 'modal-overlay';
+  m.innerHTML = `<div class="modal-box"><div class="modal-header"><h3>${escapeHtml(judul||'')}</h3><button class="modal-close" id="modalCloseBtn">×</button></div><div class="modal-body">${konten}</div></div>`;
+  document.body.appendChild(m);
+  const close = () => m.remove();
+  document.getElementById('modalCloseBtn').onclick = close;
+  m.addEventListener('click', e => { if (e.target === m && !opsi.lock) close(); });
+  return { close, element: m };
+}
+function showKonfirmasi(pesan) {
+  return new Promise(resolve => {
+    const m = showModal('Konfirmasi',
+      `<p style="margin:0 0 20px">${escapeHtml(pesan)}</p><div class="modal-actions"><button class="btn btn-secondary" id="konfirmasiTidak">Tidak</button><button class="btn btn-primary" id="konfirmasiYa">Ya</button></div>`,
+      { lock: true });
+    document.getElementById('konfirmasiYa').onclick = () => { m.close(); resolve(true); };
+    document.getElementById('konfirmasiTidak').onclick = () => { m.close(); resolve(false); };
+  });
+}
+function normalizeUser(data) {
+  if (!data) return null;
+  return {
+    user_id: String(data.id || data.user_id || ''),
+    user_nama: String(data.nama || data.user_nama || data.name || ''),
+    user_jabatan: String(data.jabatan || data.user_jabatan || data.role || 'karyawan'),
+    user_kode_cabang: String(data.kode_cabang || data.user_kode_cabang || data.cabang || '-'),
+    user_token: String(data.token || data.user_token || CONFIG.TOKEN),
+    status: String(data.status || 'aktif')
+  };
+}
+function normalizeRole(role) {
+  if (!role) return 'karyawan';
+  const r = String(role).toLowerCase().trim();
+  if (r.includes('owner')) return 'owner';
+  if (r.includes('admin')) return 'admin';
+  if (r.includes('kepala')) return 'kepala_toko';
+  return 'karyawan';
+}
+function parseResponse(res) {
+  if (!res) return { status: 'error', message: 'Tidak ada respons' };
+  if (typeof res === 'string') { try { res = JSON.parse(res); } catch(e) { return { status:'error', message:'Format tidak valid' }; } }
+  const isOk = res.status === 'ok' || res.status === 'success' || res.success === true;
+  return { status: isOk ? 'ok' : 'error', message: res.message || res.msg || '', data: res.data !== undefined ? res.data : null, duplikat: res.duplikat === true };
+}
+/* ===== SESSION — SATU-SATUNYA ===== */
+function saveSession(user) {
+  const s = {
+    user_id: String(user.user_id || user.id || ''),
+    user_nama: String(user.user_nama || user.nama || ''),
+    user_jabatan: String(user.user_jabatan || user.jabatan || 'karyawan'),
+    user_kode_cabang: String(user.user_kode_cabang || user.kode_cabang || '-'),
+    user_token: String(user.user_token || user.token || CONFIG.TOKEN),
+    is_demo: user.is_demo === true,
+    login_time: Date.now()
+  };
+  localStorage.setItem(CONFIG.SESSION_KEY, JSON.stringify(s));
+  return s;
+}
+function getSession() {
+  try {
+    const raw = localStorage.getItem(CONFIG.SESSION_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    if (!s || !s.user_id) return null;
+    const exp = s.is_demo ? CONFIG.SESSION_EXPIRY_DEMO : CONFIG.SESSION_EXPIRY_USER;
+    if (s.login_time && (Date.now() - s.login_time > exp)) { clearSession(); return null; }
+    return s;
+  } catch(e) { clearSession(); return null; }
+}
+function clearSession() { localStorage.removeItem(CONFIG.SESSION_KEY); }
+function cekSession() { return getSession() !== null; }
+
+/* ================= API ================= */
+async function apiPost(action, data) {
+  const body = { action, token: CONFIG.TOKEN, ...data };
+  try {
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), CONFIG.TIMEOUT);
+    const res = await fetch(CONFIG.BACKEND_URL, {
+      method: 'POST', headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(body), signal: ctrl.signal, redirect: 'follow'
+    });
+    clearTimeout(to);
+    const text = await res.text();
+    let json; try { json = JSON.parse(text); } catch(e) { return { status:'error', message:'Respons server tidak valid' }; }
+    return parseResponse(json);
+  } catch(err) {
+    if (err.name === 'AbortError') return { status:'error', message:'Koneksi timeout' };
+    return { status:'error', message:'Gagal terhubung ke server' };
+  }
+}
+
+/* ================= IKLAN ================= */
+let iklanCooldownUntil = 0;
+function isWebView() { return navigator.userAgent.includes('wv') || typeof window.AndroidAds !== 'undefined'; }
+function isOwnerOrDemo() {
+  const s = getSession(); if (!s) return false;
+  if (s.is_demo) return true;
+  return normalizeRole(s.user_jabatan) === 'owner';
+}
+function cooldownAktif() { return Date.now() < iklanCooldownUntil; }
+function setCooldown(ms = 120000) { iklanCooldownUntil = Date.now() + ms; }
+async function gateIklan(jenis = 'rewarded') {
+  if (isOwnerOrDemo()) return true;
+  if (cooldownAktif()) return true;
+  setCooldown();
+  return true;
+}
+
+/* ================= LOGOUT ================= */
+function logout() {
+  showKonfirmasi('Yakin ingin keluar?').then(ya => {
+    if (ya) {
+      clearSession();
+      showToast('Anda telah keluar', 'info');
+      setTimeout(() => { window.location.replace('index.html'); }, 400);
+    }
+  });
+}
+
+/* ================= DASHBOARD ================= */
+let currentSession = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const session = getSession();
+  if (!session) {
+    clearSession();
+    window.location.replace('index.html');
+    return;
+  }
+  currentSession = session;
+  try {
+    renderHeader(session);
+    renderMenu(session);
+    renderBottomNav(session);
+    const params = new URLSearchParams(window.location.search);
+    const page = params.get('page');
+    if (page && page !== 'menu') navigateTo(page);
+  } catch(err) {
+    console.error('Render error:', err);
+    const c = document.getElementById('appContent');
+    if (c) c.innerHTML = '<p style="padding:20px;color:#C8102E">Terjadi kesalahan. Silakan refresh halaman.</p>';
+  }
+});
+
+function renderHeader(session) {
+  const h = document.getElementById('appHeader');
+  if (!h) return;
+  const nama = session.user_nama || 'Pengguna';
+  const jabatan = labelJabatan(session.user_jabatan);
+  const isDemo = session.is_demo === true;
+  h.innerHTML = `
+    <div class="header-logo">MP</div>
+    <div class="header-info">
+      <div class="header-title">${CONFIG.APP_NAME}</div>
+      <div class="header-user">${escapeHtml(nama)} · ${escapeHtml(jabatan)}</div>
+    </div>
+    ${isDemo ? '<span class="header-badge-demo">MODE DEMO</span>' : ''}
+    <div class="header-actions">
+      <button class="header-btn" id="btnProfilHeader" title="Profil">👤</button>
+      <button class="header-btn" id="btnKeluarHeader" title="Keluar">🚪</button>
+    </div>`;
+  document.getElementById('btnProfilHeader').onclick = () => navigateTo('profil');
+  document.getElementById('btnKeluarHeader').onclick = logout;
+}
+
+function renderMenu(session) {
+  const c = document.getElementById('appContent');
+  if (!c) return;
+  const role = normalizeRole(session.user_jabatan);
+  const menu = getMenuByRole(role);
+  const nama = session.user_nama || 'Pengguna';
+  const cabang = session.user_kode_cabang || '-';
+  c.innerHTML = `
+    <h2 class="page-title">Selamat Datang, ${escapeHtml(nama)}</h2>
+    <p class="page-subtitle">${escapeHtml(labelJabatan(role))} · Cabang ${escapeHtml(cabang)}</p>
+    <div class="menu-grid" id="menuGrid"></div>`;
+  const g = document.getElementById('menuGrid');
+  menu.forEach(it => {
+    const card = document.createElement('div');
+    card.className = 'menu-card' + (it.highlight ? ' highlight' : '');
+    card.innerHTML = `<div class="menu-icon">${it.ikon}</div><div class="menu-label">${it.label}</div>`;
+    card.onclick = () => navigateTo(it.page);
+    g.appendChild(card);
+  });
+}
+
+function getMenuByRole(role) {
+  role = normalizeRole(role);
+  const m = {
+    owner: [
+      { ikon:'📊', label:'Dashboard Pendapatan', page:'dashboard-pendapatan', highlight:true },
+      { ikon:'👥', label:'Manajemen Manusia', page:'manusia' },
+      { ikon:'💰', label:'Cek Payroll', page:'payroll' },
+      { ikon:'💵', label:'Pendapatan', page:'pendapatan' },
+      { ikon:'📤', label:'Input Pengeluaran', page:'pengeluaran' },
+      { ikon:'🏦', label:'Kasbon (ACC)', page:'kasbon' },
+      { ikon:'📅', label:'Izin (ACC)', page:'izin' },
+      { ikon:'📝', label:'Laporan Cabang', page:'laporan' },
+      { ikon:'🗄️', label:'Database Manager', page:'database' },
+      { ikon:'⚙️', label:'Pengaturan', page:'pengaturan' },
+      { ikon:'👤', label:'Profil', page:'profil' },
+      { ikon:'🚪', label:'Keluar', page:'keluar' }
+    ],
+    admin: [
+      { ikon:'📊', label:'Dashboard Pendapatan', page:'dashboard-pendapatan', highlight:true },
+      { ikon:'💰', label:'Cek Payroll', page:'payroll' },
+      { ikon:'📤', label:'Input Pengeluaran', page:'pengeluaran' },
+      { ikon:'🏦', label:'Kasbon (ACC)', page:'kasbon' },
+      { ikon:'📅', label:'Izin (ACC)', page:'izin' },
+      { ikon:'📝', label:'Laporan Cabang', page:'laporan' },
+      { ikon:'👤', label:'Profil', page:'profil' },
+      { ikon:'🚪', label:'Keluar', page:'keluar' }
+    ],
+    kepala_toko: [
+      { ikon:'📊', label:'Dashboard Pendapatan', page:'dashboard-pendapatan', highlight:true },
+      { ikon:'💵', label:'Input Pendapatan', page:'pendapatan' },
+      { ikon:'💰', label:'Cek Payroll', page:'payroll' },
+      { ikon:'🏦', label:'Kasbon Saya', page:'kasbon' },
+      { ikon:'📅', label:'Izin Saya', page:'izin' },
+      { ikon:'📝', label:'Laporan Cabang', page:'laporan' },
+      { ikon:'👤', label:'Profil', page:'profil' },
+      { ikon:'🚪', label:'Keluar', page:'keluar' }
+    ],
+    karyawan: [
+      { ikon:'🏦', label:'Kasbon Saya', page:'kasbon', highlight:true },
+      { ikon:'📅', label:'Izin Saya', page:'izin' },
+      { ikon:'💰', label:'Payroll Saya', page:'payroll' },
+      { ikon:'👤', label:'Profil', page:'profil' },
+      { ikon:'🚪', label:'Keluar', page:'keluar' }
+    ]
+  };
+  return m[role] || m.karyawan;
+}
+
+function labelJabatan(jabatan) {
+  const r = normalizeRole(jabatan);
+  return { owner:'Owner', admin:'Admin', kepala_toko:'Kepala Toko', karyawan:'Karyawan' }[r] || 'Karyawan';
+}
+
+function renderBottomNav() {
+  const n = document.getElementById('bottomNav');
+  if (!n) return;
+  n.innerHTML = `
+    <button class="bottom-nav-item active" data-page="menu"><span class="bottom-nav-icon">🏠</span><span class="bottom-nav-label">Menu</span></button>
+    <button class="bottom-nav-item" data-page="profil"><span class="bottom-nav-icon">👤</span><span class="bottom-nav-label">Profil</span></button>
+    <button class="bottom-nav-item" data-page="keluar"><span class="bottom-nav-icon">🚪</span><span class="bottom-nav-label">Keluar</span></button>`;
+  n.querySelectorAll('.bottom-nav-item').forEach(b => {
+    b.onclick = () => {
+      const p = b.dataset.page;
+      if (p === 'keluar') logout(); else navigateTo(p);
+    };
+  });
+}
+
+function navigateTo(page) {
+  if (page === 'keluar') { logout(); return; }
+  const c = document.getElementById('appContent');
+  if (!c) return;
+  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+  const nb = document.querySelector(`.bottom-nav-item[data-page="${page}"]`);
+  if (nb) nb.classList.add('active');
+  switch (page) {
+    case 'menu': renderMenu(currentSession); break;
+    case 'dashboard-pendapatan': renderDashboardPendapatan(c); break;
+    case 'pendapatan': renderPendapatan(c); break;
+    case 'payroll': renderPayroll(c); break;
+    case 'kasbon': renderKasbon(c); break;
+    case 'izin': renderIzin(c); break;
+    case 'laporan': renderLaporan(c); break;
+    case 'profil': renderProfil(c); break;
+    case 'database': renderDatabase(c); break;
+    case 'pengaturan': renderPengaturan(c); break;
+    case 'pengeluaran': renderPengeluaran(c); break;
+    case 'manusia': renderManusia(c); break;
+    default: renderMenu(currentSession);
+  }
+}
+
+/* ================= DASHBOARD PENDAPATAN ================= */
+async function renderDashboardPendapatan(c) {
+  const role = normalizeRole(currentSession.user_jabatan);
+  if (role === 'karyawan') {
+    c.innerHTML = '<div class="empty-state"><div class="empty-icon">🚫</div><p>Akses ditolak</p></div>';
+    return;
+  }
+  c.innerHTML = `
+    <h2 class="page-title">Dashboard Pendapatan</h2>
+    <p class="page-subtitle">Ringkasan pendapatan</p>
+    <div class="form-card">
+      <h3>Filter</h3>
+      <div class="form-group"><label>Periode</label><input type="month" id="dashPendapatanPeriode" /></div>
+      <button class="btn btn-primary btn-block" id="btnLoadDashPendapatan">Tampilkan</button>
+    </div>
+    <div id="dashPendapatanResult">
+      <div class="empty-state"><div class="empty-icon">📊</div><p>Data akan tampil setelah filter dipilih</p></div>
+    </div>`;
+  document.getElementById('dashPendapatanPeriode').value = formatTanggalISO(new Date()).slice(0,7);
+  document.getElementById('btnLoadDashPendapatan').onclick = () => {
+    showToast('Fitur dashboard pendapatan akan memuat dari backend', 'info');
+  };
+}
+
+/* ================= PENDAPATAN ================= */
+async function renderPendapatan(c) {
+  if (!currentSession) return;
+  const role = normalizeRole(currentSession.user_jabatan);
+  if (role !== 'owner' && role !== 'kepala_toko' && role !== 'admin') {
+    c.innerHTML = '<div class="empty-state"><div class="empty-icon">🚫</div><p>Akses ditolak</p></div>';
+    return;
+  }
+  if (role !== 'owner') { const ok = await gateIklan('rewarded'); if (!ok) return; }
+
+  c.innerHTML = `
+    <h2 class="page-title">Input Pendapatan</h2>
+    <p class="page-subtitle">Catat pendapatan harian</p>
+    <div class="form-card">
+      <h3>Form Pendapatan</h3>
+      <div class="form-group"><label>Tanggal</label><input type="date" id="pendapatanTanggal" /></div>
+      <div class="form-group"><label>Cabang</label><input type="text" id="pendapatanCabang" value="${escapeHtml(currentSession.user_kode_cabang || '-')}" /></div>
+      <div class="toggle-group">
+        <button type="button" class="toggle-btn active" id="toggleMasuk">Masuk Kerja</button>
+        <button type="button" class="toggle-btn" id="toggleTidakMasuk">Tidak Masuk</button>
+      </div>
+      <div id="formMasukFields">
+        <div class="form-group"><label>Tips</label><input type="number" id="pendapatanTips" value="0" min="0" /></div>
+        <div class="form-group"><label>Bonus</label><input type="number" id="pendapatanBonus" value="0" min="0" /></div>
+        <div class="form-group"><label>Kasbon</label><input type="number" id="pendapatanKasbon" value="0" min="0" /></div>
+      </div>
+      <div id="formTidakMasukFields" style="display:none">
+        <div class="form-group"><label>Alasan</label><textarea id="pendapatanAlasan" placeholder="Tulis alasan tidak masuk"></textarea></div>
+      </div>
+      <div class="preview-box">
+        <div class="preview-row"><span>Unit</span><span id="previewUnit">Rp 3.000</span></div>
+        <div class="preview-row"><span>Wifi</span><span>- Rp 1.000</span></div>
+        <div class="preview-row total"><span>Total</span><span id="previewTotal">Rp 2.000</span></div>
+      </div>
+      <button type="button" class="btn btn-primary btn-block" id="btnSubmitPendapatan">Simpan</button>
+    </div>
+    <div id="pendapatanHariIni"></div>`;
+
+  document.getElementById('pendapatanTanggal').value = formatTanggalISO(new Date());
+
+  let modeMasuk = true;
+  const tM = document.getElementById('toggleMasuk');
+  const tTM = document.getElementById('toggleTidakMasuk');
+  tM.onclick = () => {
+    modeMasuk = true; tM.classList.add('active'); tTM.classList.remove('active');
+    document.getElementById('formMasukFields').style.display = '';
+    document.getElementById('formTidakMasukFields').style.display = 'none';
+    updatePreviewPendapatan(modeMasuk);
+  };
+  tTM.onclick = () => {
+    modeMasuk = false; tTM.classList.add('active'); tM.classList.remove('active');
+    document.getElementById('formMasukFields').style.display = 'none';
+    document.getElementById('formTidakMasukFields').style.display = '';
+    updatePreviewPendapatan(modeMasuk);
+  };
+  ['pendapatanTips','pendapatanBonus','pendapatanKasbon'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', () => updatePreviewPendapatan(modeMasuk));
+  });
+  window.formSubmisiId = generateUUID();
+  document.getElementById('btnSubmitPendapatan').onclick = () => submitPendapatan(modeMasuk);
+}
+
+function updatePreviewPendapatan(masuk) {
+  const tips = Number(document.getElementById('pendapatanTips')?.value || 0);
+  const bonus = Number(document.getElementById('pendapatanBonus')?.value || 0);
+  const kasbon = Number(document.getElementById('pendapatanKasbon')?.value || 0);
+  const unit = masuk ? (3000 + tips + bonus - kasbon) : 0;
+  const total = unit - 1000;
+  const e1 = document.getElementById('previewUnit'); if (e1) e1.textContent = formatRupiah(unit);
+  const e2 = document.getElementById('previewTotal'); if (e2) e2.textContent = formatRupiah(total);
+}
+
+async function submitPendapatan(masuk) {
+  const btn = document.getElementById('btnSubmitPendapatan');
+  if (!btn) return;
+  btn.disabled = true; btn.textContent = 'Menyimpan...';
+  try {
+    const data = {
+      tanggal: document.getElementById('pendapatanTanggal').value,
+      cabang: document.getElementById('pendapatanCabang').value,
+      status_masuk: masuk,
+      tips: masuk ? Number(document.getElementById('pendapatanTips').value || 0) : 0,
+      bonus: masuk ? Number(document.getElementById('pendapatanBonus').value || 0) : 0,
+      kasbon: masuk ? Number(document.getElementById('pendapatanKasbon').value || 0) : 0,
+      alasan: masuk ? '' : document.getElementById('pendapatanAlasan').value
+    };
+    const res = await apiPost('inputPendapatan', {
+      user_id: currentSession.user_id,
+      submission_id: window.formSubmisiId, data
+    });
+    if (res.status === 'ok') {
+      showToast(res.duplikat ? 'Data sudah tersimpan sebelumnya ✓' : 'Berhasil disimpan', 'success');
+      window.formSubmisiId = null;
+    } else {
+      showToast(res.message || 'Gagal menyimpan', 'error');
+    }
+  } catch(e) { showToast('Gagal terhubung ke server', 'error'); }
+  finally { btn.disabled = false; btn.textContent = 'Simpan'; }
+}
+
+/* ================= PAYROLL ================= */
+async function renderPayroll(c) {
+  if (!currentSession) return;
+  const role = normalizeRole(currentSession.user_jabatan);
+  if (role !== 'owner' && role !== 'admin') { const ok = await gateIklan('rewarded'); if (!ok) return; }
+  c.innerHTML = `
+    <h2 class="page-title">Payroll</h2>
+    <p class="page-subtitle">Lihat data gaji</p>
+    <div class="form-card">
+      <h3>Filter</h3>
+      <div class="form-group"><label>Periode</label><select id="payrollPeriode"><option value="">-- Pilih Periode --</option></select></div>
+      <button class="btn btn-primary btn-block" id="btnLoadPayroll">Tampilkan</button>
+    </div>
+    <div id="payrollResult"><div class="empty-state"><div class="empty-icon">💰</div><p>Data payroll akan tampil di sini</p></div></div>`;
+  document.getElementById('btnLoadPayroll').onclick = () => showToast('Fitur payroll akan memuat dari backend', 'info');
+}
+
+/* ================= KASBON ================= */
+async function renderKasbon(c) {
+  if (!currentSession) return;
+  const role = normalizeRole(currentSession.user_jabatan);
+  if (role !== 'owner') { const ok = await gateIklan('agresif'); if (!ok) return; }
+  const bisaAjukan = role === 'karyawan' || role === 'kepala_toko';
+  const bisaAcc = role === 'admin' || role === 'owner';
+  c.innerHTML = `
+    <h2 class="page-title">Kasbon</h2>
+    <p class="page-subtitle">${bisaAjukan ? 'Ajukan kasbon' : 'ACC / tolak kasbon'}</p>
+    ${bisaAjukan ? `
+      <div class="form-card">
+        <h3>Ajukan Kasbon</h3>
+        <div class="form-group"><label>Jumlah</label><input type="number" id="kasbonJumlah" min="0" placeholder="Contoh: 20000" /></div>
+        <div class="form-group"><label>Keterangan</label><textarea id="kasbonKeterangan" placeholder="Alasan kasbon"></textarea></div>
+        <button class="btn btn-primary btn-block" id="btnAjukanKasbon">Ajukan</button>
+      </div>` : ''}
+    ${bisaAcc ? `
+      <div class="form-card">
+        <h3>Antrian ACC</h3>
+        <div class="empty-state"><div class="empty-icon">📭</div><p>Belum ada pengajuan kasbon</p></div>
+      </div>` : ''}
+    <div class="form-card">
+      <h3>Riwayat Kasbon</h3>
+      <div class="empty-state"><div class="empty-icon">📋</div><p>Belum ada riwayat kasbon</p></div>
+    </div>`;
+  const b = document.getElementById('btnAjukanKasbon');
+  if (b) {
+    b.onclick = async () => {
+      const jumlah = Number(document.getElementById('kasbonJumlah').value);
+      if (!jumlah || jumlah <= 0) { showToast('Jumlah kasbon tidak valid', 'error'); return; }
+      b.disabled = true; b.textContent = 'Mengirim...';
+      try {
+        const res = await apiPost('ajukanKasbon', {
+          user_id: currentSession.user_id,
+          submission_id: generateUUID(),
+          jumlah, keterangan: document.getElementById('kasbonKeterangan').value
+        });
+        if (res.status === 'ok') {
+          showToast(jumlah <= 20000 ? 'Kasbon disetujui otomatis ✓' : 'Kasbon menunggu ACC', jumlah <= 20000 ? 'success' : 'info');
+        } else {
+          showToast(res.message || 'Gagal mengajukan', 'error');
+        }
+      } catch(e) { showToast('Gagal terhubung ke server', 'error'); }
+      finally { b.disabled = false; b.textContent = 'Ajukan'; }
+    };
+  }
+}
+
+/* ================= IZIN ================= */
+async function renderIzin(c) {
+  if (!currentSession) return;
+  const role = normalizeRole(currentSession.user_jabatan);
+  if (role !== 'owner') { const ok = await gateIklan('agresif'); if (!ok) return; }
+  const bisaAjukan = role === 'karyawan' || role === 'kepala_toko';
+  c.innerHTML = `
+    <h2 class="page-title">Izin</h2>
+    <p class="page-subtitle">${bisaAjukan ? 'Ajukan izin' : 'Kelola izin'}</p>
+    ${bisaAjukan ? `
+      <div class="form-card">
+        <h3>Ajukan Izin</h3>
+        <div class="form-group"><label>Jenis</label>
+          <select id="izinJenis">
+            <option value="istirahat">Istirahat (max 1 hari)</option>
+            <option value="sakit">Sakit (max 3 hari)</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Tanggal Mulai</label><input type="date" id="izinTanggalMulai" /></div>
+        <div class="form-group"><label>Jumlah Hari</label><input type="number" id="izinJumlahHari" value="1" min="1" /></div>
+        <div class="form-group"><label>Keterangan</label><textarea id="izinKeterangan" placeholder="Alasan izin"></textarea></div>
+        <button class="btn btn-primary btn-block" id="btnAjukanIzin">Ajukan Izin</button>
+      </div>` : ''}
+    <div class="form-card">
+      <h3>Daftar Izin</h3>
+      <div class="empty-state"><div class="empty-icon">📅</div><p>Belum ada data izin</p></div>
+    </div>`;
+  const b = document.getElementById('btnAjukanIzin');
+  if (b) {
+    b.onclick = async () => {
+      const jenis = document.getElementById('izinJenis').value;
+      const tanggal = document.getElementById('izinTanggalMulai').value;
+      const hari = Number(document.getElementById('izinJumlahHari').value);
+      const ket = document.getElementById('izinKeterangan').value;
+      if (!tanggal) { showToast('Tanggal wajib diisi', 'error'); return; }
+      if (jenis === 'istirahat' && hari > 1) { showToast('Istirahat maksimal 1 hari', 'error'); return; }
+      if (jenis === 'sakit' && hari > 3) { showToast('Sakit maksimal 3 hari', 'error'); return; }
+      b.disabled = true; b.textContent = 'Mengirim...';
+      try {
+        const res = await apiPost('ajukanIzin', {
+          user_id: currentSession.user_id,
+          submission_id: generateUUID(),
+          jenis, tanggal, jumlah_hari: hari, keterangan: ket
+        });
+        showToast(res.status === 'ok' ? 'Izin berhasil diajukan' : (res.message || 'Gagal mengajukan izin'), res.status === 'ok' ? 'success' : 'error');
+      } catch(e) { showToast('Gagal terhubung ke server', 'error'); }
+      finally { b.disabled = false; b.textContent = 'Ajukan Izin'; }
+    };
+  }
+}
+
+/* ================= LAPORAN ================= */
+async function renderLaporan(c) {
+  if (!currentSession) return;
+  const role = normalizeRole(currentSession.user_jabatan);
+  if (role === 'karyawan') { c.innerHTML = '<div class="empty-state"><div class="empty-icon">🚫</div><p>Akses ditolak</p></div>'; return; }
+  c.innerHTML = `
+    <h2 class="page-title">Laporan Cabang</h2>
+    <p class="page-subtitle">Kelola laporan</p>
+    <div class="empty-state"><div class="empty-icon">📝</div><p>Fitur laporan akan memuat data dari backend</p></div>`;
+}
+
+/* ================= PROFIL ================= */
+async function renderProfil(c) {
+  if (!currentSession) return;
+  const s = currentSession;
+  const isDemo = s.is_demo === true;
+  c.innerHTML = `
+    <h2 class="page-title">Profil Saya</h2>
+    <p class="page-subtitle">Data diri & status</p>
+    <div class="form-card">
+      <h3>Informasi</h3>
+      <div class="preview-row"><span>ID</span><span>${escapeHtml(s.user_id || '-')}</span></div>
+      <div class="preview-row"><span>Nama</span><span>${escapeHtml(s.user_nama || '-')}</span></div>
+      <div class="preview-row"><span>Jabatan</span><span>${escapeHtml(labelJabatan(s.user_jabatan))}</span></div>
+      <div class="preview-row"><span>Cabang</span><span>${escapeHtml(s.user_kode_cabang || '-')}</span></div>
+      <div class="preview-row"><span>Mode</span><span>${isDemo ? 'Demo' : 'Normal'}</span></div>
+    </div>
+    <button class="btn btn-outline btn-block" id="btnLogoutProfil">Keluar</button>`;
+  document.getElementById('btnLogoutProfil').onclick = logout;
+}
+
+/* ================= PENGELUARAN ================= */
+async function renderPengeluaran(c) {
+  if (!currentSession) return;
+  const role = normalizeRole(currentSession.user_jabatan);
+  if (role !== 'owner' && role !== 'admin') { c.innerHTML = '<div class="empty-state"><div class="empty-icon">🚫</div><p>Akses ditolak</p></div>'; return; }
+  c.innerHTML = `
+    <h2 class="page-title">Input Pengeluaran</h2>
+    <p class="page-subtitle">Catat pengeluaran cabang</p>
+    <div class="form-card">
+      <h3>Form Pengeluaran</h3>
+      <div class="form-group"><label>Tanggal</label><input type="date" id="pengeluaranTanggal" /></div>
+      <div class="form-group"><label>Jumlah</label><input type="number" id="pengeluaranJumlah" min="0" /></div>
+      <div class="form-group"><label>Keterangan</label><textarea id="pengeluaranKeterangan"></textarea></div>
+      <button class="btn btn-primary btn-block" id="btnSimpanPengeluaran">Simpan</button>
+    </div>`;
+  document.getElementById('pengeluaranTanggal').value = formatTanggalISO(new Date());
+  document.getElementById('btnSimpanPengeluaran').onclick = async () => {
+    const b = document.getElementById('btnSimpanPengeluaran');
+    b.disabled = true; b.textContent = 'Menyimpan...';
+    try {
+      const res = await apiPost('inputPengeluaran', {
+        user_id: currentSession.user_id,
+        submission_id: generateUUID(),
+        data: {
+          tanggal: document.getElementById('pengeluaranTanggal').value,
+          jumlah: Number(document.getElementById('pengeluaranJumlah').value),
+          keterangan: document.getElementById('pengeluaranKeterangan').value
+        }
+      });
+      showToast(res.status === 'ok' ? 'Pengeluaran tersimpan' : (res.message || 'Gagal'), res.status === 'ok' ? 'success' : 'error');
+    } catch(e) { showToast('Gagal terhubung', 'error'); }
+    finally { b.disabled = false; b.textContent = 'Simpan'; }
+  };
+}
+
+/* ================= MANUSIA ================= */
+async function renderManusia(c) {
+  if (!currentSession) return;
+  if (normalizeRole(currentSession.user_jabatan) !== 'owner') { c.innerHTML = '<div class="empty-state"><div class="empty-icon">🚫</div><p>Akses ditolak</p></div>'; return; }
+  c.innerHTML = `
+    <h2 class="page-title">Manajemen Manusia</h2>
+    <p class="page-subtitle">Kelola karyawan</p>
+    <div class="form-card">
+      <h3>Tambah Karyawan</h3>
+      <div class="form-group"><label>Nama</label><input type="text" id="manusiaNama" /></div>
+      <div class="form-group"><label>Jabatan</label>
+        <select id="manusiaJabatan">
+          <option value="karyawan">Karyawan</option>
+          <option value="kepala_toko">Kepala Toko</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Cabang</label><input type="text" id="manusiaCabang" /></div>
+      <button class="btn btn-primary btn-block" id="btnTambahManusia">Tambah</button>
+    </div>
+    <div class="form-card">
+      <h3>Daftar Karyawan</h3>
+      <div class="empty-state"><div class="empty-icon">👥</div><p>Belum ada data karyawan</p></div>
+    </div>`;
+}
+
+/* ================= PENGATURAN ================= */
+async function renderPengaturan(c) {
+  if (!currentSession) return;
+  if (normalizeRole(currentSession.user_jabatan) !== 'owner') { c.innerHTML = '<div class="empty-state"><div class="empty-icon">🚫</div><p>Akses ditolak</p></div>'; return; }
+  c.innerHTML = `
+    <h2 class="page-title">Pengaturan</h2>
+    <p class="page-subtitle">Konfigurasi sistem</p>
+    <div class="form-card">
+      <h3>Mode Iklan</h3>
+      <div class="toggle-group">
+        <button class="toggle-btn active">Normal</button>
+        <button class="toggle-btn">Agresif</button>
+      </div>
+    </div>
+    <div class="form-card">
+      <h3>Backup Data</h3>
+      <button class="btn btn-outline btn-block" id="btnBackupData">Backup Sekarang</button>
+    </div>`;
+}
+
+/* ================= DATABASE ================= */
+async function renderDatabase(c) {
+  if (!currentSession) return;
+  if (normalizeRole(currentSession.user_jabatan) !== 'owner') { c.innerHTML = '<div class="empty-state"><div class="empty-icon">🚫</div><p>Akses ditolak</p></div>'; return; }
+  const sheets = ['users','pendapatan','pengeluaran','payroll','kasbon','izin','laporan','cabang','absensi','bonus','potongan','gaji_pokok','sp','kontrak','audit_log','pengaturan'];
+  c.innerHTML = `
+    <h2 class="page-title">Database Manager</h2>
+    <p class="page-subtitle">Kelola data sheet</p>
+    <div class="menu-grid">
+      ${sheets.map(s => `<div class="menu-card" data-sheet="${s}"><div class="menu-icon">🗄️</div><div class="menu-label">${s}</div></div>`).join('')}
+    </div>`;
+  c.querySelectorAll('[data-sheet]').forEach(card => {
+    card.onclick = () => showToast('Buka sheet: ' + card.dataset.sheet, 'info');
+  });
+}
+</script>
+</body>
+</html>

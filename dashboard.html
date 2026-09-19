@@ -13,12 +13,8 @@
 html,body{height:100%}
 body{
   font-family:'Poppins',sans-serif;
-  background:#F9FAFB;
-  color:#1F2937;
-  min-height:100vh;
-  padding-top:64px;
-  padding-bottom:76px;
-  overflow-x:hidden;
+  background:#F9FAFB;color:#1F2937;
+  min-height:100vh;padding-top:64px;padding-bottom:76px;overflow-x:hidden;
 }
 #appHeader{
   position:fixed;top:0;left:0;right:0;height:64px;
@@ -207,6 +203,23 @@ tr:hover td{background:#FAFAFA}
 .pass-show{color:#059669;font-weight:700;letter-spacing:0.5px;background:#F0FDF4;padding:2px 8px;border-radius:6px;font-family:'Courier New',monospace;font-size:12px}
 .eye-btn{background:none;border:none;font-size:14px;cursor:pointer;padding:2px 6px;border-radius:4px}
 .eye-btn:active{background:#F3F4F6}
+/* Tab bar untuk menu gabungan */
+.tab-bar{
+  display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;
+  padding-bottom:4px;-webkit-overflow-scrolling:touch;
+}
+.tab-btn{
+  padding:10px 14px;border-radius:20px;border:1.5px solid #E5E7EB;
+  background:#fff;font-family:'Poppins',sans-serif;font-size:12px;
+  font-weight:600;color:#6B7280;cursor:pointer;white-space:nowrap;
+  min-height:40px;transition:all 0.2s;
+}
+.tab-btn.active{background:#C8102E;color:#fff;border-color:#C8102E}
+.tab-btn .tb-badge{
+  display:inline-block;margin-left:4px;padding:1px 6px;border-radius:8px;
+  background:#DC2626;color:#fff;font-size:9px;font-weight:800;
+}
+.tab-btn.active .tb-badge{background:#FBBF24;color:#78350F}
 @media(min-width:641px){
   body{padding-top:72px;padding-bottom:20px}
   #appHeader{height:72px;padding:0 24px}
@@ -337,24 +350,21 @@ function isKepalaToko() { var s = getSession(); return s && s.user_jabatan === '
 function isKaryawan() { var s = getSession(); return s && s.user_jabatan === 'Karyawan'; }
 function bisaIklan() { return !isOwner() && !isDemo(); }
 
-/* ============================================================
-   ROLE-BASED ACCESS — ATURAN FINAL
-============================================================ */
-// Pengajuan (hanya KT & Karyawan)
+// Pengajuan (KT & Karyawan)
 function canAjukanIzin() { return isKepalaToko() || isKaryawan(); }
 function canAjukanKerusakan() { return isKepalaToko() || isKaryawan(); }
 function canAjukanPayrollReq() { return isKepalaToko() || isKaryawan(); }
 function canAjukanKasbon() { return isKepalaToko() || isKaryawan(); }
 function hasPayrollPribadi() { return isKepalaToko() || isKaryawan(); }
 
-// ACC (Owner & Admin)
+// ACC
 function canAccIzinTahap1() { return isKepalaToko(); }
 function canAccIzinTahap2() { return isOwner() || isAdmin(); }
 function canAccKerusakan() { return isOwner() || isAdmin(); }
 function canAccPermintaanPayroll() { return isOwner() || isAdmin(); }
 function canAccKasbon() { return isOwner() || isAdmin(); }
 
-// Akses operasional
+// Operasional
 function canAturTarget() { return isOwner(); }
 function canAksesPengeluaran() { return isOwner() || isAdmin(); }
 function canAksesManusia() { return isOwner(); }
@@ -371,7 +381,7 @@ function logout() {
 }
 
 /* ============================================================
-   API WRAPPER
+   API
 ============================================================ */
 function apiPost(action, data) {
   return fetch(BACKEND_URL, {
@@ -387,7 +397,6 @@ function apiPost(action, data) {
   })
   .catch(function(e){ return { ok:false, pesan:'Gagal terhubung ke server' }; });
 }
-
 function ambilData(sheet) {
   if (isDemo()) return Promise.resolve({ ok:true, data: DUMMY_DATA[sheet] || [] });
   return apiPost('baca', { sheet: sheet });
@@ -409,7 +418,7 @@ function hapusData(sheet, row) {
    IKLAN
 ============================================================ */
 function tampilkanIklan(jenis) {
-  if (!bisaIklan()) return true;
+  if (!bisaIklan()) return true; // Owner & Demo anti iklan
   if (jenis === 'interstitial') {
     var last = localStorage.getItem('last_ad');
     if (last && Date.now() - parseInt(last) < 120000) return true;
@@ -421,6 +430,7 @@ function tampilkanIklan(jenis) {
       if (jenis === 'rewarded') window.AndroidAds.showRewarded();
       else window.AndroidAds.showInterstitial();
     }
+    // Monetag via script in <head> handles web ads automatically
     if (jenis === 'interstitial') localStorage.setItem('last_ad', Date.now().toString());
     return true;
   } catch(e) { console.error('Iklan error:', e); return true; }
@@ -462,45 +472,45 @@ function fmtRupiah(n) { n = parseInt(n) || 0; return 'Rp ' + n.toLocaleString('i
 function nowISO() { return new Date().toISOString(); }
 
 /* ============================================================
-   MENU
+   MENU — SUDAH DIRAMPINGKAN
 ============================================================ */
 function getMenuByRole(jabatan) {
-  var allMenus = [
-    {id:'pendapatan_owner', nama:'Pendapatan Owner', desc:'Rekap semua cabang (1 unit = 4rb)', ico:'📈', highlight:true},
-    {id:'pendapatan', nama:'Input Pendapatan', desc:'Catat pendapatan harian', ico:'💰'},
-    {id:'riwayat_pendapatan', nama:'Unit Cabang', desc:'Total unit per hari', ico:'📋'},
-    {id:'kasbon', nama:'Kasbon', desc:'Ajukan / ACC kasbon', ico:'💸'},
-    {id:'izin', nama:'Izin', desc:'Ajukan / ACC izin', ico:'📅'},
-    {id:'kerusakan', nama:'Kerusakan/Kendala', desc:'Lapor & ACC kerusakan', ico:'🔧'},
-    {id:'permintaan_payroll', nama:'Permintaan Payroll', desc:'Ajukan & ACC lihat payroll', ico:'📨'},
-    {id:'payroll_owner', nama:'Manajemen Payroll', desc:'Lihat & edit semua payroll', ico:'💼', highlight:true},
-    {id:'payroll', nama:'Payroll Saya', desc:'Payroll pribadi', ico:'💵'},
-    {id:'pengeluaran', nama:'Pengeluaran', desc:'Catat pengeluaran cabang', ico:'📉'},
-    {id:'laporan', nama:'Laporan', desc:'Buat & lihat laporan', ico:'📊'},
-    {id:'target', nama:'Target Cabang', desc:'Atur target harian', ico:'🎯'},
-    {id:'cabang', nama:'Kelola Cabang', desc:'Tambah & atur cabang', ico:'🏪', highlight:true},
-    {id:'manusia', nama:'Manajemen Manusia', desc:'Kelola anggota + lihat password', ico:'👥'},
-    {id:'pengaturan', nama:'Pengaturan', desc:'Bonus & pengaturan global', ico:'⚙️'},
+  if (jabatan === 'Owner') {
+    return [
+      {id:'pendapatan_owner', nama:'Pendapatan Owner', desc:'Rekap semua cabang (1 unit = 4rb)', ico:'📈', highlight:true},
+      {id:'operasional', nama:'Operasional', desc:'Input pendapatan & pengeluaran', ico:'💰'},
+      {id:'payroll_owner', nama:'Payroll', desc:'Kelola payroll semua anggota', ico:'💼', highlight:true},
+      {id:'manusia', nama:'Manusia', desc:'Anggota + cabang + password', ico:'👥'},
+      {id:'persetujuan', nama:'Persetujuan', desc:'ACC izin, kasbon, rusak, payroll', ico:'✅'},
+      {id:'laporan', nama:'Laporan', desc:'Lihat laporan dari kepala toko', ico:'📊'},
+      {id:'pengaturan', nama:'Pengaturan', desc:'Target cabang & global', ico:'⚙️'},
+      {id:'profil', nama:'Profil', desc:'Data akun', ico:'👤'}
+    ];
+  }
+  if (jabatan === 'Admin') {
+    return [
+      {id:'operasional', nama:'Operasional', desc:'Input pendapatan & pengeluaran', ico:'💰'},
+      {id:'persetujuan', nama:'Persetujuan', desc:'ACC izin, kasbon, rusak, payroll', ico:'✅'},
+      {id:'laporan', nama:'Laporan', desc:'Lihat laporan', ico:'📊'},
+      {id:'profil', nama:'Profil', desc:'Data akun', ico:'👤'}
+    ];
+  }
+  if (jabatan === 'Kepala Toko') {
+    return [
+      {id:'pendapatan', nama:'Pendapatan', desc:'Input pendapatan cabang Anda', ico:'💰'},
+      {id:'unit_cabang', nama:'Unit Cabang', desc:'Total unit cabang per hari', ico:'📋'},
+      {id:'pengajuan', nama:'Pengajuan', desc:'Kasbon, izin, kendala, payroll', ico:'📨'},
+      {id:'acc_izin', nama:'ACC Izin', desc:'ACC izin tahap 1', ico:'✅'},
+      {id:'payroll_laporan', nama:'Payroll & Laporan', desc:'Payroll pribadi + buat laporan', ico:'💵'},
+      {id:'profil', nama:'Profil', desc:'Data akun', ico:'👤'}
+    ];
+  }
+  // Karyawan
+  return [
+    {id:'pengajuan', nama:'Pengajuan', desc:'Kasbon, izin, kendala, payroll', ico:'📨'},
+    {id:'payroll', nama:'Payroll Saya', desc:'Data penggajian pribadi', ico:'💵'},
     {id:'profil', nama:'Profil', desc:'Data akun', ico:'👤'}
   ];
-
-  if (jabatan === 'Owner') return allMenus;
-
-  if (jabatan === 'Admin') {
-    var adminIds = ['pendapatan','riwayat_pendapatan','kasbon','izin','kerusakan','permintaan_payroll',
-                    'pengeluaran','laporan','profil'];
-    return allMenus.filter(function(m){ return adminIds.indexOf(m.id) > -1; });
-  }
-
-  if (jabatan === 'Kepala Toko') {
-    var ktIds = ['pendapatan','riwayat_pendapatan','kasbon','izin','kerusakan',
-                 'permintaan_payroll','payroll','laporan','profil'];
-    return allMenus.filter(function(m){ return ktIds.indexOf(m.id) > -1; });
-  }
-
-  // Karyawan
-  var karIds = ['riwayat_pendapatan','kasbon','izin','kerusakan','permintaan_payroll','payroll','profil'];
-  return allMenus.filter(function(m){ return karIds.indexOf(m.id) > -1; });
 }
 
 function getBottomNavByRole(jabatan) {
@@ -509,30 +519,30 @@ function getBottomNavByRole(jabatan) {
       {id:'home', nama:'Beranda', ico:'🏠'},
       {id:'pendapatan_owner', nama:'Rekap', ico:'📈'},
       {id:'payroll_owner', nama:'Payroll', ico:'💼'},
-      {id:'manusia', nama:'Manusia', ico:'👥'}
+      {id:'persetujuan', nama:'ACC', ico:'✅'}
     ];
   }
   if (jabatan === 'Admin') {
     return [
       {id:'home', nama:'Beranda', ico:'🏠'},
-      {id:'kasbon', nama:'ACC Kasbon', ico:'💸'},
-      {id:'izin', nama:'ACC Izin', ico:'📅'},
-      {id:'kerusakan', nama:'ACC Rusak', ico:'🔧'}
+      {id:'operasional', nama:'Operasional', ico:'💰'},
+      {id:'persetujuan', nama:'ACC', ico:'✅'},
+      {id:'laporan', nama:'Laporan', ico:'📊'}
     ];
   }
   if (jabatan === 'Kepala Toko') {
     return [
       {id:'home', nama:'Beranda', ico:'🏠'},
       {id:'pendapatan', nama:'Input', ico:'💰'},
-      {id:'izin', nama:'ACC Izin', ico:'📅'},
-      {id:'payroll', nama:'Payroll', ico:'💵'}
+      {id:'pengajuan', nama:'Ajukan', ico:'📨'},
+      {id:'acc_izin', nama:'ACC', ico:'✅'}
     ];
   }
   return [
     {id:'home', nama:'Beranda', ico:'🏠'},
-    {id:'kasbon', nama:'Kasbon', ico:'💸'},
-    {id:'izin', nama:'Izin', ico:'📅'},
-    {id:'payroll', nama:'Payroll', ico:'💵'}
+    {id:'pengajuan', nama:'Ajukan', ico:'📨'},
+    {id:'payroll', nama:'Payroll', ico:'💵'},
+    {id:'profil', nama:'Profil', ico:'👤'}
   ];
 }
 
@@ -591,20 +601,18 @@ function navigasi(pageId) {
   switch(pageId) {
     case 'home': renderHome(session); break;
     case 'pendapatan_owner': renderPendapatanOwner(session); break;
+    case 'operasional': renderOperasional(session); break;
     case 'pendapatan': renderPendapatan(session); break;
-    case 'riwayat_pendapatan': renderRiwayatPendapatan(session); break;
-    case 'kasbon': renderKasbon(session); break;
-    case 'izin': renderIzin(session); break;
-    case 'kerusakan': renderKerusakan(session); break;
-    case 'permintaan_payroll': renderPermintaanPayroll(session); break;
+    case 'unit_cabang': renderUnitCabang(session); break;
+    case 'pengajuan': renderPengajuan(session); break;
+    case 'acc_izin': renderAccIzinKT(session); break;
+    case 'persetujuan': renderPersetujuan(session); break;
+    case 'payroll_laporan': renderPayrollLaporanKT(session); break;
     case 'payroll': renderPayroll(session); break;
     case 'payroll_owner': renderPayrollOwner(session); break;
-    case 'pengeluaran': renderPengeluaran(session); break;
-    case 'laporan': renderLaporan(session); break;
     case 'manusia': renderManusia(session); break;
     case 'pengaturan': renderPengaturan(session); break;
-    case 'target': renderTarget(session); break;
-    case 'cabang': renderKelolaCabang(session); break;
+    case 'laporan': renderLaporan(session); break;
     case 'profil': renderProfil(session); break;
     default: renderHome(session);
   }
@@ -626,6 +634,7 @@ function renderHome(session) {
   html += '<div class="page-title">Halo, ' + esc(session.user_nama) + ' 👋</div>';
   html += '<div class="page-sub">';
   if (session.is_demo) html += 'Mode demo — semua fitur bisa dilihat, data tidak bisa diubah.';
+  else if (isOwner()) html += 'Owner mode — semua fitur, tanpa iklan.';
   else html += 'Selamat bertugas. Pilih menu di bawah.';
   html += '</div>';
 
@@ -679,16 +688,13 @@ function renderPendapatanOwner(session) {
 
     var html = '';
     html += '<div class="note-box">';
-    html += '<b>ℹ️ Aturan Perhitungan Owner:</b><br>';
-    html += '• Owner hanya menerima <b>' + fmtRupiah(HARGA_PER_UNIT) + ' per unit</b>.<br>';
-    html += '• Tips, bonus, dan pendapatan lain <b>full milik karyawan</b>.<br>';
-    html += '• <b>Semua pengeluaran dipotong dari uang owner</b>.';
+    html += '<b>ℹ️ Aturan Owner:</b> Hanya <b>' + fmtRupiah(HARGA_PER_UNIT) + '/unit</b>. Tips & bonus full ke karyawan. Semua pengeluaran dipotong dari owner.';
     html += '</div>';
 
     html += '<div class="card" style="padding:12px">';
     html += '<div class="frow">';
-    html += '<div class="fgroup" style="margin-bottom:0"><label>Dari Tanggal</label><input type="date" id="poDari" value="' + firstDay + '"></div>';
-    html += '<div class="fgroup" style="margin-bottom:0"><label>Sampai Tanggal</label><input type="date" id="poSampai" value="' + lastDay + '"></div>';
+    html += '<div class="fgroup" style="margin-bottom:0"><label>Dari</label><input type="date" id="poDari" value="' + firstDay + '"></div>';
+    html += '<div class="fgroup" style="margin-bottom:0"><label>Sampai</label><input type="date" id="poSampai" value="' + lastDay + '"></div>';
     html += '</div>';
     html += '<div class="btn-row" style="margin-top:10px">';
     html += '<button class="btn btn-sm btn-gray" data-quick="hari">Hari Ini</button>';
@@ -697,7 +703,6 @@ function renderPendapatanOwner(session) {
     html += '<button class="btn btn-sm btn-gray" data-quick="all">Semua</button>';
     html += '</div></div>';
     html += '<div id="poHasil"></div>';
-
     document.getElementById('poBody').innerHTML = html;
 
     document.querySelectorAll('[data-quick]').forEach(function(b){
@@ -719,7 +724,6 @@ function renderPendapatanOwner(session) {
     document.getElementById('poSampai').addEventListener('change', function(){
       hitungRekapOwner(pendapatan, target, pengeluaran, document.getElementById('poDari').value, this.value);
     });
-
     hitungRekapOwner(pendapatan, target, pengeluaran, firstDay, lastDay);
   });
 }
@@ -740,7 +744,6 @@ function hitungRekapOwner(pendapatan, target, pengeluaran, dari, sampai) {
 
   var targetMap = {};
   target.forEach(function(t){ targetMap[t.kode_cabang] = t; });
-
   var pengeluaranFiltered = pengeluaran.filter(function(p){ return p.tanggal >= dari && p.tanggal <= sampai; });
   var pengeluaranPerCabang = {};
   var totalPengeluaran = 0;
@@ -781,31 +784,26 @@ function hitungRekapOwner(pendapatan, target, pengeluaran, dari, sampai) {
   html += '<div class="total-banner">';
   html += '<div class="tb-lbl">PENDAPATAN BERSIH OWNER</div>';
   html += '<div class="tb-val">' + fmtRupiah(totalBersihOwner) + '</div>';
-  html += '<div class="tb-sub">Periode ' + dari + ' s/d ' + sampai + ' • ' + totalUnit.toLocaleString('id-ID') + ' unit</div>';
+  html += '<div class="tb-sub">' + dari + ' s/d ' + sampai + ' • ' + totalUnit.toLocaleString('id-ID') + ' unit</div>';
   html += '</div>';
-
   html += '<div class="stat-grid">';
   html += '<div class="stat-card"><div class="sc-lbl">Unit Terjual</div><div class="sc-val">' + totalUnit.toLocaleString('id-ID') + '</div><div class="sc-sub">@ ' + fmtRupiah(HARGA_PER_UNIT) + '</div></div>';
   html += '<div class="stat-card gold"><div class="sc-lbl">Hak Owner</div><div class="sc-val">' + fmtRupiah(totalHakOwner) + '</div><div class="sc-sub">unit × 4.000</div></div>';
   html += '<div class="stat-card" style="border-left-color:#DC2626"><div class="sc-lbl">Pengeluaran</div><div class="sc-val" style="color:#DC2626">-' + fmtRupiah(totalPengeluaran) + '</div><div class="sc-sub">Dipotong owner</div></div>';
   html += '<div class="stat-card green"><div class="sc-lbl">Bersih Owner</div><div class="sc-val" style="color:#059669">' + fmtRupiah(totalBersihOwner) + '</div><div class="sc-sub">Hak Owner - Pengeluaran</div></div>';
   html += '</div>';
-
   html += '<div class="card"><h3>Perhitungan Owner</h3>';
   html += '<div class="info-row"><span class="lbl">Total Unit Semua Cabang</span><span class="val">' + totalUnit.toLocaleString('id-ID') + ' unit</span></div>';
   html += '<div class="info-row"><span class="lbl">Hak Owner (' + totalUnit + ' × ' + fmtRupiah(HARGA_PER_UNIT) + ')</span><span class="val" style="color:#059669">' + fmtRupiah(totalHakOwner) + '</span></div>';
   html += '<div class="info-row"><span class="lbl">Total Pengeluaran</span><span class="val" style="color:#DC2626">-' + fmtRupiah(totalPengeluaran) + '</span></div>';
   html += '<div class="info-row" style="border-top:2px solid #C8102E;margin-top:4px;padding-top:10px"><span class="lbl" style="font-weight:700;color:#1F2937">PENDAPATAN BERSIH OWNER</span><span class="val" style="color:#C8102E;font-size:16px">' + fmtRupiah(totalBersihOwner) + '</span></div>';
   html += '</div>';
-
   html += '<div class="card" style="background:#F0FDF4;border-left:4px solid #059669">';
   html += '<h3 style="color:#065F46">Hak Karyawan (Tidak Masuk Owner)</h3>';
-  html += '<p style="font-size:11px;color:#047857;margin-bottom:8px">Tips, bonus, kasbon, wifi — full milik karyawan.</p>';
   html += '<div class="info-row"><span class="lbl">Total Hak Karyawan</span><span class="val" style="color:#059669">' + fmtRupiah(totalHakKaryawan) + '</span></div>';
   html += '</div>';
-
   html += '<div class="card"><h3>Rekap Per Cabang (' + cabangList.length + ')</h3>';
-  if (cabangList.length === 0) html += '<div class="empty"><div class="ei">📭</div>Belum ada data di periode ini</div>';
+  if (cabangList.length === 0) html += '<div class="empty"><div class="ei">📭</div>Belum ada data</div>';
   else {
     cabangList.forEach(function(c){
       html += '<div class="cabang-row">';
@@ -823,46 +821,55 @@ function hitungRekapOwner(pendapatan, target, pengeluaran, dari, sampai) {
 }
 
 /* ============================================================
-   HALAMAN: INPUT PENDAPATAN
+   HALAMAN: OPERASIONAL (Owner/Admin) — GABUNGAN
+   Tab: Input Pendapatan | Pengeluaran | Unit Cabang
 ============================================================ */
-function renderPendapatan(session) {
-  if (!canInputPendapatan()) {
-    showToast('Hanya Owner/Admin/Kepala Toko yang bisa input','error');
-    navigasi('home'); return;
-  }
+var operasionalTab = 'input';
 
+function renderOperasional(session) {
+  if (!isOwner() && !isAdmin()) { showToast('Akses ditolak','error'); navigasi('home'); return; }
   var el = document.getElementById('appContent');
-  el.innerHTML = '<div class="empty"><div class="ei">⏳</div>Memuat data...</div>';
+  var html = '';
+  html += '<div class="page-title">💰 Operasional</div>';
+  html += '<div class="page-sub">Kelola pendapatan & pengeluaran</div>';
+  html += '<div class="tab-bar">';
+  html += '<button class="tab-btn ' + (operasionalTab === 'input' ? 'active' : '') + '" data-optab="input">📝 Input Pendapatan</button>';
+  html += '<button class="tab-btn ' + (operasionalTab === 'keluar' ? 'active' : '') + '" data-optab="keluar">📉 Pengeluaran</button>';
+  html += '<button class="tab-btn ' + (operasionalTab === 'unit' ? 'active' : '') + '" data-optab="unit">📋 Unit Cabang</button>';
+  html += '</div>';
+  html += '<div id="opBody"></div>';
+  el.innerHTML = html;
 
+  document.querySelectorAll('[data-optab]').forEach(function(b){
+    b.addEventListener('click', function(){
+      operasionalTab = this.getAttribute('data-optab');
+      renderOperasional(session);
+    });
+  });
+
+  if (operasionalTab === 'input') renderOperasionalInput(session);
+  else if (operasionalTab === 'keluar') renderOperasionalKeluar(session);
+  else renderOperasionalUnit(session);
+}
+
+function renderOperasionalInput(session) {
+  var body = document.getElementById('opBody');
+  body.innerHTML = '<div class="empty"><div class="ei">⏳</div>Memuat...</div>';
   Promise.all([ambilData('Target_Cabang'), ambilData('Users')]).then(function(results){
     var cabang = results[0].ok ? results[0].data : [];
     var users = results[1].ok ? results[1].data : [];
-
-    if (isKepalaToko()) {
-      cabang = cabang.filter(function(c){ return String(c.kode_cabang) === String(session.kode_cabang); });
-    }
-
     var karyawan = users.filter(function(u){
-      if (String(u.status).toLowerCase() !== 'aktif') return false;
-      if (String(u.dihapus).toLowerCase() === 'true') return false;
-      if (u.jabatan !== 'Karyawan' && u.jabatan !== 'Kepala Toko') return false;
-      if (isKepalaToko() && String(u.kode_cabang) !== String(session.kode_cabang)) return false;
-      return true;
+      return String(u.status).toLowerCase() === 'aktif' &&
+             (String(u.dihapus).toLowerCase() !== 'true') &&
+             (u.jabatan === 'Karyawan' || u.jabatan === 'Kepala Toko');
     });
 
     var html = '';
-    html += '<div class="page-title">💰 Input Pendapatan</div>';
-    html += '<div class="page-sub">';
-    if (isKepalaToko()) html += 'Cabang: ' + esc(session.kode_cabang) + ' (hanya cabang Anda)';
-    else html += 'Pilih cabang & karyawan';
-    html += '</div>';
-
     html += '<div class="card"><h3>Form Pendapatan</h3>';
     html += '<div class="fgroup"><label>Tanggal</label><input type="date" id="pdTanggal" value="' + todayStr() + '"></div>';
-    html += '<div class="fgroup"><label>Cabang</label><select id="pdCabang"' + (isKepalaToko() ? ' disabled' : '') + '>';
+    html += '<div class="fgroup"><label>Cabang</label><select id="pdCabang">';
     cabang.forEach(function(c){
-      var sel = (isKepalaToko() && String(c.kode_cabang) === String(session.kode_cabang)) ? ' selected' : '';
-      html += '<option value="' + esc(c.kode_cabang) + '"' + sel + '>' + esc(c.nama_cabang || c.kode_cabang) + '</option>';
+      html += '<option value="' + esc(c.kode_cabang) + '">' + esc(c.nama_cabang || c.kode_cabang) + '</option>';
     });
     html += '</select></div>';
     html += '<div class="fgroup"><label>Karyawan</label><select id="pdKaryawan">';
@@ -871,80 +878,52 @@ function renderPendapatan(session) {
     });
     html += '</select></div>';
     html += '<div class="fgroup"><label>Status Masuk</label><select id="pdMasuk"><option value="ya">Masuk</option><option value="tidak">Tidak Masuk</option></select></div>';
-
     html += '<div id="pdFieldMasuk">';
-    html += '<div class="frow">';
-    html += '<div class="fgroup"><label>Unit</label><input type="number" id="pdUnit" value="0" min="0"></div>';
-    html += '<div class="fgroup"><label>Tips</label><input type="number" id="pdTips" value="0" min="0"></div>';
-    html += '</div>';
-    html += '<div class="frow">';
-    html += '<div class="fgroup"><label>Kasbon</label><input type="number" id="pdKasbon" value="0" min="0"></div>';
-    html += '<div class="fgroup"><label>WiFi</label><input type="number" id="pdWifi" value="1000" disabled></div>';
-    html += '</div></div>';
-
+    html += '<div class="frow"><div class="fgroup"><label>Unit</label><input type="number" id="pdUnit" value="0" min="0"></div>';
+    html += '<div class="fgroup"><label>Tips</label><input type="number" id="pdTips" value="0" min="0"></div></div>';
+    html += '<div class="frow"><div class="fgroup"><label>Kasbon</label><input type="number" id="pdKasbon" value="0" min="0"></div>';
+    html += '<div class="fgroup"><label>WiFi</label><input type="number" id="pdWifi" value="1000" disabled></div></div></div>';
     html += '<div id="pdFieldTidak" style="display:none">';
     html += '<div class="fgroup"><label>Kasbon (max 20.000)</label><input type="number" id="pdKasbonTidak" value="0" min="0" max="20000"></div>';
     html += '<div class="fgroup"><label>Alasan</label><select id="pdAlasan">';
-    html += '<option value="">-- Pilih --</option>';
-    html += '<option value="izin">Izin</option>';
-    html += '<option value="sakit">Sakit</option>';
-    html += '<option value="libur">Libur</option>';
-    html += '<option value="lain">Lainnya</option>';
+    html += '<option value="">-- Pilih --</option><option value="izin">Izin</option><option value="sakit">Sakit</option><option value="libur">Libur</option><option value="lain">Lainnya</option>';
     html += '</select></div></div>';
-
     html += '<div class="preview-box"><div class="pv-lbl">Pendapatan Karyawan</div><div class="pv-val" id="pdPreview">Rp 0</div></div>';
-    html += '<button class="btn btn-primary" id="pdSubmit">Simpan Pendapatan</button>';
-    html += '</div>';
-
+    html += '<button class="btn btn-primary" id="pdSubmit">Simpan Pendapatan</button></div>';
     html += '<div class="card"><h3>Pendapatan Hari Ini</h3><div id="pdList"><div class="empty">Memuat...</div></div></div>';
-    el.innerHTML = html;
+    body.innerHTML = html;
 
     document.getElementById('pdMasuk').addEventListener('change', function(){
-      var isMasuk = this.value === 'ya';
-      document.getElementById('pdFieldMasuk').style.display = isMasuk ? 'block' : 'none';
-      document.getElementById('pdFieldTidak').style.display = isMasuk ? 'none' : 'block';
+      var isM = this.value === 'ya';
+      document.getElementById('pdFieldMasuk').style.display = isM ? 'block' : 'none';
+      document.getElementById('pdFieldTidak').style.display = isM ? 'none' : 'block';
       updatePreview();
     });
     ['pdUnit','pdTips','pdKasbon','pdKasbonTidak'].forEach(function(id){
-      var inp = document.getElementById(id);
-      if (inp) inp.addEventListener('input', updatePreview);
+      var inp = document.getElementById(id); if (inp) inp.addEventListener('input', updatePreview);
     });
     function updatePreview() {
-      var isMasuk = document.getElementById('pdMasuk').value === 'ya';
+      var isM = document.getElementById('pdMasuk').value === 'ya';
       var total = 0;
-      if (isMasuk) {
-        var unit = parseInt(document.getElementById('pdUnit').value) || 0;
-        var tips = parseInt(document.getElementById('pdTips').value) || 0;
-        var kasbon = parseInt(document.getElementById('pdKasbon').value) || 0;
-        total = unit + tips - kasbon - 1000;
+      if (isM) {
+        total = (parseInt(document.getElementById('pdUnit').value)||0) +
+                (parseInt(document.getElementById('pdTips').value)||0) -
+                (parseInt(document.getElementById('pdKasbon').value)||0) - 1000;
       } else {
-        var kasbonT = parseInt(document.getElementById('pdKasbonTidak').value) || 0;
-        total = -kasbonT - 1000;
+        total = -(parseInt(document.getElementById('pdKasbonTidak').value)||0) - 1000;
       }
       document.getElementById('pdPreview').textContent = fmtRupiah(total);
     }
 
     document.getElementById('pdSubmit').addEventListener('click', function(){
       if (isDemo()) { showToast('Mode demo','warning'); return; }
-      var btn = this;
-      btn.disabled = true; btn.innerHTML = 'Menyimpan...';
-
+      var btn = this; btn.disabled = true; btn.innerHTML = 'Menyimpan...';
       var tanggal = document.getElementById('pdTanggal').value;
       var cabangVal = document.getElementById('pdCabang').value;
       var idKar = document.getElementById('pdKaryawan').value;
       var namaKar = document.getElementById('pdKaryawan').options[document.getElementById('pdKaryawan').selectedIndex].text.split(' (')[0];
       var statusMasuk = document.getElementById('pdMasuk').value;
-
-      if (!tanggal || !cabangVal || !idKar) {
-        showToast('Lengkapi semua field','error');
-        btn.disabled = false; btn.textContent = 'Simpan Pendapatan';
-        return;
-      }
-      if (isKepalaToko() && String(cabangVal) !== String(session.kode_cabang)) {
-        showToast('Hanya bisa input cabang Anda sendiri','error');
-        btn.disabled = false; btn.textContent = 'Simpan Pendapatan';
-        return;
-      }
+      if (!tanggal || !cabangVal || !idKar) { showToast('Lengkapi field','error'); btn.disabled = false; btn.textContent = 'Simpan Pendapatan'; return; }
 
       var data; var unitVal = 0;
       if (statusMasuk === 'ya') {
@@ -952,24 +931,15 @@ function renderPendapatan(session) {
         var tips = parseInt(document.getElementById('pdTips').value) || 0;
         var kasbon = parseInt(document.getElementById('pdKasbon').value) || 0;
         unitVal = unit;
-        data = {
-          tanggal: tanggal, kode_cabang: cabangVal,
-          id_karyawan: idKar, nama_karyawan: namaKar,
-          status_masuk: 'ya', unit: unit, tips: tips,
-          bonus: 0, kasbon: kasbon, wifi: 1000, tembus_target: 'tidak'
-        };
+        data = {tanggal:tanggal,kode_cabang:cabangVal,id_karyawan:idKar,nama_karyawan:namaKar,
+                status_masuk:'ya',unit:unit,tips:tips,bonus:0,kasbon:kasbon,wifi:1000,tembus_target:'tidak'};
       } else {
         var alasan = document.getElementById('pdAlasan').value;
-        if (!alasan) { showToast('Pilih alasan tidak masuk','error'); btn.disabled = false; btn.textContent = 'Simpan Pendapatan'; return; }
+        if (!alasan) { showToast('Pilih alasan','error'); btn.disabled = false; btn.textContent = 'Simpan Pendapatan'; return; }
         var kasbonT = parseInt(document.getElementById('pdKasbonTidak').value) || 0;
-        if (kasbonT > 20000) { showToast('Kasbon tidak masuk max 20.000','error'); btn.disabled = false; btn.textContent = 'Simpan Pendapatan'; return; }
-        data = {
-          tanggal: tanggal, kode_cabang: cabangVal,
-          id_karyawan: idKar, nama_karyawan: namaKar,
-          status_masuk: 'tidak', unit: 0, tips: 0,
-          bonus: 0, kasbon: kasbonT, wifi: 1000, tembus_target: 'tidak',
-          alasan: alasan
-        };
+        if (kasbonT > 20000) { showToast('Max 20.000','error'); btn.disabled = false; btn.textContent = 'Simpan Pendapatan'; return; }
+        data = {tanggal:tanggal,kode_cabang:cabangVal,id_karyawan:idKar,nama_karyawan:namaKar,
+                status_masuk:'tidak',unit:0,tips:0,bonus:0,kasbon:kasbonT,wifi:1000,tembus_target:'tidak',alasan:alasan};
       }
 
       simpanData('Pendapatan_Harian', data).then(function(res){
@@ -977,64 +947,44 @@ function renderPendapatan(session) {
         if (res && res.ok) {
           var c = incrementCounterSimpan();
           if (c % 3 === 0) tampilkanIklan('interstitial');
-          showToast('Pendapatan berhasil disimpan','success');
+          showToast('Pendapatan tersimpan','success');
           cekBonusTembus(tanggal, cabangVal, unitVal, data);
-          muatDaftarPendapatan(tanggal, cabangVal);
-        } else {
-          showToast(res.pesan || 'Gagal menyimpan','error');
-        }
+          muatDaftarPendapatanOp(tanggal, cabangVal);
+        } else showToast(res.pesan || 'Gagal','error');
       });
     });
-
-    muatDaftarPendapatan(todayStr(), cabang.length ? cabang[0].kode_cabang : '');
+    muatDaftarPendapatanOp(todayStr(), cabang.length ? cabang[0].kode_cabang : '');
   });
 }
 
-function muatDaftarPendapatan(tanggal, cabang) {
+function muatDaftarPendapatanOp(tanggal, cabang) {
   ambilData('Pendapatan_Harian').then(function(res){
-    var listEl = document.getElementById('pdList');
-    if (!listEl) return;
-    var data = (res.ok ? res.data : []).filter(function(d){
-      return d.tanggal === tanggal && d.kode_cabang === cabang;
-    });
-    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada pendapatan</div>'; return; }
-    var html = '<div class="table-wrap"><table><thead><tr>';
-    html += '<th>Karyawan</th><th>Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th><th>Status</th>';
-    html += '</tr></thead><tbody>';
+    var listEl = document.getElementById('pdList'); if (!listEl) return;
+    var data = (res.ok ? res.data : []).filter(function(d){ return d.tanggal === tanggal && d.kode_cabang === cabang; });
+    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada</div>'; return; }
+    var h = '<div class="table-wrap"><table><thead><tr><th>Karyawan</th><th>Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th><th>Status</th></tr></thead><tbody>';
     data.forEach(function(d){
-      var isBonus = parseInt(d.bonus) > 0;
-      html += '<tr' + (isBonus ? ' style="background:#FFFBEB"' : '') + '>';
-      html += '<td>' + esc(d.nama_karyawan) + '</td>';
-      html += '<td>' + esc(d.unit) + '</td>';
-      html += '<td>' + fmtRupiah(d.tips) + '</td>';
-      html += '<td>' + fmtRupiah(d.bonus) + '</td>';
-      html += '<td>' + fmtRupiah(d.kasbon) + '</td>';
-      html += '<td>';
-      if (String(d.tembus_target) === 'ya') html += '<span class="badge badge-gold">TEMBUS</span> ';
-      html += '<span class="badge ' + (d.status_masuk === 'ya' ? 'badge-green' : 'badge-red') + '">' + (d.status_masuk === 'ya' ? 'Masuk' : 'Tidak') + '</span>';
-      html += '</td></tr>';
+      h += '<tr' + (parseInt(d.bonus) > 0 ? ' style="background:#FFFBEB"' : '') + '>';
+      h += '<td>' + esc(d.nama_karyawan) + '</td><td>' + esc(d.unit) + '</td><td>' + fmtRupiah(d.tips) + '</td><td>' + fmtRupiah(d.bonus) + '</td><td>' + fmtRupiah(d.kasbon) + '</td>';
+      h += '<td>' + (String(d.tembus_target) === 'ya' ? '<span class="badge badge-gold">TEMBUS</span> ' : '') +
+           '<span class="badge ' + (d.status_masuk === 'ya' ? 'badge-green' : 'badge-red') + '">' + (d.status_masuk === 'ya' ? 'Masuk' : 'Tidak') + '</span></td></tr>';
     });
-    html += '</tbody></table></div>';
-    listEl.innerHTML = html;
+    h += '</tbody></table></div>';
+    listEl.innerHTML = h;
   });
 }
 
 function cekBonusTembus(tanggal, cabang, unitBaru, dataBaru) {
   ambilData('Pendapatan_Harian').then(function(res){
     if (!res.ok) return;
-    var hariIni = (res.data || []).filter(function(d){
-      return d.tanggal === tanggal && d.kode_cabang === cabang && d.status_masuk === 'ya';
-    });
+    var hariIni = (res.data || []).filter(function(d){ return d.tanggal === tanggal && d.kode_cabang === cabang && d.status_masuk === 'ya'; });
     var totalUnit = 0;
     hariIni.forEach(function(d){ totalUnit += parseInt(d.unit) || 0; });
     if (dataBaru && dataBaru.status_masuk === 'ya') totalUnit += unitBaru;
-
     ambilData('Target_Cabang').then(function(res2){
       if (!res2.ok) return;
       var target = 0;
-      (res2.data || []).forEach(function(t){
-        if (t.kode_cabang === cabang) target = parseInt(t.target_harian) || 0;
-      });
+      (res2.data || []).forEach(function(t){ if (t.kode_cabang === cabang) target = parseInt(t.target_harian) || 0; });
       if (totalUnit >= target && target > 0) {
         ambilData('Pengaturan').then(function(res3){
           var bonusKT = 10000, bonusKar = 5000;
@@ -1050,625 +1000,887 @@ function cekBonusTembus(tanggal, cabang, unitBaru, dataBaru) {
               updateData('Pendapatan_Harian', d._row, { bonus: b, tembus_target: 'ya' });
             }
           });
-          showToast('🎉 Target tembus! Bonus ke karyawan','success');
+          showToast('🎉 Target tembus! Bonus diberikan','success');
         });
       }
     });
   });
 }
 
-/* ============================================================
-   HALAMAN: UNIT CABANG
-============================================================ */
-function renderRiwayatPendapatan(session) {
-  var el = document.getElementById('appContent');
-  var isFullAccess = isOwner() || isAdmin();
-  var isKTRestricted = isKepalaToko();
-  var isKarRestricted = isKaryawan();
+function renderOperasionalKeluar(session) {
+  var body = document.getElementById('opBody');
+  body.innerHTML = '<div class="empty"><div class="ei">⏳</div>Memuat...</div>';
+  Promise.all([ambilData('Target_Cabang'), ambilData('Pengeluaran')]).then(function(results){
+    var cabang = results[0].ok ? results[0].data : [];
+    var pengeluaran = results[1].ok ? results[1].data : [];
+    var html = '';
+    html += '<div class="note-box">Semua pengeluaran dipotong dari uang owner.</div>';
+    html += '<div class="card"><h3>Form Pengeluaran</h3>';
+    html += '<div class="fgroup"><label>Tanggal</label><input type="date" id="pgTanggal" value="' + todayStr() + '"></div>';
+    html += '<div class="fgroup"><label>Cabang <span style="color:#DC2626">*</span></label><select id="pgCabang"><option value="">-- Pilih Cabang --</option>';
+    cabang.forEach(function(c){ html += '<option value="' + esc(c.kode_cabang) + '">' + esc(c.nama_cabang || c.kode_cabang) + '</option>'; });
+    html += '</select></div>';
+    html += '<div class="fgroup"><label>Kategori</label><select id="pgKategori">';
+    html += '<option value="operasional">Operasional</option><option value="gaji">Gaji</option><option value="sewa">Sewa</option><option value="listrik">Listrik / Air</option><option value="lain">Lainnya</option>';
+    html += '</select></div>';
+    html += '<div class="fgroup"><label>Jumlah (Rp)</label><input type="number" id="pgJumlah" value="0" min="0"></div>';
+    html += '<div class="fgroup"><label>Keterangan</label><input type="text" id="pgKet" placeholder="Keterangan"></div>';
+    html += '<button class="btn btn-primary" id="pgSubmit">Simpan Pengeluaran</button></div>';
+    html += '<div class="card"><h3>Riwayat</h3>';
+    html += '<div class="search-bar"><select id="pgFilterCabang"><option value="">Semua Cabang</option>';
+    cabang.forEach(function(c){ html += '<option value="' + esc(c.kode_cabang) + '">' + esc(c.nama_cabang || c.kode_cabang) + '</option>'; });
+    html += '</select><input type="month" id="pgFilterBulan" value="' + todayStr().slice(0,7) + '"></div>';
+    html += '<div id="pgList"><div class="empty">Memuat...</div></div></div>';
+    body.innerHTML = html;
 
-  el.innerHTML = '<div class="page-title">📋 Unit Cabang</div>' +
-    '<div class="page-sub">Total unit cabang per hari</div>' +
-    '<div class="note-box warn">' +
-    (isFullAccess
-      ? '<b>Mode Full Access:</b> Anda dapat melihat semua data.'
-      : '<b>Privasi Rekan Terjaga:</b> Anda hanya bisa melihat <b>total unit cabang</b> per hari.') +
-    '</div>' +
-    '<div id="rpList"><div class="empty"><div class="ei">⏳</div>Memuat...</div></div>';
+    muatRiwayatPengeluaran(pengeluaran, cabang);
+    document.getElementById('pgFilterCabang').addEventListener('change', function(){ muatRiwayatPengeluaran(pengeluaran, cabang); });
+    document.getElementById('pgFilterBulan').addEventListener('change', function(){ muatRiwayatPengeluaran(pengeluaran, cabang); });
 
-  ambilData('Pendapatan_Harian').then(function(res){
-    var data = res.ok ? res.data : [];
-
-    if (isKTRestricted || isKarRestricted) {
-      data = data.filter(function(d){ return String(d.kode_cabang) === String(session.kode_cabang); });
-      var perHari = {};
-      data.forEach(function(d){
-        var t = d.tanggal;
-        if (!perHari[t]) perHari[t] = { tanggal: t, unit: 0, orangHadir: {} };
-        perHari[t].unit += parseInt(d.unit) || 0;
-        if (d.status_masuk === 'ya') perHari[t].orangHadir[d.id_karyawan] = true;
-      });
-      var hariArr = Object.keys(perHari).map(function(k){
-        var h = perHari[k];
-        h.totalOrang = Object.keys(h.orangHadir).length;
-        return h;
-      }).sort(function(a,b){ return b.tanggal.localeCompare(a.tanggal); });
-
-      var listEl = document.getElementById('rpList');
-      if (hariArr.length === 0) {
-        listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada data</div>';
-        return;
-      }
-      var html = '<div class="card" style="padding:12px">';
-      html += '<h3>Total Unit Cabang ' + esc(session.kode_cabang) + '</h3>';
-      html += '<div class="table-wrap"><table><thead><tr>';
-      html += '<th>Tanggal</th><th>Total Unit</th><th>Nilai</th><th>Orang Hadir</th>';
-      html += '</tr></thead><tbody>';
-      hariArr.slice(0, 60).forEach(function(h){
-        html += '<tr><td>' + esc(h.tanggal) + '</td><td><b>' + h.unit + '</b></td><td>' + fmtRupiah(h.unit * HARGA_PER_UNIT) + '</td><td>' + h.totalOrang + ' orang</td></tr>';
-      });
-      html += '</tbody></table></div></div>';
-      html += '<div class="card"><h3>Butuh Riwayat Pribadi?</h3>';
-      html += '<p style="font-size:12px;color:#6B7280;margin-bottom:10px;line-height:1.5">Untuk melihat pendapatan lengkap Anda, buka <b>Payroll Saya</b>.</p>';
-      html += '<button class="btn btn-gold btn-block" id="rpKePayroll">💵 Buka Payroll Saya</button></div>';
-      listEl.innerHTML = html;
-      document.getElementById('rpKePayroll').addEventListener('click', function(){ navigasi('payroll'); });
-      return;
-    }
-
-    data.sort(function(a,b){ return String(b.tanggal).localeCompare(String(a.tanggal)); });
-    var listEl = document.getElementById('rpList');
-    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada riwayat</div>'; return; }
-    var html = '<div class="table-wrap"><table><thead><tr>';
-    html += '<th>Tanggal</th><th>Cabang</th><th>Karyawan</th><th>Unit</th><th>Nilai Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th>';
-    html += '</tr></thead><tbody>';
-    data.slice(0, 100).forEach(function(d){
-      html += '<tr><td>' + esc(d.tanggal) + '</td><td>' + esc(d.kode_cabang) + '</td><td>' + esc(d.nama_karyawan) + '</td><td>' + esc(d.unit) + '</td><td>' + fmtRupiah((parseInt(d.unit)||0) * HARGA_PER_UNIT) + '</td><td>' + fmtRupiah(d.tips) + '</td><td>' + fmtRupiah(d.bonus) + '</td><td>' + fmtRupiah(d.kasbon) + '</td></tr>';
-    });
-    html += '</tbody></table></div>';
-    listEl.innerHTML = html;
-  });
-}
-
-/* ============================================================
-   HALAMAN: KASBON
-   - Karyawan/KT: ajukan
-   - Owner/Admin: ACC kasbon > 20rb + lihat semua riwayat
-============================================================ */
-function renderKasbon(session) {
-  var el = document.getElementById('appContent');
-  var canAjukan = canAjukanKasbon();
-  var canAcc = canAccKasbon();
-
-  var html = '';
-  html += '<div class="page-title">💸 Kasbon</div>';
-  html += '<div class="page-sub">';
-  if (canAjukan) html += 'Ajukan & lihat riwayat kasbon';
-  else if (canAcc) html += 'ACC kasbon & lihat riwayat';
-  html += '</div>';
-
-  // Info aturan
-  html += '<div class="note-box">';
-  html += '<b>Aturan Kasbon:</b><br>';
-  html += '• ≤ ' + fmtRupiah(BATAS_KASBON_AUTO) + ' → <b>auto disetujui</b><br>';
-  html += '• > ' + fmtRupiah(BATAS_KASBON_AUTO) + ' → perlu <b>ACC Owner/Admin</b>';
-  html += '</div>';
-
-  if (canAjukan) {
-    html += '<div class="card"><h3>Ajukan Kasbon</h3>';
-    html += '<div class="fgroup"><label>Jumlah Kasbon</label><input type="number" id="ksJumlah" value="0" min="0"></div>';
-    html += '<div class="fgroup"><label>Keterangan</label><input type="text" id="ksKet" placeholder="Opsional"></div>';
-    html += '<button class="btn btn-primary" id="ksSubmit">Ajukan Kasbon</button>';
-    html += '<p style="font-size:11px;color:#9CA3AF;margin-top:8px">*Rewarded ad akan ditampilkan</p>';
-    html += '</div>';
-  }
-
-  html += '<div class="card"><h3>' + (canAjukan ? 'Riwayat Kasbon Saya' : 'Semua Pengajuan Kasbon') + '</h3><div id="ksList"><div class="empty">Memuat...</div></div></div>';
-  el.innerHTML = html;
-
-  ambilData('Pengajuan_Kasbon').then(function(res){
-    var data = res.ok ? res.data : [];
-    if (canAjukan) {
-      // Karyawan: hanya milik sendiri. KT: milik sendiri + cabangnya
-      if (isKepalaToko()) {
-        data = data.filter(function(d){
-          return String(d.id_karyawan) === String(session.user_id) ||
-                 String(d.kode_cabang) === String(session.kode_cabang);
-        });
-      } else {
-        data = data.filter(function(d){ return String(d.id_karyawan) === String(session.user_id); });
-      }
-    }
-    // Owner & Admin: lihat semua
-
-    var listEl = document.getElementById('ksList');
-    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada kasbon</div>'; return; }
-
-    data.sort(function(a,b){ return String(b.tanggal_pengajuan).localeCompare(String(a.tanggal_pengajuan)); });
-
-    var h = '';
-    data.forEach(function(d){
-      var st = String(d.status || '').toLowerCase();
-      var stLabel = d.status || 'menunggu';
-      var bc = 'badge-yellow';
-      if (st === 'auto_disetujui') bc = 'badge-blue';
-      else if (st === 'disetujui') bc = 'badge-green';
-      else if (st === 'ditolak') bc = 'badge-red';
-
-      var jml = parseInt(d.jumlah_kasbon) || 0;
-
-      h += '<div style="border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:10px">';
-      h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">';
-      h += '<div style="flex:1;min-width:160px">';
-      h += '<div style="font-size:13px;font-weight:700;color:#1F2937">' + esc(d.nama_karyawan || d.id_karyawan) + '</div>';
-      h += '<div style="font-size:11px;color:#6B7280;margin-top:2px">' + esc(d.tanggal_pengajuan) + (d.kode_cabang ? ' • ' + esc(d.kode_cabang) : '') + '</div>';
-      h += '<div style="font-size:16px;font-weight:800;color:#C8102E;margin-top:6px">' + fmtRupiah(jml) + '</div>';
-      h += '</div>';
-      h += '<span class="badge ' + bc + '">' + esc(stLabel) + '</span>';
-      h += '</div>';
-
-      if (canAcc && st === 'menunggu' && jml > BATAS_KASBON_AUTO) {
-        h += '<div class="btn-row" style="margin-top:10px">';
-        h += '<button class="btn btn-sm btn-primary" data-acc-ks="' + d._row + '" style="width:auto">✅ ACC</button>';
-        h += '<button class="btn btn-sm btn-danger" data-rej-ks="' + d._row + '">❌ Tolak</button>';
-        h += '</div>';
-      }
-      h += '</div>';
-    });
-    listEl.innerHTML = h;
-
-    listEl.querySelectorAll('[data-acc-ks]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        if (isDemo()) { showToast('Mode demo','warning'); return; }
-        var row = parseInt(this.getAttribute('data-acc-ks'));
-        updateData('Pengajuan_Kasbon', row, { status: 'disetujui', acc_by: session.user_nama, acc_time: nowISO() }).then(function(r){
-          if (r && r.ok) { showToast('Kasbon di-ACC','success'); renderKasbon(session); }
-          else showToast(r.pesan || 'Gagal','error');
-        });
-      });
-    });
-    listEl.querySelectorAll('[data-rej-ks]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        if (isDemo()) { showToast('Mode demo','warning'); return; }
-        if (!confirm('Tolak kasbon ini?')) return;
-        var row = parseInt(this.getAttribute('data-rej-ks'));
-        updateData('Pengajuan_Kasbon', row, { status: 'ditolak', acc_by: session.user_nama, acc_time: nowISO() }).then(function(r){
-          if (r && r.ok) { showToast('Kasbon ditolak','success'); renderKasbon(session); }
-          else showToast(res.pesan || 'Gagal','error');
-        });
-      });
-    });
-  });
-
-  if (canAjukan && document.getElementById('ksSubmit')) {
-    document.getElementById('ksSubmit').addEventListener('click', function(){
+    document.getElementById('pgSubmit').addEventListener('click', function(){
       if (isDemo()) { showToast('Mode demo','warning'); return; }
-      var jumlah = parseInt(document.getElementById('ksJumlah').value) || 0;
-      if (jumlah <= 0) { showToast('Masukkan jumlah kasbon','error'); return; }
-      tampilkanIklan('rewarded');
-      var btn = this;
-      btn.disabled = true; btn.textContent = 'Mengajukan...';
-      var isAuto = jumlah <= BATAS_KASBON_AUTO;
+      var cabangVal = document.getElementById('pgCabang').value;
+      var jumlah = parseInt(document.getElementById('pgJumlah').value) || 0;
+      if (!cabangVal) { showToast('Pilih cabang','error'); return; }
+      if (jumlah <= 0) { showToast('Jumlah harus > 0','error'); return; }
+      var btn = this; btn.disabled = true; btn.textContent = 'Menyimpan...';
       var data = {
-        id_pengajuan: 'KSB-' + Date.now(),
-        tanggal_pengajuan: todayStr(),
-        id_karyawan: session.user_id,
-        nama_karyawan: session.user_nama,
-        kode_cabang: session.kode_cabang,
-        jumlah_kasbon: jumlah,
-        status: isAuto ? 'auto_disetujui' : 'menunggu'
+        tanggal: document.getElementById('pgTanggal').value,
+        kode_cabang: cabangVal,
+        kategori: document.getElementById('pgKategori').value,
+        jumlah: jumlah,
+        keterangan: document.getElementById('pgKet').value || '-',
+        dicatat_oleh: session.user_nama
       };
-      simpanData('Pengajuan_Kasbon', data).then(function(res){
-        btn.disabled = false; btn.textContent = 'Ajukan Kasbon';
+      simpanData('Pengeluaran', data).then(function(res){
+        btn.disabled = false; btn.textContent = 'Simpan Pengeluaran';
         if (res && res.ok) {
-          showToast(isAuto ? 'Kasbon auto-disetujui' : 'Kasbon menunggu ACC', 'success');
-          renderKasbon(session);
+          showToast('Pengeluaran disimpan','success');
+          document.getElementById('pgJumlah').value = 0;
+          document.getElementById('pgKet').value = '';
+          ambilData('Pengeluaran').then(function(r2){ muatRiwayatPengeluaran(r2.ok ? r2.data : [], cabang); });
         } else showToast(res.pesan || 'Gagal','error');
       });
     });
-  }
+  });
+}
+
+function muatRiwayatPengeluaran(data, cabang) {
+  var listEl = document.getElementById('pgList'); if (!listEl) return;
+  var fCab = document.getElementById('pgFilterCabang') ? document.getElementById('pgFilterCabang').value : '';
+  var fBulan = document.getElementById('pgFilterBulan') ? document.getElementById('pgFilterBulan').value : '';
+  var filtered = data.filter(function(d){
+    if (fCab && d.kode_cabang !== fCab) return false;
+    if (fBulan && String(d.tanggal).slice(0,7) !== fBulan) return false;
+    return true;
+  });
+  filtered.sort(function(a,b){ return String(b.tanggal).localeCompare(String(a.tanggal)); });
+  if (filtered.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada</div>'; return; }
+  var total = 0;
+  filtered.forEach(function(d){ total += parseInt(d.jumlah) || 0; });
+  var h = '<div style="background:#FEF2F2;border-radius:8px;padding:10px 12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">';
+  h += '<span style="font-size:12px;font-weight:600;color:#991B1B">TOTAL (dipotong dari owner)</span>';
+  h += '<span style="font-size:16px;font-weight:800;color:#DC2626">' + fmtRupiah(total) + '</span></div>';
+  h += '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Cabang</th><th>Kategori</th><th>Jumlah</th><th>Ket</th></tr></thead><tbody>';
+  filtered.slice(0, 100).forEach(function(d){
+    h += '<tr><td>' + esc(d.tanggal) + '</td><td><span class="badge badge-blue">' + esc(d.kode_cabang) + '</span></td><td>' + esc(d.kategori) + '</td><td style="color:#DC2626;font-weight:700">' + fmtRupiah(d.jumlah) + '</td><td>' + esc(d.keterangan) + '</td></tr>';
+  });
+  h += '</tbody></table></div>';
+  listEl.innerHTML = h;
+}
+
+function renderOperasionalUnit(session) {
+  var body = document.getElementById('opBody');
+  body.innerHTML = '<div class="empty"><div class="ei">⏳</div>Memuat...</div>';
+  ambilData('Pendapatan_Harian').then(function(res){
+    var data = res.ok ? res.data : [];
+    data.sort(function(a,b){ return String(b.tanggal).localeCompare(String(a.tanggal)); });
+    if (data.length === 0) { body.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada</div>'; return; }
+    var h = '<div class="table-wrap"><table><thead><tr>';
+    h += '<th>Tanggal</th><th>Cabang</th><th>Karyawan</th><th>Unit</th><th>Nilai</th><th>Tips</th><th>Bonus</th><th>Kasbon</th>';
+    h += '</tr></thead><tbody>';
+    data.slice(0, 150).forEach(function(d){
+      h += '<tr><td>' + esc(d.tanggal) + '</td><td>' + esc(d.kode_cabang) + '</td><td>' + esc(d.nama_karyawan) + '</td><td>' + esc(d.unit) + '</td><td>' + fmtRupiah((parseInt(d.unit)||0) * HARGA_PER_UNIT) + '</td><td>' + fmtRupiah(d.tips) + '</td><td>' + fmtRupiah(d.bonus) + '</td><td>' + fmtRupiah(d.kasbon) + '</td></tr>';
+    });
+    h += '</tbody></table></div>';
+    body.innerHTML = h;
+  });
 }
 
 /* ============================================================
-   HALAMAN: IZIN
+   HALAMAN: INPUT PENDAPATAN (KEPALA TOKO)
 ============================================================ */
-function renderIzin(session) {
+function renderPendapatan(session) {
+  if (!canInputPendapatan()) { showToast('Akses ditolak','error'); navigasi('home'); return; }
   var el = document.getElementById('appContent');
-  var canAjukan = canAjukanIzin();
-  var canAccKT = canAccIzinTahap1();
-  var canAccFinal = canAccIzinTahap2();
+  el.innerHTML = '<div class="empty"><div class="ei">⏳</div>Memuat...</div>';
 
+  Promise.all([ambilData('Target_Cabang'), ambilData('Users')]).then(function(results){
+    var cabang = results[0].ok ? results[0].data : [];
+    var users = results[1].ok ? results[1].data : [];
+    cabang = cabang.filter(function(c){ return String(c.kode_cabang) === String(session.kode_cabang); });
+    var karyawan = users.filter(function(u){
+      return String(u.status).toLowerCase() === 'aktif' &&
+             String(u.dihapus).toLowerCase() !== 'true' &&
+             (u.jabatan === 'Karyawan' || u.jabatan === 'Kepala Toko') &&
+             String(u.kode_cabang) === String(session.kode_cabang);
+    });
+
+    var html = '';
+    html += '<div class="page-title">💰 Input Pendapatan</div>';
+    html += '<div class="page-sub">Cabang: ' + esc(session.kode_cabang) + '</div>';
+    html += '<div class="card"><h3>Form Pendapatan</h3>';
+    html += '<div class="fgroup"><label>Tanggal</label><input type="date" id="pdTanggal" value="' + todayStr() + '"></div>';
+    html += '<div class="fgroup"><label>Cabang</label><input type="text" value="' + esc(session.kode_cabang) + '" disabled></div>';
+    html += '<div class="fgroup"><label>Karyawan</label><select id="pdKaryawan">';
+    karyawan.forEach(function(k){ html += '<option value="' + esc(k.id) + '">' + esc(k.nama) + ' (' + esc(k.jabatan) + ')</option>'; });
+    html += '</select></div>';
+    html += '<div class="fgroup"><label>Status Masuk</label><select id="pdMasuk"><option value="ya">Masuk</option><option value="tidak">Tidak Masuk</option></select></div>';
+    html += '<div id="pdFieldMasuk">';
+    html += '<div class="frow"><div class="fgroup"><label>Unit</label><input type="number" id="pdUnit" value="0" min="0"></div>';
+    html += '<div class="fgroup"><label>Tips</label><input type="number" id="pdTips" value="0" min="0"></div></div>';
+    html += '<div class="frow"><div class="fgroup"><label>Kasbon</label><input type="number" id="pdKasbon" value="0" min="0"></div>';
+    html += '<div class="fgroup"><label>WiFi</label><input type="number" id="pdWifi" value="1000" disabled></div></div></div>';
+    html += '<div id="pdFieldTidak" style="display:none">';
+    html += '<div class="fgroup"><label>Kasbon (max 20.000)</label><input type="number" id="pdKasbonTidak" value="0" min="0" max="20000"></div>';
+    html += '<div class="fgroup"><label>Alasan</label><select id="pdAlasan"><option value="">-- Pilih --</option><option value="izin">Izin</option><option value="sakit">Sakit</option><option value="libur">Libur</option><option value="lain">Lainnya</option></select></div></div>';
+    html += '<div class="preview-box"><div class="pv-lbl">Pendapatan Karyawan</div><div class="pv-val" id="pdPreview">Rp 0</div></div>';
+    html += '<button class="btn btn-primary" id="pdSubmit">Simpan Pendapatan</button></div>';
+    html += '<div class="card"><h3>Pendapatan Hari Ini</h3><div id="pdList"><div class="empty">Memuat...</div></div></div>';
+    el.innerHTML = html;
+
+    document.getElementById('pdMasuk').addEventListener('change', function(){
+      var isM = this.value === 'ya';
+      document.getElementById('pdFieldMasuk').style.display = isM ? 'block' : 'none';
+      document.getElementById('pdFieldTidak').style.display = isM ? 'none' : 'block';
+      updatePreview();
+    });
+    ['pdUnit','pdTips','pdKasbon','pdKasbonTidak'].forEach(function(id){
+      var inp = document.getElementById(id); if (inp) inp.addEventListener('input', updatePreview);
+    });
+    function updatePreview() {
+      var isM = document.getElementById('pdMasuk').value === 'ya';
+      var total = 0;
+      if (isM) total = (parseInt(document.getElementById('pdUnit').value)||0) + (parseInt(document.getElementById('pdTips').value)||0) - (parseInt(document.getElementById('pdKasbon').value)||0) - 1000;
+      else total = -(parseInt(document.getElementById('pdKasbonTidak').value)||0) - 1000;
+      document.getElementById('pdPreview').textContent = fmtRupiah(total);
+    }
+
+    document.getElementById('pdSubmit').addEventListener('click', function(){
+      if (isDemo()) { showToast('Mode demo','warning'); return; }
+      var btn = this; btn.disabled = true; btn.textContent = 'Menyimpan...';
+      var tanggal = document.getElementById('pdTanggal').value;
+      var idKar = document.getElementById('pdKaryawan').value;
+      var namaKar = document.getElementById('pdKaryawan').options[document.getElementById('pdKaryawan').selectedIndex].text.split(' (')[0];
+      var statusMasuk = document.getElementById('pdMasuk').value;
+      var cabangVal = session.kode_cabang;
+      if (!tanggal || !idKar) { showToast('Lengkapi field','error'); btn.disabled = false; btn.textContent = 'Simpan Pendapatan'; return; }
+
+      var data; var unitVal = 0;
+      if (statusMasuk === 'ya') {
+        var unit = parseInt(document.getElementById('pdUnit').value) || 0;
+        var tips = parseInt(document.getElementById('pdTips').value) || 0;
+        var kasbon = parseInt(document.getElementById('pdKasbon').value) || 0;
+        unitVal = unit;
+        data = {tanggal:tanggal,kode_cabang:cabangVal,id_karyawan:idKar,nama_karyawan:namaKar,
+                status_masuk:'ya',unit:unit,tips:tips,bonus:0,kasbon:kasbon,wifi:1000,tembus_target:'tidak'};
+      } else {
+        var alasan = document.getElementById('pdAlasan').value;
+        if (!alasan) { showToast('Pilih alasan','error'); btn.disabled = false; btn.textContent = 'Simpan Pendapatan'; return; }
+        var kasbonT = parseInt(document.getElementById('pdKasbonTidak').value) || 0;
+        if (kasbonT > 20000) { showToast('Max 20.000','error'); btn.disabled = false; btn.textContent = 'Simpan Pendapatan'; return; }
+        data = {tanggal:tanggal,kode_cabang:cabangVal,id_karyawan:idKar,nama_karyawan:namaKar,
+                status_masuk:'tidak',unit:0,tips:0,bonus:0,kasbon:kasbonT,wifi:1000,tembus_target:'tidak',alasan:alasan};
+      }
+
+      simpanData('Pendapatan_Harian', data).then(function(res){
+        btn.disabled = false; btn.textContent = 'Simpan Pendapatan';
+        if (res && res.ok) {
+          var c = incrementCounterSimpan();
+          if (c % 3 === 0) tampilkanIklan('interstitial');
+          showToast('Tersimpan','success');
+          cekBonusTembus(tanggal, cabangVal, unitVal, data);
+          muatDaftarPendapatanOp(tanggal, cabangVal);
+        } else showToast(res.pesan || 'Gagal','error');
+      });
+    });
+    muatDaftarPendapatanOp(todayStr(), session.kode_cabang);
+  });
+}
+
+/* ============================================================
+   HALAMAN: UNIT CABANG (KEPALA TOKO)
+============================================================ */
+function renderUnitCabang(session) {
+  var el = document.getElementById('appContent');
+  el.innerHTML = '<div class="page-title">📋 Unit Cabang</div>' +
+    '<div class="page-sub">Total unit cabang ' + esc(session.kode_cabang) + ' per hari</div>' +
+    '<div class="note-box warn"><b>Privasi:</b> Anda hanya bisa melihat total unit cabang, bukan pendapatan rekan.</div>' +
+    '<div id="ucList"><div class="empty"><div class="ei">⏳</div>Memuat...</div></div>';
+
+  ambilData('Pendapatan_Harian').then(function(res){
+    var data = (res.ok ? res.data : []).filter(function(d){ return String(d.kode_cabang) === String(session.kode_cabang); });
+    var perHari = {};
+    data.forEach(function(d){
+      var t = d.tanggal;
+      if (!perHari[t]) perHari[t] = { tanggal: t, unit: 0, orangHadir: {} };
+      perHari[t].unit += parseInt(d.unit) || 0;
+      if (d.status_masuk === 'ya') perHari[t].orangHadir[d.id_karyawan] = true;
+    });
+    var hariArr = Object.keys(perHari).map(function(k){
+      var h = perHari[k];
+      h.totalOrang = Object.keys(h.orangHadir).length;
+      return h;
+    }).sort(function(a,b){ return b.tanggal.localeCompare(a.tanggal); });
+
+    var listEl = document.getElementById('ucList');
+    if (hariArr.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada data</div>'; return; }
+    var h = '<div class="card" style="padding:12px">';
+    h += '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Total Unit</th><th>Nilai</th><th>Orang Hadir</th></tr></thead><tbody>';
+    hariArr.slice(0, 90).forEach(function(x){
+      h += '<tr><td>' + esc(x.tanggal) + '</td><td><b>' + x.unit + '</b></td><td>' + fmtRupiah(x.unit * HARGA_PER_UNIT) + '</td><td>' + x.totalOrang + ' orang</td></tr>';
+    });
+    h += '</tbody></table></div></div>';
+    h += '<div class="card"><h3>Butuh Pendapatan Pribadi?</h3>';
+    h += '<p style="font-size:12px;color:#6B7280;margin-bottom:10px">Lihat di menu <b>Payroll & Laporan</b>.</p>';
+    h += '<button class="btn btn-gold btn-block" id="ucKePayroll">💵 Buka Payroll</button></div>';
+    listEl.innerHTML = h;
+    document.getElementById('ucKePayroll').addEventListener('click', function(){ navigasi('payroll_laporan'); });
+  });
+}
+
+/* ============================================================
+   HALAMAN: PENGAJUAN (KT & Karyawan) — GABUNGAN
+   Tab: Kasbon | Izin | Kerusakan | Permintaan Payroll
+============================================================ */
+var pengajuanTab = 'kasbon';
+
+function renderPengajuan(session) {
+  if (!canAjukanIzin() && !canAjukanKasbon()) { showToast('Akses ditolak','error'); navigasi('home'); return; }
+  var el = document.getElementById('appContent');
   var html = '';
-  html += '<div class="page-title">📅 Izin</div>';
-  html += '<div class="page-sub">';
-  if (canAjukan) html += 'Ajukan & lihat status izin';
-  else html += 'ACC izin anggota';
+  html += '<div class="page-title">📨 Pengajuan</div>';
+  html += '<div class="page-sub">Kasbon, izin, kendala & permintaan payroll</div>';
+  html += '<div class="tab-bar">';
+  html += '<button class="tab-btn ' + (pengajuanTab === 'kasbon' ? 'active' : '') + '" data-pjtab="kasbon">💸 Kasbon</button>';
+  html += '<button class="tab-btn ' + (pengajuanTab === 'izin' ? 'active' : '') + '" data-pjtab="izin">📅 Izin</button>';
+  html += '<button class="tab-btn ' + (pengajuanTab === 'rusak' ? 'active' : '') + '" data-pjtab="rusak">🔧 Kerusakan</button>';
+  html += '<button class="tab-btn ' + (pengajuanTab === 'payroll' ? 'active' : '') + '" data-pjtab="payroll">📨 Payroll</button>';
   html += '</div>';
-
-  if (canAjukan) {
-    html += '<div class="card"><h3>Ajukan Izin</h3>';
-    html += '<div class="fgroup"><label>Tanggal Izin</label><input type="date" id="izTanggal" value="' + todayStr() + '"></div>';
-    html += '<div class="fgroup"><label>Jenis Izin</label><select id="izJenis"><option value="istirahat">Istirahat (max 1 hari)</option><option value="sakit">Sakit (max 3 hari)</option></select></div>';
-    html += '<div class="fgroup"><label>Keterangan</label><input type="text" id="izKet" placeholder="Alasan izin"></div>';
-    html += '<button class="btn btn-primary" id="izSubmit">Ajukan Izin</button>';
-    html += '<p style="font-size:11px;color:#9CA3AF;margin-top:8px">*Rewarded ad akan ditampilkan</p>';
-    html += '</div>';
-  }
-
-  if (canAccKT || canAccFinal) {
-    html += '<div class="note-box">';
-    html += '<b>Tahapan ACC Izin:</b><br>';
-    html += '1️⃣ Kepala Toko ACC → <span class="badge badge-blue">disetujui_kt</span><br>';
-    html += '2️⃣ Admin / Owner ACC final → <span class="badge badge-green">disetujui</span>';
-    html += '</div>';
-  }
-
-  html += '<div class="card"><h3>Daftar Izin</h3><div id="izList"><div class="empty">Memuat...</div></div></div>';
+  html += '<div id="pjBody"></div>';
   el.innerHTML = html;
+
+  document.querySelectorAll('[data-pjtab]').forEach(function(b){
+    b.addEventListener('click', function(){
+      pengajuanTab = this.getAttribute('data-pjtab');
+      renderPengajuan(session);
+    });
+  });
+
+  if (pengajuanTab === 'kasbon') renderPjKasbon(session);
+  else if (pengajuanTab === 'izin') renderPjIzin(session);
+  else if (pengajuanTab === 'rusak') renderPjKerusakan(session);
+  else renderPjPayroll(session);
+}
+
+function renderPjKasbon(session) {
+  var body = document.getElementById('pjBody');
+  body.innerHTML = '<div class="empty"><div class="ei">⏳</div>Memuat...</div>';
+  var html = '';
+  html += '<div class="note-box">≤ ' + fmtRupiah(BATAS_KASBON_AUTO) + ' auto-disetujui. > ' + fmtRupiah(BATAS_KASBON_AUTO) + ' perlu ACC Owner/Admin.</div>';
+  html += '<div class="card"><h3>Ajukan Kasbon</h3>';
+  html += '<div class="fgroup"><label>Jumlah Kasbon</label><input type="number" id="ksJumlah" value="0" min="0"></div>';
+  html += '<div class="fgroup"><label>Keterangan</label><input type="text" id="ksKet" placeholder="Opsional"></div>';
+  html += '<button class="btn btn-primary" id="ksSubmit">Ajukan Kasbon</button>';
+  html += '<p style="font-size:11px;color:#9CA3AF;margin-top:8px">*Rewarded ad akan ditampilkan</p></div>';
+  html += '<div class="card"><h3>Riwayat Kasbon Saya</h3><div id="ksList"><div class="empty">Memuat...</div></div></div>';
+  body.innerHTML = html;
+
+  ambilData('Pengajuan_Kasbon').then(function(res){
+    var data = res.ok ? res.data : [];
+    data = data.filter(function(d){ return String(d.id_karyawan) === String(session.user_id); });
+    var listEl = document.getElementById('ksList');
+    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada</div>'; return; }
+    data.sort(function(a,b){ return String(b.tanggal_pengajuan).localeCompare(String(a.tanggal_pengajuan)); });
+    var h = '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Jumlah</th><th>Status</th></tr></thead><tbody>';
+    data.forEach(function(d){
+      var st = String(d.status || '').toLowerCase();
+      var bc = st === 'auto_disetujui' ? 'badge-blue' : st === 'disetujui' ? 'badge-green' : st === 'ditolak' ? 'badge-red' : 'badge-yellow';
+      h += '<tr><td>' + esc(d.tanggal_pengajuan) + '</td><td>' + fmtRupiah(d.jumlah_kasbon) + '</td><td><span class="badge ' + bc + '">' + esc(d.status) + '</span></td></tr>';
+    });
+    h += '</tbody></table></div>';
+    listEl.innerHTML = h;
+  });
+
+  document.getElementById('ksSubmit').addEventListener('click', function(){
+    if (isDemo()) { showToast('Mode demo','warning'); return; }
+    var jumlah = parseInt(document.getElementById('ksJumlah').value) || 0;
+    if (jumlah <= 0) { showToast('Masukkan jumlah','error'); return; }
+    tampilkanIklan('rewarded');
+    var btn = this; btn.disabled = true; btn.textContent = 'Mengajukan...';
+    var isAuto = jumlah <= BATAS_KASBON_AUTO;
+    var data = {
+      id_pengajuan: 'KSB-' + Date.now(),
+      tanggal_pengajuan: todayStr(),
+      id_karyawan: session.user_id,
+      nama_karyawan: session.user_nama,
+      kode_cabang: session.kode_cabang,
+      jumlah_kasbon: jumlah,
+      status: isAuto ? 'auto_disetujui' : 'menunggu'
+    };
+    simpanData('Pengajuan_Kasbon', data).then(function(res){
+      btn.disabled = false; btn.textContent = 'Ajukan Kasbon';
+      if (res && res.ok) { showToast(isAuto ? 'Auto-disetujui' : 'Menunggu ACC','success'); renderPjKasbon(session); }
+      else showToast(res.pesan || 'Gagal','error');
+    });
+  });
+}
+
+function renderPjIzin(session) {
+  var body = document.getElementById('pjBody');
+  body.innerHTML = '<div class="empty"><div class="ei">⏳</div>Memuat...</div>';
+  var html = '';
+  html += '<div class="card"><h3>Ajukan Izin</h3>';
+  html += '<div class="fgroup"><label>Tanggal Izin</label><input type="date" id="izTanggal" value="' + todayStr() + '"></div>';
+  html += '<div class="fgroup"><label>Jenis Izin</label><select id="izJenis"><option value="istirahat">Istirahat (max 1 hari)</option><option value="sakit">Sakit (max 3 hari)</option></select></div>';
+  html += '<div class="fgroup"><label>Keterangan</label><input type="text" id="izKet" placeholder="Alasan"></div>';
+  html += '<button class="btn btn-primary" id="izSubmit">Ajukan Izin</button>';
+  html += '<p style="font-size:11px;color:#9CA3AF;margin-top:8px">*Rewarded ad akan ditampilkan</p></div>';
+  html += '<div class="card"><h3>Riwayat Izin</h3><div id="izList"><div class="empty">Memuat...</div></div></div>';
+  body.innerHTML = html;
 
   ambilData('Izin_Istirahat').then(function(res){
     var data = res.ok ? res.data : [];
-    if (isKaryawan()) {
-      data = data.filter(function(d){ return String(d.id_karyawan) === String(session.user_id); });
-    } else if (isKepalaToko()) {
-      data = data.filter(function(d){
-        return String(d.kode_cabang) === String(session.kode_cabang) ||
-               String(d.id_karyawan) === String(session.user_id);
-      });
-    }
-
+    data = data.filter(function(d){ return String(d.id_karyawan) === String(session.user_id); });
     var listEl = document.getElementById('izList');
-    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada izin</div>'; return; }
-
-    var h = '';
+    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada</div>'; return; }
     data.sort(function(a,b){ return String(b.tanggal_izin).localeCompare(String(a.tanggal_izin)); });
+    var h = '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th>Status</th></tr></thead><tbody>';
     data.forEach(function(d){
       var st = String(d.status || 'menunggu').toLowerCase();
-      var bc = 'badge-yellow';
-      if (st === 'disetujui') bc = 'badge-green';
-      else if (st === 'disetujui_kt') bc = 'badge-blue';
-      else if (st === 'ditolak') bc = 'badge-red';
+      var bc = st === 'disetujui' ? 'badge-green' : st === 'disetujui_kt' ? 'badge-blue' : st === 'ditolak' ? 'badge-red' : 'badge-yellow';
+      h += '<tr><td>' + esc(d.tanggal_izin) + '</td><td>' + esc(d.jenis_izin) + '</td><td><span class="badge ' + bc + '">' + esc(d.status || 'menunggu') + '</span></td></tr>';
+    });
+    h += '</tbody></table></div>';
+    listEl.innerHTML = h;
+  });
 
+  document.getElementById('izSubmit').addEventListener('click', function(){
+    if (isDemo()) { showToast('Mode demo','warning'); return; }
+    var btn = this; btn.disabled = true; btn.textContent = 'Mengajukan...';
+    tampilkanIklan('rewarded');
+    var data = {
+      id_izin: 'IZ-' + Date.now(),
+      tanggal_izin: document.getElementById('izTanggal').value,
+      jenis_izin: document.getElementById('izJenis').value,
+      id_karyawan: session.user_id,
+      nama_karyawan: session.user_nama,
+      kode_cabang: session.kode_cabang,
+      keterangan: document.getElementById('izKet').value || '-',
+      status: 'menunggu'
+    };
+    simpanData('Izin_Istirahat', data).then(function(res){
+      btn.disabled = false; btn.textContent = 'Ajukan Izin';
+      if (res && res.ok) { showToast('Izin diajukan','success'); renderPjIzin(session); }
+      else showToast(res.pesan || 'Gagal','error');
+    });
+  });
+}
+
+function renderPjKerusakan(session) {
+  var body = document.getElementById('pjBody');
+  body.innerHTML = '<div class="empty"><div class="ei">⏳</div>Memuat...</div>';
+  var html = '';
+  html += '<div class="card"><h3>Lapor Kerusakan / Kendala</h3>';
+  html += '<div class="fgroup"><label>Jenis</label><select id="rkJenis"><option value="kerusakan">Kerusakan</option><option value="kendala">Kendala Ruko</option><option value="kebersihan">Kebersihan</option><option value="lain">Lainnya</option></select></div>';
+  html += '<div class="fgroup"><label>Judul</label><input type="text" id="rkJudul" placeholder="Contoh: Mesin steam bocor"></div>';
+  html += '<div class="fgroup"><label>Deskripsi</label><textarea id="rkDesk" rows="3" style="font-family:Poppins;font-size:16px;padding:12px;border:1.5px solid #E5E7EB;border-radius:8px;width:100%;outline:none;resize:vertical"></textarea></div>';
+  html += '<button class="btn btn-primary" id="rkSubmit">Laporkan</button>';
+  html += '<p style="font-size:11px;color:#9CA3AF;margin-top:8px">*Rewarded ad akan ditampilkan</p></div>';
+  html += '<div class="card"><h3>Riwayat Laporan</h3><div id="rkList"><div class="empty">Memuat...</div></div></div>';
+  body.innerHTML = html;
+
+  ambilData('Kerusakan_Kendala').then(function(res){
+    var data = res.ok ? res.data : [];
+    data = data.filter(function(d){ return String(d.pelapor) === String(session.user_id); });
+    var listEl = document.getElementById('rkList');
+    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada</div>'; return; }
+    data.sort(function(a,b){ return String(b.tanggal).localeCompare(String(a.tanggal)); });
+    var h = '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Judul</th><th>Status</th></tr></thead><tbody>';
+    data.forEach(function(d){
+      var st = String(d.status || 'menunggu').toLowerCase();
+      var bc = st === 'disetujui' ? 'badge-green' : st === 'ditolak' ? 'badge-red' : 'badge-yellow';
+      h += '<tr><td>' + esc(d.tanggal) + '</td><td>' + esc(d.judul) + '</td><td><span class="badge ' + bc + '">' + esc(d.status || 'menunggu') + '</span></td></tr>';
+    });
+    h += '</tbody></table></div>';
+    listEl.innerHTML = h;
+  });
+
+  document.getElementById('rkSubmit').addEventListener('click', function(){
+    if (isDemo()) { showToast('Mode demo','warning'); return; }
+    var judul = document.getElementById('rkJudul').value.trim();
+    if (!judul) { showToast('Judul wajib','error'); return; }
+    var btn = this; btn.disabled = true; btn.textContent = 'Mengirim...';
+    tampilkanIklan('rewarded');
+    var data = {
+      id_laporan: 'RK-' + Date.now(), tanggal: todayStr(),
+      kode_cabang: session.kode_cabang, pelapor: session.user_id, nama_pelapor: session.user_nama,
+      jenis: document.getElementById('rkJenis').value, judul: judul,
+      deskripsi: document.getElementById('rkDesk').value || '-', status: 'menunggu'
+    };
+    simpanData('Kerusakan_Kendala', data).then(function(res){
+      btn.disabled = false; btn.textContent = 'Laporkan';
+      if (res && res.ok) { showToast('Terkirim','success'); renderPjKerusakan(session); }
+      else showToast(res.pesan || 'Gagal','error');
+    });
+  });
+}
+
+function renderPjPayroll(session) {
+  var body = document.getElementById('pjBody');
+  body.innerHTML = '<div class="empty"><div class="ei">⏳</div>Memuat...</div>';
+  var html = '';
+  html += '<div class="note-box"><b>Info:</b> Payroll bersifat privasi. Ajukan permintaan untuk membuka rincian payroll Anda. Owner/Admin akan ACC.</div>';
+  html += '<div class="card"><h3>Ajukan Permintaan</h3>';
+  html += '<div class="fgroup"><label>Alasan</label><input type="text" id="ppAlasan" placeholder="Contoh: Butuh bukti slip gaji"></div>';
+  html += '<button class="btn btn-primary" id="ppSubmit">Ajukan Permintaan</button>';
+  html += '<p style="font-size:11px;color:#9CA3AF;margin-top:8px">*Rewarded ad akan ditampilkan</p></div>';
+  html += '<div class="card"><h3>Riwayat Permintaan</h3><div id="ppList"><div class="empty">Memuat...</div></div></div>';
+  body.innerHTML = html;
+
+  ambilData('Permintaan_Payroll').then(function(res){
+    var data = res.ok ? res.data : [];
+    data = data.filter(function(d){ return String(d.id_karyawan) === String(session.user_id); });
+    var listEl = document.getElementById('ppList');
+    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada</div>'; return; }
+    data.sort(function(a,b){ return String(b.tanggal).localeCompare(String(a.tanggal)); });
+    var h = '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Alasan</th><th>Status</th></tr></thead><tbody>';
+    data.forEach(function(d){
+      var st = String(d.status || 'menunggu').toLowerCase();
+      var bc = st === 'disetujui' ? 'badge-green' : st === 'ditolak' ? 'badge-red' : 'badge-yellow';
+      h += '<tr><td>' + esc(d.tanggal) + '</td><td>' + esc(d.alasan) + '</td><td><span class="badge ' + bc + '">' + esc(d.status || 'menunggu') + '</span></td></tr>';
+    });
+    h += '</tbody></table></div>';
+    listEl.innerHTML = h;
+  });
+
+  document.getElementById('ppSubmit').addEventListener('click', function(){
+    if (isDemo()) { showToast('Mode demo','warning'); return; }
+    var alasan = document.getElementById('ppAlasan').value.trim();
+    if (!alasan) { showToast('Alasan wajib','error'); return; }
+    var btn = this; btn.disabled = true; btn.textContent = 'Mengirim...';
+    tampilkanIklan('rewarded');
+    var data = {
+      id_permintaan: 'PR-' + Date.now(), tanggal: todayStr(),
+      id_karyawan: session.user_id, nama_karyawan: session.user_nama,
+      alasan: alasan, status: 'menunggu'
+    };
+    simpanData('Permintaan_Payroll', data).then(function(res){
+      btn.disabled = false; btn.textContent = 'Ajukan Permintaan';
+      if (res && res.ok) { showToast('Terkirim','success'); renderPjPayroll(session); }
+      else showToast(res.pesan || 'Gagal','error');
+    });
+  });
+}
+
+/* ============================================================
+   HALAMAN: ACC IZIN (KEPALA TOKO)
+============================================================ */
+function renderAccIzinKT(session) {
+  if (!canAccIzinTahap1()) { showToast('Hanya Kepala Toko','error'); navigasi('home'); return; }
+  var el = document.getElementById('appContent');
+  var html = '';
+  html += '<div class="page-title">✅ ACC Izin</div>';
+  html += '<div class="page-sub">ACC izin tahap 1 (Kepala Toko)</div>';
+  html += '<div class="note-box">ACC Anda akan diteruskan ke Owner/Admin untuk ACC final.</div>';
+  html += '<div class="card"><h3>Izin Menunggu ACC</h3><div id="aiList"><div class="empty">Memuat...</div></div></div>';
+  el.innerHTML = html;
+
+  ambilData('Izin_Istirahat').then(function(res){
+    var data = (res.ok ? res.data : []).filter(function(d){
+      return String(d.kode_cabang) === String(session.kode_cabang) &&
+             String(d.id_karyawan) !== String(session.user_id) &&
+             String(d.status) === 'menunggu';
+    });
+    var listEl = document.getElementById('aiList');
+    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">✨</div>Tidak ada izin menunggu</div>'; return; }
+    var h = '';
+    data.forEach(function(d){
       h += '<div style="border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:10px">';
       h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">';
       h += '<div style="flex:1;min-width:160px">';
       h += '<div style="font-size:13px;font-weight:700;color:#1F2937">' + esc(d.nama_karyawan || d.id_karyawan) + '</div>';
       h += '<div style="font-size:11px;color:#6B7280;margin-top:2px">' + esc(d.jenis_izin) + ' • ' + esc(d.tanggal_izin) + '</div>';
-      if (d.kode_cabang) h += '<div style="font-size:11px;color:#6B7280">Cabang: ' + esc(d.kode_cabang) + '</div>';
-      if (d.keterangan) h += '<div style="font-size:11px;color:#374151;margin-top:4px;font-style:italic">"' + esc(d.keterangan) + '"</div>';
+      if (d.keterangan) h += '<div style="font-size:11px;font-style:italic">"' + esc(d.keterangan) + '"</div>';
       h += '</div>';
-      h += '<span class="badge ' + bc + '">' + esc(d.status || 'menunggu') + '</span>';
+      h += '<span class="badge badge-yellow">menunggu</span>';
       h += '</div>';
-
-      var showAccKT = canAccKT && st === 'menunggu';
-      var showAccFinal = canAccFinal && st === 'disetujui_kt';
-      if (showAccKT || showAccFinal) {
-        h += '<div class="btn-row" style="margin-top:10px">';
-        if (showAccKT) h += '<button class="btn btn-sm btn-gold" data-acc="' + d._row + '" data-tahap="kt">✅ ACC Kepala Toko</button>';
-        if (showAccFinal) h += '<button class="btn btn-sm btn-primary" data-acc="' + d._row + '" data-tahap="final" style="width:auto">✅ ACC Final</button>';
-        h += '<button class="btn btn-sm btn-danger" data-rej="' + d._row + '">❌ Tolak</button>';
-        h += '</div>';
-      }
-      h += '</div>';
+      h += '<div class="btn-row" style="margin-top:10px">';
+      h += '<button class="btn btn-sm btn-gold" data-acc-kt="' + d._row + '">✅ ACC Kepala Toko</button>';
+      h += '<button class="btn btn-sm btn-danger" data-rej-kt="' + d._row + '">❌ Tolak</button>';
+      h += '</div></div>';
     });
     listEl.innerHTML = h;
 
-    listEl.querySelectorAll('[data-acc]').forEach(function(btn){
+    listEl.querySelectorAll('[data-acc-kt]').forEach(function(btn){
       btn.addEventListener('click', function(){
         if (isDemo()) { showToast('Mode demo','warning'); return; }
-        var row = parseInt(this.getAttribute('data-acc'));
-        var tahap = this.getAttribute('data-tahap');
-        var newStatus = tahap === 'kt' ? 'disetujui_kt' : 'disetujui';
-        updateData('Izin_Istirahat', row, { status: newStatus, acc_by: session.user_nama, acc_time: nowISO() }).then(function(r){
-          if (r && r.ok) { showToast('Izin di-ACC','success'); renderIzin(session); }
+        var row = parseInt(this.getAttribute('data-acc-kt'));
+        updateData('Izin_Istirahat', row, { status: 'disetujui_kt', acc_by: session.user_nama, acc_time: nowISO() }).then(function(r){
+          if (r && r.ok) { showToast('Diteruskan ke Owner/Admin','success'); renderAccIzinKT(session); }
           else showToast(r.pesan || 'Gagal','error');
         });
       });
     });
-    listEl.querySelectorAll('[data-rej]').forEach(function(btn){
+    listEl.querySelectorAll('[data-rej-kt]').forEach(function(btn){
       btn.addEventListener('click', function(){
         if (isDemo()) { showToast('Mode demo','warning'); return; }
         if (!confirm('Tolak izin ini?')) return;
+        var row = parseInt(this.getAttribute('data-rej-kt'));
+        updateData('Izin_Istirahat', row, { status: 'ditolak', acc_by: session.user_nama }).then(function(r){
+          if (r && r.ok) { showToast('Ditolak','success'); renderAccIzinKT(session); }
+          else showToast(r.pesan || 'Gagal','error');
+        });
+      });
+    });
+  });
+}
+
+/* ============================================================
+   HALAMAN: PERSETUJUAN (Owner/Admin) — GABUNGAN
+   Tab: Izin | Kasbon | Kerusakan | Permintaan Payroll
+============================================================ */
+var persetujuanTab = 'izin';
+
+function renderPersetujuan(session) {
+  if (!canAccIzinTahap2() && !canAccKasbon()) { showToast('Akses ditolak','error'); navigasi('home'); return; }
+  var el = document.getElementById('appContent');
+  var html = '';
+  html += '<div class="page-title">✅ Persetujuan</div>';
+  html += '<div class="page-sub">ACC izin, kasbon, kerusakan & permintaan payroll</div>';
+  html += '<div class="tab-bar">';
+  html += '<button class="tab-btn ' + (persetujuanTab === 'izin' ? 'active' : '') + '" data-ptab="izin">📅 Izin</button>';
+  html += '<button class="tab-btn ' + (persetujuanTab === 'kasbon' ? 'active' : '') + '" data-ptab="kasbon">💸 Kasbon</button>';
+  html += '<button class="tab-btn ' + (persetujuanTab === 'rusak' ? 'active' : '') + '" data-ptab="rusak">🔧 Kerusakan</button>';
+  html += '<button class="tab-btn ' + (persetujuanTab === 'payroll' ? 'active' : '') + '" data-ptab="payroll">📨 Payroll</button>';
+  html += '</div>';
+  html += '<div id="pBody"></div>';
+  el.innerHTML = html;
+
+  document.querySelectorAll('[data-ptab]').forEach(function(b){
+    b.addEventListener('click', function(){
+      persetujuanTab = this.getAttribute('data-ptab');
+      renderPersetujuan(session);
+    });
+  });
+
+  if (persetujuanTab === 'izin') accIzin(session);
+  else if (persetujuanTab === 'kasbon') accKasbon(session);
+  else if (persetujuanTab === 'rusak') accKerusakan(session);
+  else accPayroll(session);
+}
+
+function accIzin(session) {
+  var body = document.getElementById('pBody');
+  body.innerHTML = '<div class="empty"><div class="ei">⏳</div>Memuat...</div>';
+  ambilData('Izin_Istirahat').then(function(res){
+    var data = (res.ok ? res.data : []).filter(function(d){ return String(d.status) === 'disetujui_kt'; });
+    if (data.length === 0) { body.innerHTML = '<div class="empty"><div class="ei">✨</div>Tidak ada izin menunggu ACC final</div>'; return; }
+    var h = '<div class="card"><h3>Izin Siap ACC Final</h3>';
+    data.forEach(function(d){
+      h += '<div style="border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:10px">';
+      h += '<div style="font-size:13px;font-weight:700;color:#1F2937">' + esc(d.nama_karyawan) + '</div>';
+      h += '<div style="font-size:11px;color:#6B7280">' + esc(d.jenis_izin) + ' • ' + esc(d.tanggal_izin) + ' • ' + esc(d.kode_cabang) + '</div>';
+      h += '<div class="btn-row" style="margin-top:10px">';
+      h += '<button class="btn btn-sm btn-primary" data-acc="' + d._row + '" style="width:auto">✅ ACC Final</button>';
+      h += '<button class="btn btn-sm btn-danger" data-rej="' + d._row + '">❌ Tolak</button>';
+      h += '</div></div>';
+    });
+    h += '</div>';
+    body.innerHTML = h;
+
+    body.querySelectorAll('[data-acc]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if (isDemo()) { showToast('Mode demo','warning'); return; }
+        var row = parseInt(this.getAttribute('data-acc'));
+        updateData('Izin_Istirahat', row, { status: 'disetujui', acc_by: session.user_nama, acc_time: nowISO() }).then(function(r){
+          if (r && r.ok) { showToast('Izin disetujui','success'); accIzin(session); }
+          else showToast(r.pesan || 'Gagal','error');
+        });
+      });
+    });
+    body.querySelectorAll('[data-rej]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if (isDemo()) { showToast('Mode demo','warning'); return; }
+        if (!confirm('Tolak?')) return;
         var row = parseInt(this.getAttribute('data-rej'));
-        updateData('Izin_Istirahat', row, { status: 'ditolak', acc_by: session.user_nama, acc_time: nowISO() }).then(function(r){
-          if (r && r.ok) { showToast('Izin ditolak','success'); renderIzin(session); }
+        updateData('Izin_Istirahat', row, { status: 'ditolak', acc_by: session.user_nama }).then(function(r){
+          if (r && r.ok) { showToast('Ditolak','success'); accIzin(session); }
           else showToast(r.pesan || 'Gagal','error');
         });
       });
     });
   });
-
-  if (canAjukan && document.getElementById('izSubmit')) {
-    document.getElementById('izSubmit').addEventListener('click', function(){
-      if (isDemo()) { showToast('Mode demo','warning'); return; }
-      var btn = this;
-      btn.disabled = true; btn.textContent = 'Mengajukan...';
-      tampilkanIklan('rewarded');
-      var data = {
-        id_izin: 'IZ-' + Date.now(),
-        tanggal_izin: document.getElementById('izTanggal').value,
-        jenis_izin: document.getElementById('izJenis').value,
-        id_karyawan: session.user_id,
-        nama_karyawan: session.user_nama,
-        kode_cabang: session.kode_cabang,
-        keterangan: document.getElementById('izKet').value || '-',
-        status: 'menunggu'
-      };
-      simpanData('Izin_Istirahat', data).then(function(res){
-        btn.disabled = false; btn.textContent = 'Ajukan Izin';
-        if (res && res.ok) { showToast('Izin diajukan','success'); renderIzin(session); }
-        else showToast(res.pesan || 'Gagal','error');
-      });
-    });
-  }
 }
 
-/* ============================================================
-   HALAMAN: KERUSAKAN / KENDALA
-============================================================ */
-function renderKerusakan(session) {
-  var el = document.getElementById('appContent');
-  var canAjukan = canAjukanKerusakan();
-  var canAcc = canAccKerusakan();
+function accKasbon(session) {
+  var body = document.getElementById('pBody');
+  body.innerHTML = '<div class="empty"><div class="ei">⏳</div>Memuat...</div>';
+  ambilData('Pengajuan_Kasbon').then(function(res){
+    var data = (res.ok ? res.data : []).filter(function(d){
+      return String(d.status) === 'menunggu' && (parseInt(d.jumlah_kasbon) || 0) > BATAS_KASBON_AUTO;
+    });
+    if (data.length === 0) { body.innerHTML = '<div class="empty"><div class="ei">✨</div>Tidak ada kasbon menunggu ACC</div>'; return; }
+    var h = '<div class="card"><h3>Kasbon Menunggu ACC</h3>';
+    data.forEach(function(d){
+      h += '<div style="border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:10px">';
+      h += '<div style="font-size:13px;font-weight:700;color:#1F2937">' + esc(d.nama_karyawan) + '</div>';
+      h += '<div style="font-size:11px;color:#6B7280">' + esc(d.tanggal_pengajuan) + ' • ' + esc(d.kode_cabang || '-') + '</div>';
+      h += '<div style="font-size:18px;font-weight:800;color:#C8102E;margin-top:6px">' + fmtRupiah(d.jumlah_kasbon) + '</div>';
+      h += '<div class="btn-row" style="margin-top:10px">';
+      h += '<button class="btn btn-sm btn-primary" data-acc="' + d._row + '" style="width:auto">✅ ACC</button>';
+      h += '<button class="btn btn-sm btn-danger" data-rej="' + d._row + '">❌ Tolak</button>';
+      h += '</div></div>';
+    });
+    h += '</div>';
+    body.innerHTML = h;
 
-  var html = '';
-  html += '<div class="page-title">🔧 Kerusakan / Kendala</div>';
-  html += '<div class="page-sub">';
-  if (canAjukan) html += 'Laporkan kerusakan atau kendala ruko';
-  else html += 'ACC laporan kerusakan anggota';
-  html += '</div>';
+    body.querySelectorAll('[data-acc]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if (isDemo()) { showToast('Mode demo','warning'); return; }
+        var row = parseInt(this.getAttribute('data-acc'));
+        updateData('Pengajuan_Kasbon', row, { status: 'disetujui', acc_by: session.user_nama, acc_time: nowISO() }).then(function(r){
+          if (r && r.ok) { showToast('Kasbon disetujui','success'); accKasbon(session); }
+          else showToast(r.pesan || 'Gagal','error');
+        });
+      });
+    });
+    body.querySelectorAll('[data-rej]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if (isDemo()) { showToast('Mode demo','warning'); return; }
+        if (!confirm('Tolak?')) return;
+        var row = parseInt(this.getAttribute('data-rej'));
+        updateData('Pengajuan_Kasbon', row, { status: 'ditolak', acc_by: session.user_nama }).then(function(r){
+          if (r && r.ok) { showToast('Ditolak','success'); accKasbon(session); }
+          else showToast(r.pesan || 'Gagal','error');
+        });
+      });
+    });
+  });
+}
 
-  if (canAjukan) {
-    html += '<div class="card"><h3>Lapor Kerusakan / Kendala</h3>';
-    html += '<div class="fgroup"><label>Jenis</label><select id="rkJenis">';
-    html += '<option value="kerusakan">Kerusakan</option>';
-    html += '<option value="kendala">Kendala Ruko</option>';
-    html += '<option value="kebersihan">Kebersihan</option>';
-    html += '<option value="lain">Lainnya</option>';
-    html += '</select></div>';
-    html += '<div class="fgroup"><label>Judul</label><input type="text" id="rkJudul" placeholder="Contoh: Mesin steam bocor"></div>';
-    html += '<div class="fgroup"><label>Deskripsi</label><textarea id="rkDesk" rows="3" placeholder="Detail kerusakan/kendala" style="font-family:Poppins;font-size:16px;padding:12px;border:1.5px solid #E5E7EB;border-radius:8px;width:100%;outline:none;resize:vertical"></textarea></div>';
-    html += '<button class="btn btn-primary" id="rkSubmit">Laporkan</button>';
-    html += '<p style="font-size:11px;color:#9CA3AF;margin-top:8px">*Rewarded ad akan ditampilkan</p>';
-    html += '</div>';
-  }
-
-  html += '<div class="card"><h3>Daftar Laporan</h3><div id="rkList"><div class="empty">Memuat...</div></div></div>';
-  el.innerHTML = html;
-
+function accKerusakan(session) {
+  var body = document.getElementById('pBody');
+  body.innerHTML = '<div class="empty"><div class="ei">⏳</div>Memuat...</div>';
   ambilData('Kerusakan_Kendala').then(function(res){
-    var data = res.ok ? res.data : [];
-    if (isKaryawan()) {
-      data = data.filter(function(d){ return String(d.pelapor) === String(session.user_id); });
-    } else if (isKepalaToko()) {
-      data = data.filter(function(d){
-        return String(d.kode_cabang) === String(session.kode_cabang) ||
-               String(d.pelapor) === String(session.user_id);
-      });
-    }
-
-    var listEl = document.getElementById('rkList');
-    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada laporan</div>'; return; }
-
-    var h = '';
-    data.sort(function(a,b){ return String(b.tanggal).localeCompare(String(a.tanggal)); });
+    var data = (res.ok ? res.data : []).filter(function(d){ return String(d.status) === 'menunggu'; });
+    if (data.length === 0) { body.innerHTML = '<div class="empty"><div class="ei">✨</div>Tidak ada kerusakan menunggu</div>'; return; }
+    var h = '<div class="card"><h3>Kerusakan / Kendala Menunggu</h3>';
     data.forEach(function(d){
-      var st = String(d.status || 'menunggu').toLowerCase();
-      var bc = st === 'disetujui' || st === 'ditangani' ? 'badge-green' : st === 'ditolak' ? 'badge-red' : 'badge-yellow';
-
       h += '<div style="border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:10px">';
-      h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">';
-      h += '<div style="flex:1;min-width:160px">';
-      h += '<div style="font-size:11px;color:#6B7280">' + esc(d.jenis) + ' • ' + esc(d.tanggal) + '</div>';
-      h += '<div style="font-size:13px;font-weight:700;color:#1F2937;margin-top:2px">' + esc(d.judul) + '</div>';
-      h += '<div style="font-size:11px;color:#374151;margin-top:4px">' + esc(d.deskripsi) + '</div>';
-      h += '<div style="font-size:10px;color:#9CA3AF;margin-top:4px">Oleh: ' + esc(d.nama_pelapor || d.pelapor) + ' • Cabang: ' + esc(d.kode_cabang) + '</div>';
-      h += '</div>';
-      h += '<span class="badge ' + bc + '">' + esc(d.status || 'menunggu') + '</span>';
-      h += '</div>';
-
-      if (canAcc && st === 'menunggu') {
-        h += '<div class="btn-row" style="margin-top:10px">';
-        h += '<button class="btn btn-sm btn-primary" data-acc-rk="' + d._row + '" style="width:auto">✅ ACC</button>';
-        h += '<button class="btn btn-sm btn-danger" data-rej-rk="' + d._row + '">❌ Tolak</button>';
-        h += '</div>';
-      }
-      h += '</div>';
+      h += '<div style="font-size:11px;color:#6B7280">' + esc(d.jenis) + ' • ' + esc(d.tanggal) + ' • ' + esc(d.kode_cabang) + '</div>';
+      h += '<div style="font-size:13px;font-weight:700;color:#1F2937">' + esc(d.judul) + '</div>';
+      h += '<div style="font-size:11px;color:#374151;margin-top:2px">' + esc(d.deskripsi) + '</div>';
+      h += '<div style="font-size:10px;color:#9CA3AF;margin-top:4px">Oleh: ' + esc(d.nama_pelapor) + '</div>';
+      h += '<div class="btn-row" style="margin-top:10px">';
+      h += '<button class="btn btn-sm btn-primary" data-acc="' + d._row + '" style="width:auto">✅ ACC</button>';
+      h += '<button class="btn btn-sm btn-danger" data-rej="' + d._row + '">❌ Tolak</button>';
+      h += '</div></div>';
     });
-    listEl.innerHTML = h;
+    h += '</div>';
+    body.innerHTML = h;
 
-    listEl.querySelectorAll('[data-acc-rk]').forEach(function(btn){
+    body.querySelectorAll('[data-acc]').forEach(function(btn){
       btn.addEventListener('click', function(){
         if (isDemo()) { showToast('Mode demo','warning'); return; }
-        var row = parseInt(this.getAttribute('data-acc-rk'));
+        var row = parseInt(this.getAttribute('data-acc'));
         updateData('Kerusakan_Kendala', row, { status: 'disetujui', acc_by: session.user_nama, acc_time: nowISO() }).then(function(r){
-          if (r && r.ok) { showToast('Laporan di-ACC','success'); renderKerusakan(session); }
+          if (r && r.ok) { showToast('Disetujui','success'); accKerusakan(session); }
           else showToast(r.pesan || 'Gagal','error');
         });
       });
     });
-    listEl.querySelectorAll('[data-rej-rk]').forEach(function(btn){
+    body.querySelectorAll('[data-rej]').forEach(function(btn){
       btn.addEventListener('click', function(){
         if (isDemo()) { showToast('Mode demo','warning'); return; }
-        if (!confirm('Tolak laporan ini?')) return;
-        var row = parseInt(this.getAttribute('data-rej-rk'));
-        updateData('Kerusakan_Kendala', row, { status: 'ditolak', acc_by: session.user_nama, acc_time: nowISO() }).then(function(r){
-          if (r && r.ok) { showToast('Laporan ditolak','success'); renderKerusakan(session); }
+        if (!confirm('Tolak?')) return;
+        var row = parseInt(this.getAttribute('data-rej'));
+        updateData('Kerusakan_Kendala', row, { status: 'ditolak', acc_by: session.user_nama }).then(function(r){
+          if (r && r.ok) { showToast('Ditolak','success'); accKerusakan(session); }
           else showToast(r.pesan || 'Gagal','error');
         });
       });
     });
   });
+}
 
-  if (canAjukan && document.getElementById('rkSubmit')) {
-    document.getElementById('rkSubmit').addEventListener('click', function(){
-      if (isDemo()) { showToast('Mode demo','warning'); return; }
-      var judul = document.getElementById('rkJudul').value.trim();
-      if (!judul) { showToast('Judul wajib diisi','error'); return; }
-      var btn = this;
-      btn.disabled = true; btn.textContent = 'Mengirim...';
-      tampilkanIklan('rewarded');
-      var data = {
-        id_laporan: 'RK-' + Date.now(),
-        tanggal: todayStr(),
-        kode_cabang: session.kode_cabang,
-        pelapor: session.user_id,
-        nama_pelapor: session.user_nama,
-        jenis: document.getElementById('rkJenis').value,
-        judul: judul,
-        deskripsi: document.getElementById('rkDesk').value || '-',
-        status: 'menunggu'
-      };
-      simpanData('Kerusakan_Kendala', data).then(function(res){
-        btn.disabled = false; btn.textContent = 'Laporkan';
-        if (res && res.ok) { showToast('Laporan dikirim','success'); renderKerusakan(session); }
-        else showToast(res.pesan || 'Gagal','error');
+function accPayroll(session) {
+  var body = document.getElementById('pBody');
+  body.innerHTML = '<div class="empty"><div class="ei">⏳</div>Memuat...</div>';
+  ambilData('Permintaan_Payroll').then(function(res){
+    var data = (res.ok ? res.data : []).filter(function(d){ return String(d.status) === 'menunggu'; });
+    if (data.length === 0) { body.innerHTML = '<div class="empty"><div class="ei">✨</div>Tidak ada permintaan menunggu</div>'; return; }
+    var h = '<div class="card"><h3>Permintaan Lihat Payroll</h3>';
+    data.forEach(function(d){
+      h += '<div style="border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:10px">';
+      h += '<div style="font-size:13px;font-weight:700;color:#1F2937">' + esc(d.nama_karyawan) + '</div>';
+      h += '<div style="font-size:11px;color:#6B7280">' + esc(d.tanggal) + '</div>';
+      if (d.alasan) h += '<div style="font-size:11px;font-style:italic;margin-top:4px">"' + esc(d.alasan) + '"</div>';
+      h += '<div class="btn-row" style="margin-top:10px">';
+      h += '<button class="btn btn-sm btn-primary" data-acc="' + d._row + '" style="width:auto">✅ ACC</button>';
+      h += '<button class="btn btn-sm btn-danger" data-rej="' + d._row + '">❌ Tolak</button>';
+      h += '</div></div>';
+    });
+    h += '</div>';
+    body.innerHTML = h;
+
+    body.querySelectorAll('[data-acc]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if (isDemo()) { showToast('Mode demo','warning'); return; }
+        var row = parseInt(this.getAttribute('data-acc'));
+        updateData('Permintaan_Payroll', row, { status: 'disetujui', acc_by: session.user_nama, acc_time: nowISO() }).then(function(r){
+          if (r && r.ok) { showToast('Disetujui','success'); accPayroll(session); }
+          else showToast(r.pesan || 'Gagal','error');
+        });
       });
     });
-  }
+    body.querySelectorAll('[data-rej]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if (isDemo()) { showToast('Mode demo','warning'); return; }
+        if (!confirm('Tolak?')) return;
+        var row = parseInt(this.getAttribute('data-rej'));
+        updateData('Permintaan_Payroll', row, { status: 'ditolak', acc_by: session.user_nama }).then(function(r){
+          if (r && r.ok) { showToast('Ditolak','success'); accPayroll(session); }
+          else showToast(r.pesan || 'Gagal','error');
+        });
+      });
+    });
+  });
 }
 
 /* ============================================================
-   HALAMAN: PERMINTAAN LIHAT PAYROLL
+   HALAMAN: PAYROLL & LAPORAN (KEPALA TOKO) — GABUNGAN
 ============================================================ */
-function renderPermintaanPayroll(session) {
+var plTab = 'payroll';
+
+function renderPayrollLaporanKT(session) {
+  if (!hasPayrollPribadi()) { showToast('Akses ditolak','error'); navigasi('home'); return; }
   var el = document.getElementById('appContent');
-  var canAjukan = canAjukanPayrollReq();
-  var canAcc = canAccPermintaanPayroll();
-
   var html = '';
-  html += '<div class="page-title">📨 Permintaan Lihat Payroll</div>';
-  html += '<div class="page-sub">';
-  if (canAjukan) html += 'Ajukan permintaan untuk membuka detail payroll';
-  else html += 'ACC permintaan anggota';
+  html += '<div class="page-title">💵 Payroll & Laporan</div>';
+  html += '<div class="page-sub">Data pribadi & laporan cabang</div>';
+  html += '<div class="tab-bar">';
+  html += '<button class="tab-btn ' + (plTab === 'payroll' ? 'active' : '') + '" data-pltab="payroll">💵 Payroll Saya</button>';
+  html += '<button class="tab-btn ' + (plTab === 'laporan' ? 'active' : '') + '" data-pltab="laporan">📊 Laporan</button>';
   html += '</div>';
-
-  html += '<div class="note-box"><b>Info:</b> Payroll bersifat privasi. Untuk melihat rincian lengkap, ajukan permintaan. Owner/Admin akan ACC.</div>';
-
-  if (canAjukan) {
-    html += '<div class="card"><h3>Ajukan Permintaan</h3>';
-    html += '<div class="fgroup"><label>Alasan</label><input type="text" id="ppAlasan" placeholder="Contoh: Butuh bukti slip gaji"></div>';
-    html += '<button class="btn btn-primary" id="ppSubmit">Ajukan Permintaan</button>';
-    html += '<p style="font-size:11px;color:#9CA3AF;margin-top:8px">*Rewarded ad akan ditampilkan</p>';
-    html += '</div>';
-  }
-
-  html += '<div class="card"><h3>Daftar Permintaan</h3><div id="ppList"><div class="empty">Memuat...</div></div></div>';
+  html += '<div id="plBody"></div>';
   el.innerHTML = html;
 
-  ambilData('Permintaan_Payroll').then(function(res){
-    var data = res.ok ? res.data : [];
-    if (isKaryawan() || isKepalaToko()) {
-      data = data.filter(function(d){ return String(d.id_karyawan) === String(session.user_id); });
-    }
-
-    var listEl = document.getElementById('ppList');
-    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada permintaan</div>'; return; }
-
-    var h = '';
-    data.sort(function(a,b){ return String(b.tanggal).localeCompare(String(a.tanggal)); });
-    data.forEach(function(d){
-      var st = String(d.status || 'menunggu').toLowerCase();
-      var bc = st === 'disetujui' ? 'badge-green' : st === 'ditolak' ? 'badge-red' : 'badge-yellow';
-
-      h += '<div style="border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:10px">';
-      h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">';
-      h += '<div style="flex:1;min-width:160px">';
-      h += '<div style="font-size:11px;color:#6B7280">' + esc(d.tanggal) + '</div>';
-      h += '<div style="font-size:13px;font-weight:700;color:#1F2937;margin-top:2px">' + esc(d.nama_karyawan || d.id_karyawan) + '</div>';
-      if (d.alasan) h += '<div style="font-size:11px;color:#374151;margin-top:4px;font-style:italic">"' + esc(d.alasan) + '"</div>';
-      h += '</div>';
-      h += '<span class="badge ' + bc + '">' + esc(d.status || 'menunggu') + '</span>';
-      h += '</div>';
-
-      if (canAcc && st === 'menunggu') {
-        h += '<div class="btn-row" style="margin-top:10px">';
-        h += '<button class="btn btn-sm btn-primary" data-acc-pp="' + d._row + '" style="width:auto">✅ ACC</button>';
-        h += '<button class="btn btn-sm btn-danger" data-rej-pp="' + d._row + '">❌ Tolak</button>';
-        h += '</div>';
-      }
-      if (st === 'disetujui' && String(d.id_karyawan) === String(session.user_id) && canAjukan) {
-        h += '<div class="btn-row" style="margin-top:10px">';
-        h += '<button class="btn btn-sm btn-gold" data-lihat-py="1">💵 Buka Payroll Saya</button>';
-        h += '</div>';
-      }
-      h += '</div>';
-    });
-    listEl.innerHTML = h;
-
-    listEl.querySelectorAll('[data-acc-pp]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        if (isDemo()) { showToast('Mode demo','warning'); return; }
-        var row = parseInt(this.getAttribute('data-acc-pp'));
-        updateData('Permintaan_Payroll', row, { status: 'disetujui', acc_by: session.user_nama, acc_time: nowISO() }).then(function(r){
-          if (r && r.ok) { showToast('Permintaan di-ACC','success'); renderPermintaanPayroll(session); }
-          else showToast(r.pesan || 'Gagal','error');
-        });
-      });
-    });
-    listEl.querySelectorAll('[data-rej-pp]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        if (isDemo()) { showToast('Mode demo','warning'); return; }
-        if (!confirm('Tolak permintaan ini?')) return;
-        var row = parseInt(this.getAttribute('data-rej-pp'));
-        updateData('Permintaan_Payroll', row, { status: 'ditolak', acc_by: session.user_nama, acc_time: nowISO() }).then(function(r){
-          if (r && r.ok) { showToast('Permintaan ditolak','success'); renderPermintaanPayroll(session); }
-          else showToast(r.pesan || 'Gagal','error');
-        });
-      });
-    });
-    listEl.querySelectorAll('[data-lihat-py]').forEach(function(btn){
-      btn.addEventListener('click', function(){ navigasi('payroll'); });
+  document.querySelectorAll('[data-pltab]').forEach(function(b){
+    b.addEventListener('click', function(){
+      plTab = this.getAttribute('data-pltab');
+      renderPayrollLaporanKT(session);
     });
   });
 
-  if (canAjukan && document.getElementById('ppSubmit')) {
-    document.getElementById('ppSubmit').addEventListener('click', function(){
-      if (isDemo()) { showToast('Mode demo','warning'); return; }
-      var alasan = document.getElementById('ppAlasan').value.trim();
-      if (!alasan) { showToast('Alasan wajib diisi','error'); return; }
-      var btn = this;
-      btn.disabled = true; btn.textContent = 'Mengirim...';
-      tampilkanIklan('rewarded');
-      var data = {
-        id_permintaan: 'PR-' + Date.now(),
-        tanggal: todayStr(),
-        id_karyawan: session.user_id,
-        nama_karyawan: session.user_nama,
-        alasan: alasan,
-        status: 'menunggu'
-      };
-      simpanData('Permintaan_Payroll', data).then(function(res){
-        btn.disabled = false; btn.textContent = 'Ajukan Permintaan';
-        if (res && res.ok) { showToast('Permintaan dikirim','success'); renderPermintaanPayroll(session); }
-        else showToast(res.pesan || 'Gagal','error');
-      });
-    });
-  }
+  if (plTab === 'payroll') muatPayrollSaya();
+  else muatLaporanKT(session);
 }
 
-/* ============================================================
-   HALAMAN: PAYROLL SAYA
-============================================================ */
-function renderPayroll(session) {
-  if (!hasPayrollPribadi()) {
-    showToast('Owner & Admin tidak memiliki payroll pribadi','error');
-    navigasi('home'); return;
-  }
-
+function muatPayrollSaya() {
   if (!sessionStorage.getItem('payroll_ad')) {
     tampilkanIklan('interstitial');
     sessionStorage.setItem('payroll_ad','1');
   }
+  var body = document.getElementById('plBody');
+  var html = '';
+  html += '<div class="priv-card"><div class="pv-ico">🔒</div><div class="pv-ttl">PRIVASI TOTAL</div>';
+  html += '<div class="pv-sub">Hanya menampilkan payroll milik Anda.</div></div>';
+  html += '<div class="card"><h3>Payroll Saya</h3><div id="pyList"><div class="empty">Memuat...</div></div></div>';
+  body.innerHTML = html;
 
+  var s = getSession();
+  ambilData('Payroll').then(function(res){
+    var listEl = document.getElementById('pyList');
+    var data = res.ok ? res.data : [];
+    data = data.filter(function(d){ return String(d.id_karyawan) === String(s.user_id); });
+    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada data</div>'; return; }
+    data.sort(function(a,b){ return String(b.periode).localeCompare(String(a.periode)); });
+    var totalDibayar = 0, totalBelum = 0;
+    data.forEach(function(d){
+      if (d.status === 'dibayar') totalDibayar += parseInt(d.total_payroll) || 0;
+      else totalBelum += parseInt(d.total_payroll) || 0;
+    });
+    var h = '<div class="stat-grid" style="margin-bottom:12px">';
+    h += '<div class="stat-card green"><div class="sc-lbl">Total Dibayar</div><div class="sc-val" style="font-size:15px">' + fmtRupiah(totalDibayar) + '</div></div>';
+    h += '<div class="stat-card gold"><div class="sc-lbl">Belum Dibayar</div><div class="sc-val" style="font-size:15px">' + fmtRupiah(totalBelum) + '</div></div></div>';
+    h += '<div class="table-wrap"><table><thead><tr><th>Periode</th><th>Total</th><th>Status</th></tr></thead><tbody>';
+    data.forEach(function(d){
+      h += '<tr><td>' + esc(d.periode) + '</td><td>' + fmtRupiah(d.total_payroll) + '</td><td><span class="badge ' + (d.status === 'dibayar' ? 'badge-green' : 'badge-yellow') + '">' + esc(d.status) + '</span></td></tr>';
+    });
+    h += '</tbody></table></div>';
+    listEl.innerHTML = h;
+  });
+}
+
+function muatLaporanKT(session) {
+  var body = document.getElementById('plBody');
+  body.innerHTML = '<div class="empty"><div class="ei">⏳</div>Memuat...</div>';
+  var html = '';
+  html += '<div class="card"><h3>Buat Laporan</h3>';
+  html += '<div class="fgroup"><label>Judul</label><input type="text" id="lpJudul" placeholder="Judul laporan"></div>';
+  html += '<div class="fgroup"><label>Isi</label><textarea id="lpIsi" rows="3" style="font-family:Poppins;font-size:16px;padding:12px;border:1.5px solid #E5E7EB;border-radius:8px;width:100%;outline:none;resize:vertical"></textarea></div>';
+  html += '<button class="btn btn-primary" id="lpSubmit">Buat Laporan</button></div>';
+  html += '<div class="card"><h3>Riwayat Laporan Saya</h3><div id="lpList"><div class="empty">Memuat...</div></div></div>';
+  body.innerHTML = html;
+
+  ambilData('Laporan').then(function(res){
+    var listEl = document.getElementById('lpList');
+    var data = res.ok ? res.data : [];
+    data = data.filter(function(d){ return String(d.pembuat) === String(session.user_nama); });
+    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada laporan</div>'; return; }
+    var h = '';
+    data.sort(function(a,b){ return String(b.tanggal).localeCompare(String(a.tanggal)); });
+    data.forEach(function(d){
+      h += '<div class="info-row"><span class="lbl">' + esc(d.judul) + ' — ' + esc(d.tanggal) + '</span><span class="val"><span class="badge badge-blue">' + esc(d.status) + '</span></span></div>';
+    });
+    listEl.innerHTML = h;
+  });
+
+  document.getElementById('lpSubmit').addEventListener('click', function(){
+    if (isDemo()) { showToast('Mode demo','warning'); return; }
+    var judul = document.getElementById('lpJudul').value.trim();
+    if (!judul) { showToast('Judul wajib','error'); return; }
+    var btn = this; btn.disabled = true;
+    var data = {
+      id_laporan: 'LP-' + Date.now(), tanggal: todayStr(),
+      kode_cabang: session.kode_cabang, judul: judul,
+      isi: document.getElementById('lpIsi').value || '-',
+      pembuat: session.user_nama, status: 'draft'
+    };
+    simpanData('Laporan', data).then(function(res){
+      btn.disabled = false;
+      if (res && res.ok) { showToast('Laporan dibuat','success'); muatLaporanKT(session); }
+      else showToast(res.pesan || 'Gagal','error');
+    });
+  });
+}
+
+/* ============================================================
+   HALAMAN: PAYROLL SAYA (KARYAWAN)
+============================================================ */
+function renderPayroll(session) {
+  if (!hasPayrollPribadi()) { showToast('Akses ditolak','error'); navigasi('home'); return; }
+  if (!sessionStorage.getItem('payroll_ad')) {
+    tampilkanIklan('interstitial');
+    sessionStorage.setItem('payroll_ad','1');
+  }
   var el = document.getElementById('appContent');
   var html = '';
   html += '<div class="page-title">💵 Payroll Saya</div>';
   html += '<div class="page-sub">Data penggajian pribadi</div>';
-  html += '<div class="priv-card">';
-  html += '<div class="pv-ico">🔒</div>';
-  html += '<div class="pv-ttl">PRIVASI TOTAL</div>';
-  html += '<div class="pv-sub">Hanya menampilkan payroll milik Anda.<br>Payroll rekan tidak dapat diakses.</div>';
-  html += '</div>';
+  html += '<div class="priv-card"><div class="pv-ico">🔒</div><div class="pv-ttl">PRIVASI TOTAL</div>';
+  html += '<div class="pv-sub">Hanya menampilkan payroll milik Anda.</div></div>';
   html += '<div class="card"><h3>Payroll Saya</h3><div id="pyList"><div class="empty">Memuat...</div></div></div>';
   el.innerHTML = html;
 
@@ -1676,23 +1888,16 @@ function renderPayroll(session) {
     var listEl = document.getElementById('pyList');
     var data = res.ok ? res.data : [];
     data = data.filter(function(d){ return String(d.id_karyawan) === String(session.user_id); });
-
-    if (data.length === 0) {
-      listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada data payroll untuk Anda</div>';
-      return;
-    }
+    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada data</div>'; return; }
     data.sort(function(a,b){ return String(b.periode).localeCompare(String(a.periode)); });
-
     var totalDibayar = 0, totalBelum = 0;
     data.forEach(function(d){
       if (d.status === 'dibayar') totalDibayar += parseInt(d.total_payroll) || 0;
       else totalBelum += parseInt(d.total_payroll) || 0;
     });
-
     var h = '<div class="stat-grid" style="margin-bottom:12px">';
-    h += '<div class="stat-card green"><div class="sc-lbl">Total Dibayar</div><div class="sc-val" style="font-size:15px">' + fmtRupiah(totalDibayar) + '</div></div>';
-    h += '<div class="stat-card gold"><div class="sc-lbl">Belum Dibayar</div><div class="sc-val" style="font-size:15px">' + fmtRupiah(totalBelum) + '</div></div>';
-    h += '</div>';
+    h += '<div class="stat-card green"><div class="sc-lbl">Dibayar</div><div class="sc-val" style="font-size:15px">' + fmtRupiah(totalDibayar) + '</div></div>';
+    h += '<div class="stat-card gold"><div class="sc-lbl">Belum</div><div class="sc-val" style="font-size:15px">' + fmtRupiah(totalBelum) + '</div></div></div>';
     h += '<div class="table-wrap"><table><thead><tr><th>Periode</th><th>Total</th><th>Status</th></tr></thead><tbody>';
     data.forEach(function(d){
       h += '<tr><td>' + esc(d.periode) + '</td><td>' + fmtRupiah(d.total_payroll) + '</td><td><span class="badge ' + (d.status === 'dibayar' ? 'badge-green' : 'badge-yellow') + '">' + esc(d.status) + '</span></td></tr>';
@@ -1703,32 +1908,25 @@ function renderPayroll(session) {
 }
 
 /* ============================================================
-   HALAMAN: MANAJEMEN PAYROLL OWNER
+   HALAMAN: PAYROLL OWNER (manajemen semua)
 ============================================================ */
 function renderPayrollOwner(session) {
   if (!canModifPayrollAll()) { showToast('Hanya Owner','error'); navigasi('home'); return; }
-
   var el = document.getElementById('appContent');
   var html = '';
-  html += '<div class="page-title">💼 Manajemen Payroll</div>';
-  html += '<div class="page-sub">Lihat & edit payroll semua anggota</div>';
-  html += '<div class="priv-card owner">';
-  html += '<div class="pv-ico">👑</div>';
-  html += '<div class="pv-ttl">AKSES OWNER</div>';
-  html += '<div class="pv-sub">Anda bisa memodifikasi payroll seluruh anggota untuk koreksi data.</div>';
-  html += '</div>';
+  html += '<div class="page-title">💼 Payroll</div>';
+  html += '<div class="page-sub">Kelola semua payroll anggota</div>';
+  html += '<div class="priv-card owner"><div class="pv-ico">👑</div><div class="pv-ttl">AKSES OWNER</div>';
+  html += '<div class="pv-sub">Lihat & edit payroll semua anggota.</div></div>';
   html += '<button class="btn btn-gold btn-block" id="pyoTambah" style="margin-bottom:14px">+ Tambah Payroll</button>';
-  html += '<div class="search-bar">';
-  html += '<input type="text" id="pyoSearch" placeholder="Cari nama/ID...">';
-  html += '<select id="pyoFilterStatus"><option value="">Semua Status</option><option value="dibayar">Dibayar</option><option value="menunggu">Menunggu</option></select>';
-  html += '</div>';
+  html += '<div class="search-bar"><input type="text" id="pyoSearch" placeholder="Cari nama/ID...">';
+  html += '<select id="pyoFilterStatus"><option value="">Semua Status</option><option value="dibayar">Dibayar</option><option value="menunggu">Menunggu</option></select></div>';
   html += '<div class="card"><h3>Semua Payroll</h3><div id="pyoList"><div class="empty">Memuat...</div></div></div>';
   el.innerHTML = html;
 
   muatPayrollOwner();
   document.getElementById('pyoSearch').addEventListener('input', muatPayrollOwner);
   document.getElementById('pyoFilterStatus').addEventListener('change', muatPayrollOwner);
-
   document.getElementById('pyoTambah').addEventListener('click', function(){
     if (isDemo()) { showToast('Mode demo','warning'); return; }
     bukaFormPayroll(null);
@@ -1737,45 +1935,27 @@ function renderPayrollOwner(session) {
 
 function muatPayrollOwner() {
   ambilData('Payroll').then(function(res){
-    var listEl = document.getElementById('pyoList');
-    if (!listEl) return;
+    var listEl = document.getElementById('pyoList'); if (!listEl) return;
     var data = res.ok ? res.data : [];
-
     var q = (document.getElementById('pyoSearch').value || '').toLowerCase();
     var fs = document.getElementById('pyoFilterStatus').value;
-
     data = data.filter(function(d){
       if (q && String(d.nama_karyawan || '').toLowerCase().indexOf(q) === -1 && String(d.id_karyawan).indexOf(q) === -1) return false;
       if (fs && d.status !== fs) return false;
       return true;
     });
     data.sort(function(a,b){ return String(b.periode).localeCompare(String(a.periode)); });
-
-    if (data.length === 0) {
-      listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada data payroll</div>';
-      return;
-    }
-
+    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada</div>'; return; }
     var totalSemua = 0;
     data.forEach(function(d){ totalSemua += parseInt(d.total_payroll) || 0; });
-
     var h = '<div style="background:#FEF3C7;border-radius:8px;padding:10px 12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">';
-    h += '<span style="font-size:12px;font-weight:600;color:#92400E">TOTAL SEMUA PAYROLL</span>';
+    h += '<span style="font-size:12px;font-weight:600;color:#92400E">TOTAL SEMUA</span>';
     h += '<span style="font-size:16px;font-weight:800;color:#B45309">' + fmtRupiah(totalSemua) + '</span></div>';
-    h += '<div class="table-wrap"><table><thead><tr>';
-    h += '<th>Periode</th><th>ID</th><th>Nama</th><th>Total</th><th>Status</th><th>Aksi</th>';
-    h += '</tr></thead><tbody>';
+    h += '<div class="table-wrap"><table><thead><tr><th>Periode</th><th>ID</th><th>Nama</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead><tbody>';
     data.forEach(function(d){
-      h += '<tr>';
-      h += '<td>' + esc(d.periode) + '</td>';
-      h += '<td>' + esc(d.id_karyawan) + '</td>';
-      h += '<td>' + esc(d.nama_karyawan) + '</td>';
-      h += '<td><b>' + fmtRupiah(d.total_payroll) + '</b></td>';
+      h += '<tr><td>' + esc(d.periode) + '</td><td>' + esc(d.id_karyawan) + '</td><td>' + esc(d.nama_karyawan) + '</td><td><b>' + fmtRupiah(d.total_payroll) + '</b></td>';
       h += '<td><span class="badge ' + (d.status === 'dibayar' ? 'badge-green' : 'badge-yellow') + '">' + esc(d.status) + '</span></td>';
-      h += '<td style="white-space:nowrap">';
-      h += '<button class="btn btn-sm btn-outline" data-pedit="' + d._row + '">✏️</button> ';
-      h += '<button class="btn btn-sm btn-danger" data-pdel="' + d._row + '">🗑️</button>';
-      h += '</td></tr>';
+      h += '<td style="white-space:nowrap"><button class="btn btn-sm btn-outline" data-pedit="' + d._row + '">✏️</button> <button class="btn btn-sm btn-danger" data-pdel="' + d._row + '">🗑️</button></td></tr>';
     });
     h += '</tbody></table></div>';
     listEl.innerHTML = h;
@@ -1791,10 +1971,10 @@ function muatPayrollOwner() {
     listEl.querySelectorAll('[data-pdel]').forEach(function(btn){
       btn.addEventListener('click', function(){
         if (isDemo()) { showToast('Mode demo','warning'); return; }
-        if (!confirm('Yakin hapus data payroll ini?')) return;
+        if (!confirm('Yakin hapus?')) return;
         var row = parseInt(this.getAttribute('data-pdel'));
         hapusData('Payroll', row).then(function(r){
-          if (r && r.ok) { showToast('Payroll dihapus','success'); muatPayrollOwner(); }
+          if (r && r.ok) { showToast('Dihapus','success'); muatPayrollOwner(); }
           else showToast(r.pesan || 'Gagal','error');
         });
       });
@@ -1806,17 +1986,14 @@ function bukaFormPayroll(item) {
   var isEdit = !!item;
   var ov = document.createElement('div');
   ov.className = 'modal-overlay show';
-
   var h = '<div class="modal">';
   h += '<div class="modal-head"><h3>' + (isEdit ? 'Edit' : 'Tambah') + ' Payroll</h3><button class="modal-close" id="pyoClose">✕</button></div>';
-  h += '<div class="note-box owner"><b>Akses Owner:</b> Perubahan langsung tersimpan.</div>';
   h += '<div class="fgroup"><label>Periode</label><input type="text" id="pyoPeriode" value="' + (item ? esc(item.periode) : todayStr().slice(0,7) + '-P1') + '"></div>';
   h += '<div class="fgroup"><label>ID Karyawan</label><input type="text" id="pyoIdKar" value="' + (item ? esc(item.id_karyawan) : '') + '"></div>';
   h += '<div class="fgroup"><label>Nama Karyawan</label><input type="text" id="pyoNamaKar" value="' + (item ? esc(item.nama_karyawan) : '') + '"></div>';
-  h += '<div class="fgroup"><label>Total Payroll (Rp)</label><input type="number" id="pyoTotal" value="' + (item ? esc(item.total_payroll) : '0') + '" min="0"></div>';
+  h += '<div class="fgroup"><label>Total (Rp)</label><input type="number" id="pyoTotal" value="' + (item ? esc(item.total_payroll) : '0') + '" min="0"></div>';
   h += '<div class="fgroup"><label>Status</label><select id="pyoStatus"><option value="menunggu" ' + (item && item.status === 'menunggu' ? 'selected' : '') + '>Menunggu</option><option value="dibayar" ' + (item && item.status === 'dibayar' ? 'selected' : '') + '>Dibayar</option></select></div>';
-  h += '<button class="btn btn-primary" id="pyoSimpan">Simpan Payroll</button>';
-  h += '</div>';
+  h += '<button class="btn btn-primary" id="pyoSimpan">Simpan</button></div>';
   ov.innerHTML = h;
   document.body.appendChild(ov);
 
@@ -1829,22 +2006,16 @@ function bukaFormPayroll(item) {
     var namaKar = document.getElementById('pyoNamaKar').value.trim();
     var total = parseInt(document.getElementById('pyoTotal').value) || 0;
     var status = document.getElementById('pyoStatus').value;
-
-    if (!periode || !idKar || !namaKar) { showToast('Lengkapi semua field','error'); return; }
-
-    var data = {
-      periode: periode, id_karyawan: idKar, nama_karyawan: namaKar,
-      total_payroll: total, status: status, diedit_oleh: getSession().user_nama
-    };
-
+    if (!periode || !idKar || !namaKar) { showToast('Lengkapi field','error'); return; }
+    var data = {periode:periode,id_karyawan:idKar,nama_karyawan:namaKar,total_payroll:total,status:status,diedit_oleh:getSession().user_nama};
     if (isEdit) {
       updateData('Payroll', item._row, data).then(function(r){
-        if (r && r.ok) { showToast('Payroll diperbarui','success'); ov.remove(); muatPayrollOwner(); }
+        if (r && r.ok) { showToast('Diperbarui','success'); ov.remove(); muatPayrollOwner(); }
         else showToast(r.pesan || 'Gagal','error');
       });
     } else {
       simpanData('Payroll', data).then(function(r){
-        if (r && r.ok) { showToast('Payroll ditambahkan','success'); ov.remove(); muatPayrollOwner(); }
+        if (r && r.ok) { showToast('Ditambahkan','success'); ov.remove(); muatPayrollOwner(); }
         else showToast(r.pesan || 'Gagal','error');
       });
     }
@@ -1852,257 +2023,72 @@ function bukaFormPayroll(item) {
 }
 
 /* ============================================================
-   HALAMAN: PENGELUARAN
+   HALAMAN: MANUSIA (OWNER) — GABUNGAN
+   Tab: Anggota | Cabang
 ============================================================ */
-function renderPengeluaran(session) {
-  if (!canAksesPengeluaran()) {
-    showToast('Hanya Admin & Owner yang bisa akses','error');
-    navigasi('home'); return;
-  }
+var manusiaTab = 'anggota';
 
-  var el = document.getElementById('appContent');
-  el.innerHTML = '<div class="page-title">📉 Pengeluaran</div>' +
-    '<div class="page-sub">Catat pengeluaran per cabang</div>' +
-    '<div class="note-box">Semua pengeluaran dipotong dari uang owner.</div>' +
-    '<div id="pgBody"><div class="empty"><div class="ei">⏳</div>Memuat cabang...</div></div>';
-
-  Promise.all([ambilData('Target_Cabang'), ambilData('Pengeluaran')]).then(function(results){
-    var cabang = results[0].ok ? results[0].data : [];
-    var pengeluaran = results[1].ok ? results[1].data : [];
-
-    var html = '';
-    html += '<div class="card"><h3>Form Pengeluaran</h3>';
-    html += '<div class="fgroup"><label>Tanggal</label><input type="date" id="pgTanggal" value="' + todayStr() + '"></div>';
-    html += '<div class="fgroup"><label>Cabang <span style="color:#DC2626">*</span></label>';
-    html += '<select id="pgCabang">';
-    html += '<option value="">-- Pilih Cabang --</option>';
-    cabang.forEach(function(c){
-      html += '<option value="' + esc(c.kode_cabang) + '">' + esc(c.nama_cabang || c.kode_cabang) + ' (' + esc(c.kode_cabang) + ')</option>';
-    });
-    html += '</select></div>';
-    html += '<div class="fgroup"><label>Kategori</label><select id="pgKategori">';
-    html += '<option value="operasional">Operasional</option>';
-    html += '<option value="gaji">Gaji</option>';
-    html += '<option value="sewa">Sewa</option>';
-    html += '<option value="listrik">Listrik / Air</option>';
-    html += '<option value="lain">Lainnya</option>';
-    html += '</select></div>';
-    html += '<div class="fgroup"><label>Jumlah (Rp)</label><input type="number" id="pgJumlah" value="0" min="0"></div>';
-    html += '<div class="fgroup"><label>Keterangan</label><input type="text" id="pgKet" placeholder="Keterangan pengeluaran"></div>';
-    html += '<button class="btn btn-primary" id="pgSubmit">Simpan Pengeluaran</button></div>';
-
-    html += '<div class="card"><h3>Riwayat Pengeluaran</h3>';
-    html += '<div class="search-bar">';
-    html += '<select id="pgFilterCabang"><option value="">Semua Cabang</option>';
-    cabang.forEach(function(c){
-      html += '<option value="' + esc(c.kode_cabang) + '">' + esc(c.nama_cabang || c.kode_cabang) + '</option>';
-    });
-    html += '</select>';
-    html += '<input type="month" id="pgFilterBulan" value="' + todayStr().slice(0,7) + '">';
-    html += '</div>';
-    html += '<div id="pgList"><div class="empty">Memuat...</div></div></div>';
-
-    document.getElementById('pgBody').innerHTML = html;
-
-    muatRiwayatPengeluaran(pengeluaran, cabang);
-
-    document.getElementById('pgFilterCabang').addEventListener('change', function(){ muatRiwayatPengeluaran(pengeluaran, cabang); });
-    document.getElementById('pgFilterBulan').addEventListener('change', function(){ muatRiwayatPengeluaran(pengeluaran, cabang); });
-
-    document.getElementById('pgSubmit').addEventListener('click', function(){
-      if (isDemo()) { showToast('Mode demo','warning'); return; }
-      var cabangVal = document.getElementById('pgCabang').value;
-      var jumlah = parseInt(document.getElementById('pgJumlah').value) || 0;
-      if (!cabangVal) { showToast('Pilih cabang terlebih dahulu','error'); return; }
-      if (jumlah <= 0) { showToast('Jumlah harus lebih dari 0','error'); return; }
-      var btn = this;
-      btn.disabled = true; btn.textContent = 'Menyimpan...';
-      var data = {
-        tanggal: document.getElementById('pgTanggal').value,
-        kode_cabang: cabangVal,
-        kategori: document.getElementById('pgKategori').value,
-        jumlah: jumlah,
-        keterangan: document.getElementById('pgKet').value || '-',
-        dicatat_oleh: session.user_nama
-      };
-      simpanData('Pengeluaran', data).then(function(res){
-        btn.disabled = false; btn.textContent = 'Simpan Pengeluaran';
-        if (res && res.ok) {
-          showToast('Pengeluaran disimpan','success');
-          document.getElementById('pgJumlah').value = 0;
-          document.getElementById('pgKet').value = '';
-          ambilData('Pengeluaran').then(function(r2){
-            muatRiwayatPengeluaran(r2.ok ? r2.data : [], cabang);
-          });
-        } else showToast(res.pesan || 'Gagal','error');
-      });
-    });
-  });
-}
-
-function muatRiwayatPengeluaran(data, cabang) {
-  var listEl = document.getElementById('pgList');
-  if (!listEl) return;
-  var fCab = document.getElementById('pgFilterCabang') ? document.getElementById('pgFilterCabang').value : '';
-  var fBulan = document.getElementById('pgFilterBulan') ? document.getElementById('pgFilterBulan').value : '';
-  var filtered = data.filter(function(d){
-    if (fCab && d.kode_cabang !== fCab) return false;
-    if (fBulan && String(d.tanggal).slice(0,7) !== fBulan) return false;
-    return true;
-  });
-  filtered.sort(function(a,b){ return String(b.tanggal).localeCompare(String(a.tanggal)); });
-  if (filtered.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada pengeluaran</div>'; return; }
-  var total = 0;
-  filtered.forEach(function(d){ total += parseInt(d.jumlah) || 0; });
-  var h = '<div style="background:#FEF2F2;border-radius:8px;padding:10px 12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">';
-  h += '<span style="font-size:12px;font-weight:600;color:#991B1B">TOTAL (dipotong dari owner)</span>';
-  h += '<span style="font-size:16px;font-weight:800;color:#DC2626">' + fmtRupiah(total) + '</span></div>';
-  h += '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Cabang</th><th>Kategori</th><th>Jumlah</th><th>Keterangan</th></tr></thead><tbody>';
-  filtered.slice(0, 100).forEach(function(d){
-    h += '<tr><td>' + esc(d.tanggal) + '</td><td><span class="badge badge-blue">' + esc(d.kode_cabang) + '</span></td><td>' + esc(d.kategori) + '</td><td style="color:#DC2626;font-weight:700">' + fmtRupiah(d.jumlah) + '</td><td>' + esc(d.keterangan) + '</td></tr>';
-  });
-  h += '</tbody></table></div>';
-  listEl.innerHTML = h;
-}
-
-/* ============================================================
-   HALAMAN: LAPORAN
-   - Buat laporan: hanya Kepala Toko
-   - Lihat laporan: Owner, Admin, Kepala Toko
-============================================================ */
-function renderLaporan(session) {
-  if (!canLihatLaporan()) {
-    showToast('Akses ditolak','error');
-    navigasi('home'); return;
-  }
-  var canBuat = canBuatLaporan();
-
-  var el = document.getElementById('appContent');
-  var html = '';
-  html += '<div class="page-title">📊 Laporan</div>';
-  html += '<div class="page-sub">';
-  if (canBuat) html += 'Buat & lihat laporan';
-  else html += 'Lihat laporan dari Kepala Toko';
-  html += '</div>';
-
-  if (canBuat) {
-    html += '<div class="card"><h3>Buat Laporan</h3>';
-    html += '<div class="fgroup"><label>Judul</label><input type="text" id="lpJudul" placeholder="Judul laporan"></div>';
-    html += '<div class="fgroup"><label>Isi</label><textarea id="lpIsi" rows="3" placeholder="Isi laporan" style="font-family:Poppins;font-size:16px;padding:12px;border:1.5px solid #E5E7EB;border-radius:8px;width:100%;outline:none;resize:vertical"></textarea></div>';
-    html += '<button class="btn btn-primary" id="lpSubmit">Buat Laporan</button></div>';
-  } else {
-    html += '<div class="note-box warn"><b>Info:</b> Hanya Kepala Toko yang bisa membuat laporan. Anda dapat melihat semua laporan yang masuk.</div>';
-  }
-
-  html += '<div class="card"><h3>Daftar Laporan</h3><div id="lpList"><div class="empty">Memuat...</div></div></div>';
-  el.innerHTML = html;
-
-  ambilData('Laporan').then(function(res){
-    var listEl = document.getElementById('lpList');
-    var data = res.ok ? res.data : [];
-    // KT: hanya lihat laporan miliknya / cabangnya? Kita tampilkan semua agar owner bisa pantau
-    if (isKepalaToko()) {
-      data = data.filter(function(d){
-        return String(d.pembuat) === String(session.user_nama) ||
-               String(d.kode_cabang) === String(session.kode_cabang);
-      });
-    }
-
-    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada laporan</div>'; return; }
-
-    data.sort(function(a,b){ return String(b.tanggal).localeCompare(String(a.tanggal)); });
-    var h = '';
-    data.forEach(function(d){
-      h += '<div style="border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:10px">';
-      h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">';
-      h += '<div style="flex:1;min-width:160px">';
-      h += '<div style="font-size:11px;color:#6B7280">' + esc(d.tanggal) + ' • ' + esc(d.pembuat) + '</div>';
-      h += '<div style="font-size:13px;font-weight:700;color:#1F2937;margin-top:2px">' + esc(d.judul) + '</div>';
-      h += '<div style="font-size:11px;color:#374151;margin-top:4px">' + esc(d.isi) + '</div>';
-      h += '</div>';
-      h += '<span class="badge badge-blue">' + esc(d.status || '-') + '</span>';
-      h += '</div></div>';
-    });
-    listEl.innerHTML = h;
-  });
-
-  if (canBuat && document.getElementById('lpSubmit')) {
-    document.getElementById('lpSubmit').addEventListener('click', function(){
-      if (isDemo()) { showToast('Mode demo','warning'); return; }
-      var judul = document.getElementById('lpJudul').value.trim();
-      if (!judul) { showToast('Judul wajib diisi','error'); return; }
-      var btn = this; btn.disabled = true;
-      var data = {
-        id_laporan: 'LP-' + Date.now(), tanggal: todayStr(),
-        kode_cabang: session.kode_cabang,
-        judul: judul,
-        isi: document.getElementById('lpIsi').value || '-',
-        pembuat: session.user_nama, status: 'draft'
-      };
-      simpanData('Laporan', data).then(function(res){
-        btn.disabled = false;
-        if (res && res.ok) { showToast('Laporan dibuat','success'); renderLaporan(session); }
-        else showToast(res.pesan || 'Gagal','error');
-      });
-    });
-  }
-}
-
-/* ============================================================
-   HALAMAN: MANAJEMEN MANUSIA
-============================================================ */
 function renderManusia(session) {
-  if (!canAksesManusia()) {
-    showToast('Hanya Owner yang bisa akses','error');
-    navigasi('home'); return;
-  }
-
+  if (!canAksesManusia()) { showToast('Hanya Owner','error'); navigasi('home'); return; }
   var el = document.getElementById('appContent');
   var html = '';
-  html += '<div class="page-title">👥 Manajemen Manusia</div>';
-  html += '<div class="page-sub">Kelola anggota, ID & password (khusus Owner)</div>';
-  html += '<div class="note-box owner"><b>👑 Akses Owner:</b> Anda bisa melihat password asli, mengubah ID, reset password.</div>';
-  html += '<button class="btn btn-gold btn-block" id="mhTambah" style="margin-bottom:14px">+ Tambah Anggota</button>';
-  html += '<div class="search-bar">';
-  html += '<input type="text" id="mhSearch" placeholder="Cari nama/ID...">';
-  html += '<select id="mhFilterJabatan"><option value="">Semua Jabatan</option><option>Owner</option><option>Admin</option><option>Kepala Toko</option><option>Karyawan</option></select>';
-  html += '<select id="mhFilterCabang"><option value="">Semua Cabang</option></select>';
+  html += '<div class="page-title">👥 Manusia</div>';
+  html += '<div class="page-sub">Kelola anggota & cabang (khusus Owner)</div>';
+  html += '<div class="tab-bar">';
+  html += '<button class="tab-btn ' + (manusiaTab === 'anggota' ? 'active' : '') + '" data-mntab="anggota">👤 Anggota</button>';
+  html += '<button class="tab-btn ' + (manusiaTab === 'cabang' ? 'active' : '') + '" data-mntab="cabang">🏪 Cabang</button>';
   html += '</div>';
-  html += '<div class="card"><div id="mhList"><div class="empty">Memuat...</div></div></div>';
+  html += '<div id="mnBody"></div>';
   el.innerHTML = html;
 
-  muatManusia();
+  document.querySelectorAll('[data-mntab]').forEach(function(b){
+    b.addEventListener('click', function(){
+      manusiaTab = this.getAttribute('data-mntab');
+      renderManusia(session);
+    });
+  });
 
-  document.getElementById('mhSearch').addEventListener('input', muatManusia);
-  document.getElementById('mhFilterJabatan').addEventListener('change', muatManusia);
-  document.getElementById('mhFilterCabang').addEventListener('change', muatManusia);
+  if (manusiaTab === 'anggota') muatAnggota(session);
+  else muatCabang(session);
+}
 
+function muatAnggota(session) {
+  var body = document.getElementById('mnBody');
+  var html = '';
+  html += '<div class="note-box owner"><b>👑 Akses Owner:</b> Lihat password asli, ubah ID, reset password.</div>';
+  html += '<button class="btn btn-gold btn-block" id="mhTambah" style="margin-bottom:14px">+ Tambah Anggota</button>';
+  html += '<div class="search-bar"><input type="text" id="mhSearch" placeholder="Cari nama/ID...">';
+  html += '<select id="mhFilterJabatan"><option value="">Semua Jabatan</option><option>Owner</option><option>Admin</option><option>Kepala Toko</option><option>Karyawan</option></select>';
+  html += '<select id="mhFilterCabang"><option value="">Semua Cabang</option></select></div>';
+  html += '<div class="card"><div id="mhList"><div class="empty">Memuat...</div></div></div>';
+  body.innerHTML = html;
+
+  loadAnggotaList();
+  document.getElementById('mhSearch').addEventListener('input', loadAnggotaList);
+  document.getElementById('mhFilterJabatan').addEventListener('change', loadAnggotaList);
+  document.getElementById('mhFilterCabang').addEventListener('change', loadAnggotaList);
   document.getElementById('mhTambah').addEventListener('click', function(){
     if (isDemo()) { showToast('Mode demo','warning'); return; }
     bukaFormAnggota(null);
   });
 }
 
-function muatManusia() {
+function loadAnggotaList() {
   ambilData('Users').then(function(res){
-    var listEl = document.getElementById('mhList');
-    if (!listEl) return;
+    var listEl = document.getElementById('mhList'); if (!listEl) return;
     var data = res.ok ? res.data : [];
     var cabSet = {};
     data.forEach(function(d){ if (d.kode_cabang) cabSet[d.kode_cabang] = true; });
     var cabSel = document.getElementById('mhFilterCabang');
     if (cabSel && cabSel.options.length <= 1) {
       Object.keys(cabSet).forEach(function(c){
-        var opt = document.createElement('option');
-        opt.value = c; opt.textContent = c;
+        var opt = document.createElement('option'); opt.value = c; opt.textContent = c;
         cabSel.appendChild(opt);
       });
     }
-
     var q = (document.getElementById('mhSearch').value || '').toLowerCase();
     var fj = document.getElementById('mhFilterJabatan').value;
     var fc = document.getElementById('mhFilterCabang').value;
-
     data = data.filter(function(d){
       if (String(d.dihapus).toLowerCase() === 'true') return false;
       if (q && String(d.nama).toLowerCase().indexOf(q) === -1 && String(d.id).indexOf(q) === -1) return false;
@@ -2110,31 +2096,21 @@ function muatManusia() {
       if (fc && d.kode_cabang !== fc) return false;
       return true;
     });
-
-    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">👤</div>Tidak ada anggota</div>'; return; }
-
-    var h = '<div class="table-wrap"><table><thead><tr>';
-    h += '<th>ID</th><th>Nama</th><th>Jabatan</th><th>Cabang</th><th>Password</th><th>Status</th><th>Aksi</th>';
-    h += '</tr></thead><tbody>';
+    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">👤</div>Tidak ada</div>'; return; }
+    var h = '<div class="table-wrap"><table><thead><tr><th>ID</th><th>Nama</th><th>Jabatan</th><th>Cabang</th><th>Password</th><th>Status</th><th>Aksi</th></tr></thead><tbody>';
     data.forEach(function(d){
       var stCls = String(d.status).toLowerCase() === 'aktif' ? 'badge-green' : 'badge-gray';
       var pass = d.password || '-';
-      h += '<tr>';
-      h += '<td><b>' + esc(d.id) + '</b></td>';
-      h += '<td>' + esc(d.nama) + '</td>';
-      h += '<td>' + esc(d.jabatan) + '</td>';
-      h += '<td>' + esc(d.kode_cabang) + '</td>';
-      h += '<td><div class="pass-cell">';
-      h += '<span class="pass-mask" data-pid="' + d._row + '">••••••</span>';
+      h += '<tr><td><b>' + esc(d.id) + '</b></td><td>' + esc(d.nama) + '</td><td>' + esc(d.jabatan) + '</td><td>' + esc(d.kode_cabang) + '</td>';
+      h += '<td><div class="pass-cell"><span class="pass-mask" data-pid="' + d._row + '">••••••</span>';
       h += '<span class="pass-show" data-pid="' + d._row + '" style="display:none">' + esc(pass) + '</span>';
-      h += '<button class="eye-btn" data-toggle="' + d._row + '">👁</button>';
-      h += '</div></td>';
+      h += '<button class="eye-btn" data-toggle="' + d._row + '">👁</button></div></td>';
       h += '<td><span class="badge ' + stCls + '">' + esc(d.status) + '</span></td>';
       h += '<td style="white-space:nowrap">';
-      h += '<button class="btn btn-sm btn-outline" data-edit="' + d._row + '" title="Edit">✏️</button> ';
-      h += '<button class="btn btn-sm btn-outline" data-id="' + d._row + '" title="Ubah ID">🆔</button> ';
-      h += '<button class="btn btn-sm btn-outline" data-pass="' + d._row + '" title="Reset Password">🔑</button> ';
-      h += '<button class="btn btn-sm btn-danger" data-del="' + d._row + '" title="Hapus">🗑️</button>';
+      h += '<button class="btn btn-sm btn-outline" data-edit="' + d._row + '">✏️</button> ';
+      h += '<button class="btn btn-sm btn-outline" data-id="' + d._row + '">🆔</button> ';
+      h += '<button class="btn btn-sm btn-outline" data-pass="' + d._row + '">🔑</button> ';
+      h += '<button class="btn btn-sm btn-danger" data-del="' + d._row + '">🗑️</button>';
       h += '</td></tr>';
     });
     h += '</tbody></table></div>';
@@ -2145,19 +2121,10 @@ function muatManusia() {
         var id = this.getAttribute('data-toggle');
         var mask = listEl.querySelector('.pass-mask[data-pid="' + id + '"]');
         var show = listEl.querySelector('.pass-show[data-pid="' + id + '"]');
-        if (!mask || !show) return;
-        if (show.style.display === 'none') {
-          show.style.display = 'inline-block';
-          mask.style.display = 'none';
-          this.textContent = '🙈';
-        } else {
-          show.style.display = 'none';
-          mask.style.display = 'inline';
-          this.textContent = '👁';
-        }
+        if (show.style.display === 'none') { show.style.display = 'inline-block'; mask.style.display = 'none'; this.textContent = '🙈'; }
+        else { show.style.display = 'none'; mask.style.display = 'inline'; this.textContent = '👁'; }
       });
     });
-
     listEl.querySelectorAll('[data-edit]').forEach(function(btn){
       btn.addEventListener('click', function(){
         if (isDemo()) { showToast('Mode demo','warning'); return; }
@@ -2186,12 +2153,12 @@ function muatManusia() {
       btn.addEventListener('click', function(){
         if (isDemo()) { showToast('Mode demo','warning'); return; }
         var row = parseInt(this.getAttribute('data-del'));
-        if (confirm('Yakin hapus anggota ini? (soft delete)')) {
+        if (confirm('Yakin hapus? (soft delete)')) {
           var alasan = prompt('Alasan hapus:');
-          if (!alasan) { showToast('Alasan wajib diisi','error'); return; }
-          updateData('Users', row, { dihapus: true, alasan_hapus: alasan }).then(function(res){
-            if (res && res.ok) { showToast('Anggota dihapus','success'); muatManusia(); }
-            else showToast(res.pesan || 'Gagal','error');
+          if (!alasan) { showToast('Alasan wajib','error'); return; }
+          updateData('Users', row, { dihapus: true, alasan_hapus: alasan }).then(function(r){
+            if (r && r.ok) { showToast('Dihapus','success'); loadAnggotaList(); }
+            else showToast(r.pesan || 'Gagal','error');
           });
         }
       });
@@ -2205,9 +2172,7 @@ function bukaFormAnggota(item) {
   ov.className = 'modal-overlay show';
   var h = '<div class="modal">';
   h += '<div class="modal-head"><h3>' + (isEdit ? 'Edit' : 'Tambah') + ' Anggota</h3><button class="modal-close" id="maClose">✕</button></div>';
-  h += '<div class="fgroup"><label>ID</label><input type="text" id="maId" value="' + (item ? esc(item.id) : '') + '" ' + (isEdit ? 'readonly style="background:#F3F4F6"' : '') + '>';
-  if (isEdit) h += '<p style="font-size:10px;color:#9CA3AF;margin-top:4px">ID tidak bisa diubah di sini — gunakan tombol 🆔</p>';
-  h += '</div>';
+  h += '<div class="fgroup"><label>ID</label><input type="text" id="maId" value="' + (item ? esc(item.id) : '') + '" ' + (isEdit ? 'readonly style="background:#F3F4F6"' : '') + '></div>';
   if (!isEdit) h += '<div class="fgroup"><label>Password (default 123456)</label><input type="text" id="maPass" value="123456"></div>';
   if (isEdit) h += '<div class="fgroup"><label>Password Saat Ini</label><input type="text" value="' + esc(item.password || '-') + '" readonly style="background:#F0FDF4;font-family:Courier New;font-weight:700;color:#059669"></div>';
   h += '<div class="fgroup"><label>Nama</label><input type="text" id="maNama" value="' + (item ? esc(item.nama) : '') + '"></div>';
@@ -2224,34 +2189,26 @@ function bukaFormAnggota(item) {
   document.getElementById('maSimpan').addEventListener('click', function(){
     var id = document.getElementById('maId').value.trim();
     var nama = document.getElementById('maNama').value.trim();
-    if (!id || !nama) { showToast('ID dan Nama wajib','error'); return; }
-
-    var data = {
-      nama: nama,
-      jabatan: document.getElementById('maJabatan').value,
-      kode_cabang: document.getElementById('maCabang').value || '-',
-      status: document.getElementById('maStatus').value
-    };
+    if (!id || !nama) { showToast('ID & Nama wajib','error'); return; }
+    var data = {nama:nama,jabatan:document.getElementById('maJabatan').value,
+                kode_cabang:document.getElementById('maCabang').value || '-',
+                status:document.getElementById('maStatus').value};
     if (!isEdit) {
       var pass = document.getElementById('maPass').value;
-      if (pass.length < 6) { showToast('Password min 6 karakter','error'); return; }
-      data.id = id;
-      data.password = pass;
-      data.dihapus = false;
-      data.tanggal_masuk = todayStr();
+      if (pass.length < 6) { showToast('Password min 6','error'); return; }
+      data.id = id; data.password = pass; data.dihapus = false; data.tanggal_masuk = todayStr();
     }
-
     if (isEdit) {
-      updateData('Users', item._row, data).then(function(res){
-        if (res && res.ok) { showToast('Data diperbarui','success'); ov.remove(); muatManusia(); }
-        else showToast(res.pesan || 'Gagal','error');
+      updateData('Users', item._row, data).then(function(r){
+        if (r && r.ok) { showToast('Diperbarui','success'); ov.remove(); loadAnggotaList(); }
+        else showToast(r.pesan || 'Gagal','error');
       });
     } else {
       ambilData('Users').then(function(res){
         var exists = (res.data || []).some(function(u){ return String(u.id) === String(id); });
-        if (exists) { showToast('ID sudah digunakan','error'); return; }
+        if (exists) { showToast('ID sudah ada','error'); return; }
         simpanData('Users', data).then(function(r){
-          if (r && r.ok) { showToast('Anggota ditambahkan','success'); ov.remove(); muatManusia(); }
+          if (r && r.ok) { showToast('Ditambahkan','success'); ov.remove(); loadAnggotaList(); }
           else showToast(r.pesan || 'Gagal','error');
         });
       });
@@ -2264,23 +2221,21 @@ function bukaFormUbahId(item) {
   ov.className = 'modal-overlay show';
   ov.innerHTML = '<div class="modal">' +
     '<div class="modal-head"><h3>Ubah ID</h3><button class="modal-close" id="miClose">✕</button></div>' +
-    '<div class="note-box warn"><b>Perhatian:</b> Mengubah ID dapat memutus sesi login user tersebut.</div>' +
+    '<div class="note-box warn">Mengubah ID dapat memutus sesi login user.</div>' +
     '<div class="fgroup"><label>ID Lama</label><input type="text" value="' + esc(item.id) + '" disabled></div>' +
-    '<div class="fgroup"><label>ID Baru</label><input type="text" id="miNewId" placeholder="ID baru unik"></div>' +
-    '<button class="btn btn-primary" id="miSimpan">Simpan ID Baru</button></div>';
+    '<div class="fgroup"><label>ID Baru</label><input type="text" id="miNewId"></div>' +
+    '<button class="btn btn-primary" id="miSimpan">Simpan</button></div>';
   document.body.appendChild(ov);
-
   document.getElementById('miClose').addEventListener('click', function(){ ov.remove(); });
   ov.addEventListener('click', function(e){ if (e.target === ov) ov.remove(); });
-
   document.getElementById('miSimpan').addEventListener('click', function(){
     var newId = document.getElementById('miNewId').value.trim();
-    if (!newId) { showToast('ID baru wajib diisi','error'); return; }
+    if (!newId) { showToast('ID wajib','error'); return; }
     ambilData('Users').then(function(res){
       var exists = (res.data || []).some(function(u){ return String(u.id) === String(newId); });
-      if (exists) { showToast('ID sudah digunakan','error'); return; }
+      if (exists) { showToast('Sudah dipakai','error'); return; }
       updateData('Users', item._row, { id: newId, id_lama: item.id }).then(function(r){
-        if (r && r.ok) { showToast('ID diubah','success'); ov.remove(); muatManusia(); }
+        if (r && r.ok) { showToast('Diubah','success'); ov.remove(); loadAnggotaList(); }
         else showToast(r.pesan || 'Gagal','error');
       });
     });
@@ -2293,155 +2248,49 @@ function bukaFormPassword(row, item) {
   ov.innerHTML = '<div class="modal">' +
     '<div class="modal-head"><h3>Reset Password</h3><button class="modal-close" id="mpClose">✕</button></div>' +
     '<div class="fgroup"><label>Password Lama</label><input type="text" value="' + esc(item && item.password || '-') + '" readonly style="background:#F3F4F6;font-family:Courier New"></div>' +
-    '<div class="note-box warn"><b>Perhatian:</b> Password lama langsung tidak valid setelah disimpan.</div>' +
+    '<div class="note-box warn">Password lama langsung tidak valid.</div>' +
     '<div class="fgroup"><label>Password Baru (min 6)</label><input type="text" id="mpPass1"></div>' +
-    '<div class="fgroup"><label>Konfirmasi Password</label><input type="text" id="mpPass2"></div>' +
-    '<button class="btn btn-primary" id="mpSimpan">Simpan Password Baru</button></div>';
+    '<div class="fgroup"><label>Konfirmasi</label><input type="text" id="mpPass2"></div>' +
+    '<button class="btn btn-primary" id="mpSimpan">Simpan</button></div>';
   document.body.appendChild(ov);
-
   document.getElementById('mpClose').addEventListener('click', function(){ ov.remove(); });
   ov.addEventListener('click', function(e){ if (e.target === ov) ov.remove(); });
   document.getElementById('mpSimpan').addEventListener('click', function(){
     var p1 = document.getElementById('mpPass1').value;
     var p2 = document.getElementById('mpPass2').value;
-    if (p1.length < 6) { showToast('Password min 6 karakter','error'); return; }
-    if (p1 !== p2) { showToast('Password tidak sama','error'); return; }
-    updateData('Users', row, { password: p1 }).then(function(res){
-      if (res && res.ok) { showToast('Password direset','success'); ov.remove(); muatManusia(); }
-      else showToast(res.pesan || 'Gagal','error');
+    if (p1.length < 6) { showToast('Min 6','error'); return; }
+    if (p1 !== p2) { showToast('Tidak sama','error'); return; }
+    updateData('Users', row, { password: p1 }).then(function(r){
+      if (r && r.ok) { showToast('Direset','success'); ov.remove(); loadAnggotaList(); }
+      else showToast(r.pesan || 'Gagal','error');
     });
   });
 }
 
-/* ============================================================
-   HALAMAN: PENGATURAN (Owner)
-============================================================ */
-function renderPengaturan(session) {
-  if (!isOwner()) { showToast('Hanya Owner','error'); navigasi('home'); return; }
-  var el = document.getElementById('appContent');
+function muatCabang(session) {
+  var body = document.getElementById('mnBody');
   var html = '';
-  html += '<div class="page-title">⚙️ Pengaturan</div>';
-  html += '<div class="page-sub">Bonus, WiFi, dan konfigurasi global</div>';
-  html += '<div class="card"><h3>Pengaturan Global</h3><div id="stGlobal"><div class="empty">Memuat...</div></div></div>';
-  el.innerHTML = html;
-
-  ambilData('Pengaturan').then(function(res){
-    var data = res.ok ? res.data : [];
-    var globalEl = document.getElementById('stGlobal');
-    if (data.length === 0) { globalEl.innerHTML = '<div class="empty">Belum ada pengaturan</div>'; return; }
-    var h = '';
-    data.forEach(function(d){
-      h += '<div class="fgroup"><label>' + esc(d.key).replace(/_/g,' ').toUpperCase() + '</label>';
-      h += '<input type="number" value="' + esc(d.value) + '" data-key="' + esc(d.key) + '" data-row="' + d._row + '"></div>';
-    });
-    h += '<button class="btn btn-primary" id="stSimpan">Simpan Pengaturan</button>';
-    globalEl.innerHTML = h;
-
-    document.getElementById('stSimpan').addEventListener('click', function(){
-      if (isDemo()) { showToast('Mode demo','warning'); return; }
-      var inputs = globalEl.querySelectorAll('input[data-key]');
-      var promises = [];
-      inputs.forEach(function(inp){
-        promises.push(updateData('Pengaturan', parseInt(inp.getAttribute('data-row')), {
-          key: inp.getAttribute('data-key'), value: inp.value
-        }));
-      });
-      Promise.all(promises).then(function(){ showToast('Pengaturan disimpan','success'); });
-    });
-  });
-}
-
-/* ============================================================
-   HALAMAN: TARGET CABANG (OWNER)
-============================================================ */
-function renderTarget(session) {
-  if (!canAturTarget()) {
-    showToast('Hanya Owner yang bisa atur target','error');
-    navigasi('home'); return;
-  }
-  var el = document.getElementById('appContent');
-  var html = '';
-  html += '<div class="page-title">🎯 Target Cabang</div>';
-  html += '<div class="page-sub">Atur target harian per cabang (unit) — khusus Owner</div>';
-  html += '<div class="card"><div id="tgList"><div class="empty">Memuat...</div></div></div>';
-  el.innerHTML = html;
-
-  ambilData('Target_Cabang').then(function(res){
-    var data = res.ok ? res.data : [];
-    var listEl = document.getElementById('tgList');
-    if (data.length === 0) { listEl.innerHTML = '<div class="empty">Belum ada target</div>'; return; }
-    var h = '';
-    data.forEach(function(d){
-      h += '<div class="fgroup"><label>' + esc(d.nama_cabang || d.kode_cabang) + '</label>';
-      h += '<input type="number" value="' + esc(d.target_harian) + '" data-kode="' + esc(d.kode_cabang) + '" data-row="' + d._row + '"></div>';
-    });
-    h += '<button class="btn btn-primary" id="tgSimpan">Simpan Target</button>';
-    listEl.innerHTML = h;
-
-    document.getElementById('tgSimpan').addEventListener('click', function(){
-      if (isDemo()) { showToast('Mode demo','warning'); return; }
-      var inputs = listEl.querySelectorAll('input[data-kode]');
-      var promises = [];
-      inputs.forEach(function(inp){
-        promises.push(updateData('Target_Cabang', parseInt(inp.getAttribute('data-row')), {
-          kode_cabang: inp.getAttribute('data-kode'),
-          target_harian: parseInt(inp.value) || 0
-        }));
-      });
-      Promise.all(promises).then(function(){ showToast('Target disimpan','success'); });
-    });
-  });
-}
-
-/* ============================================================
-   HALAMAN: KELOLA CABANG (OWNER) — BARU
-============================================================ */
-function renderKelolaCabang(session) {
-  if (!canKelolaCabang()) {
-    showToast('Hanya Owner yang bisa kelola cabang','error');
-    navigasi('home'); return;
-  }
-
-  var el = document.getElementById('appContent');
-  var html = '';
-  html += '<div class="page-title">🏪 Kelola Cabang</div>';
-  html += '<div class="page-sub">Tambah, edit & hapus cabang (khusus Owner)</div>';
-  html += '<div class="note-box owner"><b>👑 Akses Owner:</b> Kelola daftar cabang, nama, dan target harian.</div>';
+  html += '<div class="note-box owner"><b>👑 Akses Owner:</b> Tambah, edit & hapus cabang.</div>';
   html += '<button class="btn btn-gold btn-block" id="cbTambah" style="margin-bottom:14px">+ Tambah Cabang</button>';
   html += '<div class="card"><h3>Daftar Cabang</h3><div id="cbList"><div class="empty">Memuat...</div></div></div>';
-  el.innerHTML = html;
+  body.innerHTML = html;
 
-  muatCabang();
-
+  loadCabangList();
   document.getElementById('cbTambah').addEventListener('click', function(){
     if (isDemo()) { showToast('Mode demo','warning'); return; }
     bukaFormCabang(null);
   });
 }
 
-function muatCabang() {
+function loadCabangList() {
   ambilData('Target_Cabang').then(function(res){
-    var listEl = document.getElementById('cbList');
-    if (!listEl) return;
+    var listEl = document.getElementById('cbList'); if (!listEl) return;
     var data = res.ok ? res.data : [];
-
-    if (data.length === 0) {
-      listEl.innerHTML = '<div class="empty"><div class="ei">🏪</div>Belum ada cabang</div>';
-      return;
-    }
-
-    var h = '<div class="table-wrap"><table><thead><tr>';
-    h += '<th>Kode</th><th>Nama Cabang</th><th>Target Harian</th><th>Aksi</th>';
-    h += '</tr></thead><tbody>';
+    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">🏪</div>Belum ada cabang</div>'; return; }
+    var h = '<div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama</th><th>Target Harian</th><th>Aksi</th></tr></thead><tbody>';
     data.forEach(function(d){
-      h += '<tr>';
-      h += '<td><b>' + esc(d.kode_cabang) + '</b></td>';
-      h += '<td>' + esc(d.nama_cabang || '-') + '</td>';
-      h += '<td>' + (parseInt(d.target_harian) || 0) + ' unit</td>';
-      h += '<td style="white-space:nowrap">';
-      h += '<button class="btn btn-sm btn-outline" data-cbedit="' + d._row + '">✏️</button> ';
-      h += '<button class="btn btn-sm btn-danger" data-cbdel="' + d._row + '" data-cbkode="' + esc(d.kode_cabang) + '">🗑️</button>';
-      h += '</td></tr>';
+      h += '<tr><td><b>' + esc(d.kode_cabang) + '</b></td><td>' + esc(d.nama_cabang || '-') + '</td><td>' + (parseInt(d.target_harian)||0) + ' unit</td>';
+      h += '<td style="white-space:nowrap"><button class="btn btn-sm btn-outline" data-cbedit="' + d._row + '">✏️</button> <button class="btn btn-sm btn-danger" data-cbdel="' + d._row + '" data-cbkode="' + esc(d.kode_cabang) + '">🗑️</button></td></tr>';
     });
     h += '</tbody></table></div>';
     listEl.innerHTML = h;
@@ -2459,9 +2308,9 @@ function muatCabang() {
         if (isDemo()) { showToast('Mode demo','warning'); return; }
         var row = parseInt(this.getAttribute('data-cbdel'));
         var kode = this.getAttribute('data-cbkode');
-        if (!confirm('Hapus cabang ' + kode + '? Pastikan tidak ada data terkait.')) return;
+        if (!confirm('Hapus cabang ' + kode + '?')) return;
         hapusData('Target_Cabang', row).then(function(r){
-          if (r && r.ok) { showToast('Cabang dihapus','success'); muatCabang(); }
+          if (r && r.ok) { showToast('Dihapus','success'); loadCabangList(); }
           else showToast(r.pesan || 'Gagal','error');
         });
       });
@@ -2475,9 +2324,8 @@ function bukaFormCabang(item) {
   ov.className = 'modal-overlay show';
   var h = '<div class="modal">';
   h += '<div class="modal-head"><h3>' + (isEdit ? 'Edit' : 'Tambah') + ' Cabang</h3><button class="modal-close" id="cbClose">✕</button></div>';
-  h += '<div class="fgroup"><label>Kode Cabang</label><input type="text" id="cbKode" value="' + (item ? esc(item.kode_cabang) : '') + '" ' + (isEdit ? 'readonly style="background:#F3F4F6"' : '') + ' placeholder="Contoh: GROBOGAN"></div>';
-  if (isEdit) h += '<p style="font-size:10px;color:#9CA3AF;margin-top:-8px;margin-bottom:10px">Kode cabang tidak bisa diubah</p>';
-  h += '<div class="fgroup"><label>Nama Cabang</label><input type="text" id="cbNama" value="' + (item ? esc(item.nama_cabang) : '') + '" placeholder="Contoh: Grobogan"></div>';
+  h += '<div class="fgroup"><label>Kode Cabang</label><input type="text" id="cbKode" value="' + (item ? esc(item.kode_cabang) : '') + '" ' + (isEdit ? 'readonly style="background:#F3F4F6"' : '') + ' placeholder="GROBOGAN"></div>';
+  h += '<div class="fgroup"><label>Nama Cabang</label><input type="text" id="cbNama" value="' + (item ? esc(item.nama_cabang) : '') + '" placeholder="Grobogan"></div>';
   h += '<div class="fgroup"><label>Target Harian (unit)</label><input type="number" id="cbTarget" value="' + (item ? esc(item.target_harian) : '0') + '" min="0"></div>';
   h += '<button class="btn btn-primary" id="cbSimpan">Simpan Cabang</button></div>';
   ov.innerHTML = h;
@@ -2490,31 +2338,92 @@ function bukaFormCabang(item) {
     var kode = document.getElementById('cbKode').value.trim().toUpperCase();
     var nama = document.getElementById('cbNama').value.trim();
     var target = parseInt(document.getElementById('cbTarget').value) || 0;
-
-    if (!kode) { showToast('Kode cabang wajib','error'); return; }
-    if (!nama) { showToast('Nama cabang wajib','error'); return; }
-
-    var data = {
-      kode_cabang: kode,
-      nama_cabang: nama,
-      target_harian: target
-    };
-
+    if (!kode) { showToast('Kode wajib','error'); return; }
+    if (!nama) { showToast('Nama wajib','error'); return; }
+    var data = {kode_cabang:kode,nama_cabang:nama,target_harian:target};
     if (isEdit) {
       updateData('Target_Cabang', item._row, data).then(function(r){
-        if (r && r.ok) { showToast('Cabang diperbarui','success'); ov.remove(); muatCabang(); }
+        if (r && r.ok) { showToast('Diperbarui','success'); ov.remove(); loadCabangList(); }
         else showToast(r.pesan || 'Gagal','error');
       });
     } else {
       ambilData('Target_Cabang').then(function(res){
         var exists = (res.data || []).some(function(c){ return String(c.kode_cabang) === String(kode); });
-        if (exists) { showToast('Kode cabang sudah ada','error'); return; }
+        if (exists) { showToast('Kode sudah ada','error'); return; }
         simpanData('Target_Cabang', data).then(function(r){
-          if (r && r.ok) { showToast('Cabang ditambahkan','success'); ov.remove(); muatCabang(); }
+          if (r && r.ok) { showToast('Ditambahkan','success'); ov.remove(); loadCabangList(); }
           else showToast(r.pesan || 'Gagal','error');
         });
       });
     }
+  });
+}
+
+/* ============================================================
+   HALAMAN: PENGATURAN (OWNER) — Target + Global
+============================================================ */
+function renderPengaturan(session) {
+  if (!isOwner()) { showToast('Hanya Owner','error'); navigasi('home'); return; }
+  var el = document.getElementById('appContent');
+  var html = '';
+  html += '<div class="page-title">⚙️ Pengaturan</div>';
+  html += '<div class="page-sub">Target cabang & konfigurasi global</div>';
+  html += '<div class="card"><h3>Pengaturan Global</h3><div id="stGlobal"><div class="empty">Memuat...</div></div></div>';
+  el.innerHTML = html;
+
+  ambilData('Pengaturan').then(function(res){
+    var data = res.ok ? res.data : [];
+    var globalEl = document.getElementById('stGlobal');
+    if (data.length === 0) { globalEl.innerHTML = '<div class="empty">Belum ada</div>'; return; }
+    var h = '';
+    data.forEach(function(d){
+      h += '<div class="fgroup"><label>' + esc(d.key).replace(/_/g,' ').toUpperCase() + '</label>';
+      h += '<input type="number" value="' + esc(d.value) + '" data-key="' + esc(d.key) + '" data-row="' + d._row + '"></div>';
+    });
+    h += '<button class="btn btn-primary" id="stSimpan">Simpan Pengaturan</button>';
+    globalEl.innerHTML = h;
+    document.getElementById('stSimpan').addEventListener('click', function(){
+      if (isDemo()) { showToast('Mode demo','warning'); return; }
+      var inputs = globalEl.querySelectorAll('input[data-key]');
+      var promises = [];
+      inputs.forEach(function(inp){
+        promises.push(updateData('Pengaturan', parseInt(inp.getAttribute('data-row')), {
+          key: inp.getAttribute('data-key'), value: inp.value
+        }));
+      });
+      Promise.all(promises).then(function(){ showToast('Pengaturan disimpan','success'); });
+    });
+  });
+}
+
+/* ============================================================
+   HALAMAN: LAPORAN (Owner/Admin — hanya lihat)
+============================================================ */
+function renderLaporan(session) {
+  if (!canLihatLaporan() || isKepalaToko()) { showToast('Akses ditolak','error'); navigasi('home'); return; }
+  var el = document.getElementById('appContent');
+  var html = '';
+  html += '<div class="page-title">📊 Laporan</div>';
+  html += '<div class="page-sub">Lihat laporan dari kepala toko</div>';
+  html += '<div class="note-box warn"><b>Info:</b> Hanya Kepala Toko yang bisa membuat laporan. Anda dapat memantau semua laporan.</div>';
+  html += '<div class="card"><h3>Semua Laporan</h3><div id="lpList"><div class="empty">Memuat...</div></div></div>';
+  el.innerHTML = html;
+
+  ambilData('Laporan').then(function(res){
+    var listEl = document.getElementById('lpList');
+    var data = res.ok ? res.data : [];
+    if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada laporan</div>'; return; }
+    data.sort(function(a,b){ return String(b.tanggal).localeCompare(String(a.tanggal)); });
+    var h = '';
+    data.forEach(function(d){
+      h += '<div style="border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:10px">';
+      h += '<div style="font-size:11px;color:#6B7280">' + esc(d.tanggal) + ' • ' + esc(d.pembuat) + (d.kode_cabang ? ' • ' + esc(d.kode_cabang) : '') + '</div>';
+      h += '<div style="font-size:13px;font-weight:700;color:#1F2937;margin-top:2px">' + esc(d.judul) + '</div>';
+      h += '<div style="font-size:11px;color:#374151;margin-top:4px">' + esc(d.isi) + '</div>';
+      h += '<div style="margin-top:6px"><span class="badge badge-blue">' + esc(d.status || 'draft') + '</span></div>';
+      h += '</div>';
+    });
+    listEl.innerHTML = h;
   });
 }
 
@@ -2534,10 +2443,12 @@ function renderProfil(session) {
   html += '<div class="info-row"><span class="lbl">Mode</span><span class="val">' + (session.is_demo ? 'Demo' : 'Aktif') + '</span></div>';
   html += '</div>';
 
-  if (hasPayrollPribadi()) {
-    html += '<div class="note-box"><b>💵 Payroll Pribadi:</b> Buka menu <b>Payroll Saya</b> untuk melihat data penggajian Anda.</div>';
-  } else {
-    html += '<div class="note-box warn"><b>ℹ️ Info:</b> Owner & Admin tidak memiliki payroll pribadi di sistem ini.</div>';
+  if (isOwner()) {
+    html += '<div class="note-box owner"><b>👑 Owner:</b> Akses penuh, tanpa iklan.</div>';
+  } else if (isAdmin()) {
+    html += '<div class="note-box"><b>ℹ️ Admin:</b> Tidak punya payroll pribadi. Fokus pada operasional & ACC.</div>';
+  } else if (hasPayrollPribadi()) {
+    html += '<div class="note-box"><b>💵 Payroll Pribadi:</b> Buka menu Payroll.</div>';
   }
 
   html += '<button class="btn btn-outline btn-block" id="prLogout">🚪 Keluar</button>';

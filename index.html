@@ -1,399 +1,525 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>STEAM MP 7000 — Login</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login - STEAM MP 7000</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root {
-  --merah: #C8102E; --merah-hover: #DC2626; --putih: #FFFFFF; --bg: #F9FAFB;
-  --emas: #F59E0B; --emas-terang: #FBBF24; --hitam: #1F2937; --hitam-pekat: #111827;
-  --abu: #6B7280; --abu-terang: #E5E7EB; --radius: 14px;
-  --shadow: 0 4px 6px rgba(0,0,0,0.1); --shadow-lg: 0 10px 25px rgba(0,0,0,0.12);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg); color: var(--hitam);
-  -webkit-tap-highlight-color: transparent; min-height: 100vh;
-}
-button { font-family: inherit; cursor: pointer; }
-input, select, textarea { font-family: inherit; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --merah:#C8102E;
+    --merah-dark:#9B0C23;
+    --emas:#F59E0B;
+    --emas-dark:#B45309;
+    --putih:#FFFFFF;
+    --hitam:#1F2937;
+    --abu:#6B7280;
+    --abu-bg:#F3F4F6;
+  }
+  html,body{height:100%}
+  body{
+    font-family:'Poppins',system-ui,-apple-system,sans-serif;
+    background:linear-gradient(135deg,#C8102E 0%,#9B0C23 45%,#7A0819 100%);
+    color:var(--hitam);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    position:relative;
+    overflow-x:hidden;
+  }
+  /* Ornamen latar */
+  body::before{
+    content:"";
+    position:fixed;
+    top:-120px;right:-120px;
+    width:320px;height:320px;
+    background:radial-gradient(circle, rgba(245,158,11,.35), transparent 70%);
+    border-radius:50%;
+    pointer-events:none;
+  }
+  body::after{
+    content:"";
+    position:fixed;
+    bottom:-140px;left:-140px;
+    width:360px;height:360px;
+    background:radial-gradient(circle, rgba(255,255,255,.15), transparent 70%);
+    border-radius:50%;
+    pointer-events:none;
+  }
 
-.btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-height: 44px; padding: 10px 20px; border: none;
-  border-radius: var(--radius); font-size: 15px; font-weight: 600;
-  transition: all 0.2s ease; text-decoration: none; gap: 8px;
-}
-.btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.btn-primary { background: var(--merah); color: var(--putih); box-shadow: 0 4px 12px rgba(200,16,46,0.3); }
-.btn-primary:hover:not(:disabled) { background: var(--merah-hover); transform: translateY(-1px); }
-.btn-outline { background: transparent; color: var(--merah); border: 2px solid var(--merah); }
-.btn-outline:hover:not(:disabled) { background: var(--merah); color: var(--putih); }
-.btn-block { width: 100%; }
+  .login-wrap{
+    width:100%;
+    max-width:400px;
+    position:relative;
+    z-index:2;
+  }
+  .login-card{
+    background:var(--putih);
+    border-radius:20px;
+    box-shadow:0 20px 50px rgba(0,0,0,.35), 0 4px 12px rgba(0,0,0,.2);
+    padding:28px 22px 22px;
+    border-top:5px solid var(--emas);
+    animation:fadeUp .5s ease;
+  }
+  @keyframes fadeUp{
+    from{opacity:0;transform:translateY(18px)}
+    to{opacity:1;transform:translateY(0)}
+  }
 
-.form-group { margin-bottom: 18px; }
-.form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--hitam); margin-bottom: 6px; }
-.form-group input {
-  width: 100%; min-height: 44px; padding: 10px 14px;
-  border: 1.5px solid var(--abu-terang); border-radius: var(--radius);
-  font-size: 15px; background: var(--putih); color: var(--hitam); transition: border-color 0.2s;
-}
-.form-group input:focus { outline: none; border-color: var(--merah); box-shadow: 0 0 0 3px rgba(200,16,46,0.1); }
+  .brand{
+    text-align:center;
+    margin-bottom:20px;
+  }
+  .logo-circle{
+    width:74px;height:74px;
+    border-radius:50%;
+    margin:0 auto 12px;
+    background:linear-gradient(145deg,#F59E0B,#D97706);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 20px rgba(245,158,11,.45), inset 0 -3px 6px rgba(0,0,0,.12);
+    border:3px solid #fff;
+  }
+  .logo-circle span{
+    font-weight:800;
+    font-size:26px;
+    color:#fff;
+    letter-spacing:1px;
+    text-shadow:0 1px 2px rgba(0,0,0,.25);
+  }
+  .brand h1{
+    font-size:22px;
+    font-weight:800;
+    color:var(--merah);
+    letter-spacing:.5px;
+    line-height:1.2;
+  }
+  .brand .tagline{
+    font-size:11.5px;
+    color:var(--emas-dark);
+    font-weight:600;
+    margin-top:6px;
+    letter-spacing:.3px;
+    line-height:1.45;
+  }
 
-.login-body {
-  display: flex; align-items: center; justify-content: center;
-  min-height: 100vh; background: linear-gradient(135deg, #C8102E 0%, #7F0A1E 100%);
-  padding: 20px;
-}
-.login-wrapper { width: 100%; max-width: 420px; }
-.login-card {
-  background: var(--putih); border-radius: 24px; padding: 32px 24px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: slideUp 0.4s ease;
-}
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.login-brand { text-align: center; margin-bottom: 28px; }
-.login-logo {
-  width: 72px; height: 72px; margin: 0 auto 14px;
-  background: linear-gradient(135deg, var(--merah), #7F0A1E); color: var(--putih);
-  border-radius: 20px; display: flex; align-items: center; justify-content: center;
-  font-size: 28px; font-weight: 700; box-shadow: 0 8px 20px rgba(200,16,46,0.4);
-}
-.login-title { font-size: 22px; font-weight: 700; color: var(--hitam-pekat); letter-spacing: 0.5px; }
-.login-tagline { font-size: 12px; color: var(--abu); line-height: 1.5; margin-top: 6px; font-style: italic; }
-.login-form { margin-bottom: 18px; }
-.password-wrapper { position: relative; }
-.password-wrapper input { padding-right: 48px; }
-.toggle-password {
-  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
-  width: 38px; height: 38px; border: none; background: transparent;
-  font-size: 18px; border-radius: 8px;
-}
-.toggle-password:hover { background: var(--bg); }
-.login-error {
-  background: #FEE2E2; color: var(--merah); padding: 10px 14px;
-  border-radius: 10px; font-size: 13px; margin-bottom: 16px; border-left: 4px solid var(--merah);
-}
-.login-divider { text-align: center; position: relative; margin: 18px 0; }
-.login-divider::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--abu-terang); }
-.login-divider span { position: relative; background: var(--putih); padding: 0 12px; font-size: 12px; color: var(--abu); }
-.login-footer { text-align: center; font-size: 11px; color: var(--abu); margin-top: 22px; }
+  .form-group{
+    margin-bottom:14px;
+    position:relative;
+  }
+  .form-group label{
+    display:block;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--hitam);
+    margin-bottom:6px;
+  }
+  .input-wrap{
+    position:relative;
+  }
+  .input-wrap input{
+    width:100%;
+    padding:13px 44px 13px 14px;
+    border:1.5px solid #E5E7EB;
+    border-radius:12px;
+    font-family:inherit;
+    font-size:14.5px;
+    color:var(--hitam);
+    background:var(--abu-bg);
+    transition:.2s;
+    outline:none;
+  }
+  .input-wrap input:focus{
+    border-color:var(--merah);
+    background:#fff;
+    box-shadow:0 0 0 3px rgba(200,16,46,.12);
+  }
+  .input-wrap .toggle-pass{
+    position:absolute;
+    right:6px;top:50%;
+    transform:translateY(-50%);
+    background:transparent;
+    border:none;
+    padding:8px 10px;
+    cursor:pointer;
+    font-size:16px;
+    color:var(--abu);
+    border-radius:8px;
+    line-height:1;
+  }
+  .input-wrap .toggle-pass:hover{color:var(--merah)}
 
-.toast-container {
-  position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
-  z-index: 9999; display: flex; flex-direction: column; gap: 8px;
-  width: calc(100% - 32px); max-width: 380px; pointer-events: none;
-}
-.toast {
-  padding: 12px 18px; border-radius: 12px; font-size: 14px; font-weight: 500;
-  color: #fff; box-shadow: var(--shadow-lg); animation: toastIn 0.3s ease; text-align: center;
-}
-.toast-success { background: #16A34A; }
-.toast-error { background: var(--merah); }
-.toast-info { background: #2563EB; }
-.toast-warning { background: var(--emas); }
-.toast-hide { opacity: 0; transform: translateY(-10px); transition: all 0.3s; }
-@keyframes toastIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+  .btn{
+    width:100%;
+    padding:14px;
+    border-radius:12px;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    border:none;
+    transition:.2s;
+    letter-spacing:.4px;
+  }
+  .btn-primary{
+    background:linear-gradient(145deg,var(--merah),var(--merah-dark));
+    color:#fff;
+    box-shadow:0 6px 16px rgba(200,16,46,.35);
+  }
+  .btn-primary:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-primary:disabled{opacity:.65;cursor:not-allowed;transform:none}
 
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 9000;
-  display: flex; align-items: center; justify-content: center; padding: 16px; animation: fadeIn 0.2s;
-}
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.modal-box {
-  background: var(--putih); border-radius: 18px; width: 100%; max-width: 480px;
-  max-height: 90vh; overflow: hidden; display: flex; flex-direction: column;
-  box-shadow: var(--shadow-lg); animation: modalIn 0.25s ease;
-}
-@keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-.modal-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 20px; border-bottom: 1px solid var(--abu-terang);
-}
-.modal-header h3 { font-size: 17px; font-weight: 600; }
-.modal-close {
-  width: 36px; height: 36px; border: none; background: transparent;
-  font-size: 24px; border-radius: 8px; color: var(--abu); line-height: 1;
-}
-.modal-close:hover { background: var(--bg); }
-.modal-body { padding: 20px; overflow-y: auto; }
-.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+  .btn-outline{
+    background:transparent;
+    color:var(--emas-dark);
+    border:2px solid var(--emas);
+    margin-top:10px;
+  }
+  .btn-outline:hover{background:rgba(245,158,11,.1)}
 
-.loading-overlay {
-  position: fixed; inset: 0; background: rgba(255,255,255,0.85); z-index: 9998;
-  display: none; align-items: center; justify-content: center;
-}
-.loading-spinner {
-  width: 48px; height: 48px; border: 4px solid var(--abu-terang);
-  border-top-color: var(--merah); border-radius: 50%; animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+  .error-msg{
+    background:#FEE2E2;
+    color:#991B1B;
+    border:1px solid #FCA5A5;
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:12.5px;
+    font-weight:500;
+    margin-bottom:12px;
+    display:none;
+    animation:shake .35s;
+  }
+  @keyframes shake{
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-6px)}
+    75%{transform:translateX(6px)}
+  }
 
-.demo-role-list { display: flex; flex-direction: column; gap: 10px; }
+  .footer{
+    text-align:center;
+    margin-top:18px;
+    font-size:11.5px;
+    color:rgba(255,255,255,.85);
+    font-weight:500;
+  }
+  .footer strong{color:#fff;font-weight:700}
+
+  /* Modal Demo */
+  .modal-overlay{
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.6);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    z-index:100;
+    backdrop-filter:blur(3px);
+  }
+  .modal-overlay.show{display:flex}
+  .modal{
+    background:#fff;
+    border-radius:18px;
+    padding:22px 20px;
+    width:100%;
+    max-width:380px;
+    box-shadow:0 20px 50px rgba(0,0,0,.4);
+    animation:fadeUp .3s ease;
+  }
+  .modal h3{
+    color:var(--merah);
+    font-size:17px;
+    margin-bottom:4px;
+    text-align:center;
+  }
+  .modal p.sub{
+    text-align:center;
+    color:var(--abu);
+    font-size:12.5px;
+    margin-bottom:16px;
+  }
+  .role-list{display:flex;flex-direction:column;gap:9px}
+  .role-btn{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 14px;
+    border:1.5px solid #E5E7EB;
+    border-radius:12px;
+    background:#fff;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:600;
+    color:var(--hitam);
+    text-align:left;
+    transition:.18s;
+  }
+  .role-btn:hover{
+    border-color:var(--emas);
+    background:#FFFBEB;
+    transform:translateX(3px);
+  }
+  .role-btn .ico{
+    width:34px;height:34px;
+    border-radius:9px;
+    background:linear-gradient(145deg,var(--merah),var(--merah-dark));
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;
+    flex-shrink:0;
+  }
+  .modal .close-btn{
+    width:100%;
+    margin-top:14px;
+    padding:10px;
+    background:var(--abu-bg);
+    border:none;
+    border-radius:10px;
+    font-family:inherit;
+    font-weight:600;
+    font-size:13px;
+    color:var(--abu);
+    cursor:pointer;
+  }
+  .modal .close-btn:hover{background:#E5E7EB}
+
+  .spinner{
+    display:inline-block;
+    width:16px;height:16px;
+    border:2.5px solid rgba(255,255,255,.4);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+    vertical-align:-3px;
+    margin-right:8px;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  @media(min-width:480px){
+    .login-card{padding:34px 28px 26px}
+    .brand h1{font-size:24px}
+  }
 </style>
 </head>
-<body class="login-body">
-<div class="login-wrapper">
+<body>
+
+<div class="login-wrap">
   <div class="login-card">
-    <div class="login-brand">
-      <div class="login-logo">MP</div>
-      <h1 class="login-title">STEAM MP 7000</h1>
-      <p class="login-tagline">Jujur Disiplin Tanggung Jawab<br>HARGA MATI !</p>
+    <div class="brand">
+      <div class="logo-circle"><span>MP</span></div>
+      <h1>STEAM MP 7000</h1>
+      <div class="tagline">Jujur Disiplin Tanggung Jawab<br>HARGA MATI !</div>
     </div>
 
-    <form id="formLogin" class="login-form" autocomplete="off">
+    <div class="error-msg" id="errorMsg"></div>
+
+    <form id="loginForm" autocomplete="off">
       <div class="form-group">
-        <label for="inputId">ID Karyawan</label>
-        <input type="text" id="inputId" placeholder="Masukkan ID" autocomplete="username" />
-      </div>
-      <div class="form-group">
-        <label for="inputPassword">Password</label>
-        <div class="password-wrapper">
-          <input type="password" id="inputPassword" placeholder="Masukkan password" autocomplete="current-password" />
-          <button type="button" id="togglePassword" class="toggle-password" aria-label="Lihat password">👁️</button>
+        <label for="userId">ID Pengguna</label>
+        <div class="input-wrap">
+          <input type="text" id="userId" placeholder="Masukkan ID" required>
         </div>
       </div>
-      <div id="loginError" class="login-error" style="display:none"></div>
-      <button type="submit" id="btnMasuk" class="btn btn-primary btn-block">MASUK</button>
+      <div class="form-group">
+        <label for="userPass">Password</label>
+        <div class="input-wrap">
+          <input type="password" id="userPass" placeholder="Masukkan Password" required>
+          <button type="button" class="toggle-pass" id="togglePass" aria-label="Tampilkan password">👁️</button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" id="btnMasuk">MASUK</button>
+      <button type="button" class="btn btn-outline" id="btnDemo">COBA DEMO</button>
     </form>
+  </div>
+  <div class="footer">© <strong>Steam MP Manajemen</strong> 2026</div>
+</div>
 
-    <div class="login-divider"><span>atau</span></div>
-    <button type="button" id="btnDemo" class="btn btn-outline btn-block">COBA MODE DEMO</button>
-    <p class="login-footer">Steam MP Manajemen</p>
+<!-- Modal Demo -->
+<div class="modal-overlay" id="demoModal">
+  <div class="modal">
+    <h3>Pilih Mode Demo</h3>
+    <p class="sub">Jelajahi aplikasi tanpa login</p>
+    <div class="role-list">
+      <button class="role-btn" data-role="Owner" data-id="9999">
+        <div class="ico">👑</div><div>Owner</div>
+      </button>
+      <button class="role-btn" data-role="Admin" data-id="9998">
+        <div class="ico">🛡️</div><div>Admin</div>
+      </button>
+      <button class="role-btn" data-role="Kepala Toko" data-id="9997">
+        <div class="ico">🏪</div><div>Kepala Toko</div>
+      </button>
+      <button class="role-btn" data-role="Karyawan" data-id="9996">
+        <div class="ico">👤</div><div>Karyawan</div>
+      </button>
+    </div>
+    <button class="close-btn" id="closeDemo">Batal</button>
   </div>
 </div>
 
 <script>
-/* ================= CONFIG ================= */
-const CONFIG = {
-  BACKEND_URL: 'https://script.google.com/macros/s/AKfycbz3wQy6XT-57z0NkTs5eIHai2wXpyR672NJ_rhC0Zi9csmWmFlrVvgv7DmU4Bh33wFUbg/exec',
-  TOKEN: 'steam-mp-7000-2026',
-  APP_NAME: 'STEAM MP 7000',
-  TAGLINE: 'Jujur Disiplin Tanggung Jawab HARGA MATI !',
-  FOOTER: 'Steam MP Manajemen',
-  TIMEOUT: 30000,
-  SESSION_KEY: 'steam_mp_session',
-  SESSION_EXPIRY_USER: 8 * 60 * 60 * 1000,
-  SESSION_EXPIRY_DEMO: 15 * 60 * 1000
-};
+(function(){
+  'use strict';
 
-/* ================= UTILS ================= */
-function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
-function escapeHtml(text) {
-  if (text === null || text === undefined) return '';
-  return String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
-}
-function showToast(pesan, tipe = 'info') {
-  let c = document.getElementById('toastContainer');
-  if (!c) { c = document.createElement('div'); c.id = 'toastContainer'; c.className = 'toast-container'; document.body.appendChild(c); }
-  const t = document.createElement('div');
-  t.className = 'toast toast-' + tipe;
-  t.textContent = pesan;
-  c.appendChild(t);
-  setTimeout(() => { t.classList.add('toast-hide'); setTimeout(() => t.remove(), 300); }, 3000);
-}
-function showLoading() {
-  let el = document.getElementById('loadingOverlay');
-  if (!el) { el = document.createElement('div'); el.id='loadingOverlay'; el.className='loading-overlay'; el.innerHTML='<div class="loading-spinner"></div>'; document.body.appendChild(el); }
-  el.style.display = 'flex';
-}
-function hideLoading() { const el = document.getElementById('loadingOverlay'); if (el) el.style.display = 'none'; }
-function showModal(judul, konten, opsi = {}) {
-  const ex = document.getElementById('globalModal'); if (ex) ex.remove();
-  const m = document.createElement('div');
-  m.id = 'globalModal'; m.className = 'modal-overlay';
-  m.innerHTML = `<div class="modal-box"><div class="modal-header"><h3>${escapeHtml(judul||'')}</h3><button class="modal-close" id="modalCloseBtn">×</button></div><div class="modal-body">${konten}</div></div>`;
-  document.body.appendChild(m);
-  const close = () => m.remove();
-  document.getElementById('modalCloseBtn').onclick = close;
-  m.addEventListener('click', e => { if (e.target === m && !opsi.lock) close(); });
-  return { close, element: m };
-}
-function showKonfirmasi(pesan) {
-  return new Promise(resolve => {
-    const m = showModal('Konfirmasi',
-      `<p style="margin:0 0 20px">${escapeHtml(pesan)}</p><div class="modal-actions"><button class="btn btn-secondary" id="konfirmasiTidak" style="background:#E5E7EB;color:#1F2937;border:none;border-radius:14px;min-height:44px;padding:10px 20px;font-weight:600;">Tidak</button><button class="btn btn-primary" id="konfirmasiYa">Ya</button></div>`,
-      { lock: true });
-    document.getElementById('konfirmasiYa').onclick = () => { m.close(); resolve(true); };
-    document.getElementById('konfirmasiTidak').onclick = () => { m.close(); resolve(false); };
-  });
-}
-function normalizeUser(data) {
-  if (!data) return null;
-  return {
-    user_id: String(data.id || data.user_id || ''),
-    user_nama: String(data.nama || data.user_nama || data.name || ''),
-    user_jabatan: String(data.jabatan || data.user_jabatan || data.role || 'karyawan'),
-    user_kode_cabang: String(data.kode_cabang || data.user_kode_cabang || data.cabang || '-'),
-    user_token: String(data.token || data.user_token || CONFIG.TOKEN),
-    status: String(data.status || 'aktif')
-  };
-}
-function normalizeRole(role) {
-  if (!role) return 'karyawan';
-  const r = String(role).toLowerCase().trim();
-  if (r.includes('owner')) return 'owner';
-  if (r.includes('admin')) return 'admin';
-  if (r.includes('kepala')) return 'kepala_toko';
-  return 'karyawan';
-}
-function parseResponse(res) {
-  if (!res) return { status: 'error', message: 'Tidak ada respons' };
-  if (typeof res === 'string') { try { res = JSON.parse(res); } catch(e) { return { status:'error', message:'Format tidak valid' }; } }
-  const isOk = res.status === 'ok' || res.status === 'success' || res.success === true;
-  return { status: isOk ? 'ok' : 'error', message: res.message || res.msg || '', data: res.data !== undefined ? res.data : null, duplikat: res.duplikat === true };
-}
-/* ===== SESSION — SATU-SATUNYA ===== */
-function saveSession(user) {
-  const s = {
-    user_id: String(user.user_id || user.id || ''),
-    user_nama: String(user.user_nama || user.nama || ''),
-    user_jabatan: String(user.user_jabatan || user.jabatan || 'karyawan'),
-    user_kode_cabang: String(user.user_kode_cabang || user.kode_cabang || '-'),
-    user_token: String(user.user_token || user.token || CONFIG.TOKEN),
-    is_demo: user.is_demo === true,
-    login_time: Date.now()
-  };
-  localStorage.setItem(CONFIG.SESSION_KEY, JSON.stringify(s));
-  return s;
-}
-function getSession() {
-  try {
-    const raw = localStorage.getItem(CONFIG.SESSION_KEY);
-    if (!raw) return null;
-    const s = JSON.parse(raw);
-    if (!s || !s.user_id) return null;
-    const exp = s.is_demo ? CONFIG.SESSION_EXPIRY_DEMO : CONFIG.SESSION_EXPIRY_USER;
-    if (s.login_time && (Date.now() - s.login_time > exp)) { clearSession(); return null; }
-    return s;
-  } catch(e) { clearSession(); return null; }
-}
-function clearSession() { localStorage.removeItem(CONFIG.SESSION_KEY); }
-function cekSession() { return getSession() !== null; }
+  var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwWiWeesEtkkzsbZrEb4I1WYAj8LPVY73H5ZZo1kB8UjWCcL2v5IbH3WvfZqblkEhMu/exec';
+  var TOKEN = 'steam-mp-7000-2026';
+  var SESSION_KEY = 'steam_mp_session';
 
-/* ================= API ================= */
-async function apiPost(action, data) {
-  const body = { action, token: CONFIG.TOKEN, ...data };
-  try {
-    const ctrl = new AbortController();
-    const to = setTimeout(() => ctrl.abort(), CONFIG.TIMEOUT);
-    const res = await fetch(CONFIG.BACKEND_URL, {
-      method: 'POST', headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(body), signal: ctrl.signal, redirect: 'follow'
-    });
-    clearTimeout(to);
-    const text = await res.text();
-    let json; try { json = JSON.parse(text); } catch(e) { return { status:'error', message:'Respons server tidak valid' }; }
-    return parseResponse(json);
-  } catch(err) {
-    if (err.name === 'AbortError') return { status:'error', message:'Koneksi timeout' };
-    return { status:'error', message:'Gagal terhubung ke server' };
+  /* ---------- SESSION ---------- */
+  function getSession(){
+    try{
+      var raw = localStorage.getItem(SESSION_KEY);
+      if(!raw) return null;
+      var s = JSON.parse(raw);
+      if(!s || !s.user_id) return null;
+      return s;
+    }catch(e){ return null; }
   }
-}
+  function setSession(s){
+    try{ localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }catch(e){}
+  }
+  function clearSession(){
+    try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
+  }
 
-/* ================= AUTH ================= */
-document.addEventListener('DOMContentLoaded', () => {
-  // CEK SESSION SEKALI DI AWAL — kalau ada, redirect & return
-  if (getSession()) {
+  /* ---------- GUARD: SUDAH LOGIN? ---------- */
+  var existing = getSession();
+  if(existing){
     window.location.replace('dashboard.html');
     return;
   }
-  initFormLogin();
-  initDemoModal();
-  initTogglePassword();
-});
 
-function initFormLogin() {
-  const f = document.getElementById('formLogin');
-  if (f) f.addEventListener('submit', e => { e.preventDefault(); prosesLogin(); });
-}
-function initTogglePassword() {
-  const b = document.getElementById('togglePassword');
-  const i = document.getElementById('inputPassword');
-  if (!b || !i) return;
-  b.onclick = () => { if (i.type === 'password') { i.type='text'; b.textContent='🙈'; } else { i.type='password'; b.textContent='👁️'; } };
-}
-function initDemoModal() {
-  const b = document.getElementById('btnDemo');
-  if (!b) return;
-  b.onclick = () => {
-    const m = showModal('Mode Demo', `
-      <p style="margin:0 0 16px">Pilih role untuk mencoba aplikasi:</p>
-      <div class="demo-role-list">
-        <button class="btn btn-outline" data-role="Owner">Demo Owner</button>
-        <button class="btn btn-outline" data-role="Admin">Demo Admin</button>
-        <button class="btn btn-outline" data-role="Kepala Toko">Demo Kepala Toko</button>
-        <button class="btn btn-outline" data-role="Karyawan">Demo Karyawan</button>
-      </div>`);
-    m.element.querySelectorAll('[data-role]').forEach(btn => {
-      btn.onclick = () => { m.close(); prosesDemo(btn.dataset.role); };
-    });
-  };
-}
-function tampilkanError(id, pesan) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.textContent = pesan; el.style.display = 'block';
-}
-function sembunyikanError(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.textContent = ''; el.style.display = 'none';
-}
-async function prosesLogin() {
-  const id = document.getElementById('inputId').value.trim();
-  const password = document.getElementById('inputPassword').value.trim();
-  const btn = document.getElementById('btnMasuk');
-  if (!id || !password) { tampilkanError('loginError', 'ID dan Password wajib diisi'); return; }
-  sembunyikanError('loginError');
-  btn.disabled = true; btn.textContent = 'MEMPROSES...';
-  try {
-    const res = await apiPost('login', { id, password });
-    console.log('LOGIN RESPONSE:', res);
-    if (res.status === 'ok' && res.data && res.data.user) {
-      const user = normalizeUser(res.data.user);
-      saveSession({ ...user, user_token: res.data.token || CONFIG.TOKEN, is_demo: false });
-      console.log('SESSION SAVED:', getSession());
-      showToast('Login berhasil!', 'success');
-      setTimeout(() => { window.location.replace('dashboard.html'); }, 600);
-    } else {
-      tampilkanError('loginError', res.message || 'ID atau Password salah');
-    }
-  } catch(err) {
-    console.error('LOGIN ERROR:', err);
-    tampilkanError('loginError', 'Gagal terhubung ke server');
-  } finally {
-    btn.disabled = false; btn.textContent = 'MASUK';
+  /* ---------- API ---------- */
+  function apiPost(action, data){
+    var body = Object.assign({ action: action, token: TOKEN }, data || {});
+    return fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(body)
+    }).then(function(r){ return r.json(); });
   }
-}
-async function prosesDemo(role) {
-  showLoading();
-  try {
-    const res = await apiPost('loginDemo', { role });
-    console.log('DEMO RESPONSE:', res);
-    if (res.status === 'ok' && res.data && res.data.user) {
-      const user = normalizeUser(res.data.user);
-      saveSession({ ...user, user_jabatan: role, is_demo: true });
-      showToast(`Masuk sebagai Demo ${role}`, 'info');
-      setTimeout(() => { window.location.replace('dashboard.html'); }, 600);
-    } else {
-      showToast(res.message || 'Gagal masuk mode demo', 'error');
+
+  /* ---------- DOM ---------- */
+  var form = document.getElementById('loginForm');
+  var inpId = document.getElementById('userId');
+  var inpPass = document.getElementById('userPass');
+  var btnMasuk = document.getElementById('btnMasuk');
+  var btnDemo = document.getElementById('btnDemo');
+  var togglePass = document.getElementById('togglePass');
+  var errorMsg = document.getElementById('errorMsg');
+  var demoModal = document.getElementById('demoModal');
+  var closeDemo = document.getElementById('closeDemo');
+
+  /* ---------- SHOW/HIDE PASSWORD ---------- */
+  togglePass.addEventListener('click', function(){
+    if(inpPass.type === 'password'){
+      inpPass.type = 'text';
+      togglePass.textContent = '🙈';
+    }else{
+      inpPass.type = 'password';
+      togglePass.textContent = '👁️';
     }
-  } catch(err) {
-    console.error('DEMO ERROR:', err);
-    showToast('Gagal terhubung ke server', 'error');
-  } finally { hideLoading(); }
-}
+  });
+
+  /* ---------- ERROR ---------- */
+  function showError(msg){
+    errorMsg.textContent = msg;
+    errorMsg.style.display = 'block';
+    setTimeout(function(){ errorMsg.style.display = 'none'; }, 4000);
+  }
+
+  /* ---------- LOGIN SUBMIT ---------- */
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var id = String(inpId.value || '').trim();
+    var pass = String(inpPass.value || '').trim();
+
+    if(!id || !pass){
+      showError('ID dan Password wajib diisi.');
+      return;
+    }
+
+    btnMasuk.disabled = true;
+    btnMasuk.innerHTML = '<span class="spinner"></span>Memeriksa...';
+
+    apiPost('baca', { sheet: 'Users' })
+      .then(function(res){
+        if(!res || !res.ok){
+          throw new Error((res && res.pesan) || 'Gagal membaca data user.');
+        }
+        var users = Array.isArray(res.data) ? res.data : [];
+        var found = null;
+        for(var i=0;i<users.length;i++){
+          var u = users[i];
+          var uid = String(u.id == null ? '' : u.id).trim();
+          var upass = String(u.password == null ? '' : u.password).trim();
+          var status = String(u.status == null ? '' : u.status).trim().toLowerCase();
+          var dihapus = String(u.dihapus == null ? '' : u.dihapus).trim().toLowerCase();
+          var isDeleted = (dihapus === 'true' || dihapus === 'ya' || dihapus === '1');
+          if(uid === id && upass === pass && status === 'aktif' && !isDeleted){
+            found = u;
+            break;
+          }
+        }
+
+        if(!found){
+          showError('ID atau Password salah.');
+          btnMasuk.disabled = false;
+          btnMasuk.textContent = 'MASUK';
+          return;
+        }
+
+        var session = {
+          user_id: String(found.id == null ? '' : found.id),
+          user_nama: String(found.nama == null ? '' : found.nama),
+          user_jabatan: String(found.jabatan == null ? '' : found.jabatan),
+          user_kode_cabang: String(found.kode_cabang == null ? '-' : found.kode_cabang),
+          is_demo: false,
+          login_time: Date.now()
+        };
+        setSession(session);
+        window.location.replace('dashboard.html');
+      })
+      .catch(function(err){
+        showError(err && err.message ? err.message : 'Terjadi kesalahan jaringan.');
+        btnMasuk.disabled = false;
+        btnMasuk.textContent = 'MASUK';
+      });
+  });
+
+  /* ---------- DEMO ---------- */
+  btnDemo.addEventListener('click', function(){
+    demoModal.classList.add('show');
+  });
+  closeDemo.addEventListener('click', function(){
+    demoModal.classList.remove('show');
+  });
+  demoModal.addEventListener('click', function(e){
+    if(e.target === demoModal) demoModal.classList.remove('show');
+  });
+
+  var roleBtns = demoModal.querySelectorAll('.role-btn');
+  roleBtns.forEach(function(b){
+    b.addEventListener('click', function(){
+      var role = b.getAttribute('data-role');
+      var demoId = b.getAttribute('data-id');
+      var session = {
+        user_id: demoId,
+        user_nama: 'Demo ' + role,
+        user_jabatan: role,
+        user_kode_cabang: '-',
+        is_demo: true,
+        login_time: Date.now()
+      };
+      setSession(session);
+      window.location.replace('dashboard.html');
+    });
+  });
+
+})();
 </script>
 </body>
 </html>

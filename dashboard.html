@@ -244,6 +244,7 @@ var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwWiWeesEtkkzsbZrEb4I
 var TOKEN = 'steam-mp-7000-2026';
 var SESSION_KEY = 'steam_mp_session';
 var HARGA_PER_UNIT = 4000;
+var BATAS_KASBON_AUTO = 20000;
 
 /* ============================================================
    DUMMY DATA
@@ -269,8 +270,11 @@ var DUMMY_DATA = {
   ],
   'Pengajuan_Kasbon': [
     {id_pengajuan:'KSB-001',tanggal_pengajuan:'2026-01-15',
-     id_karyawan:'4001',nama_karyawan:'Karyawan A',
-     jumlah_kasbon:20000,status:'auto_disetujui',_row:2}
+     id_karyawan:'4001',nama_karyawan:'Karyawan A',kode_cabang:'GROBOGAN',
+     jumlah_kasbon:15000,status:'auto_disetujui',_row:2},
+    {id_pengajuan:'KSB-002',tanggal_pengajuan:'2026-01-16',
+     id_karyawan:'4001',nama_karyawan:'Karyawan A',kode_cabang:'GROBOGAN',
+     jumlah_kasbon:50000,status:'menunggu',_row:3}
   ],
   'Izin_Istirahat': [
     {id_izin:'IZ-001',tanggal_izin:'2026-01-20',jenis_izin:'istirahat',
@@ -331,31 +335,34 @@ function isOwner() { var s = getSession(); return s && s.user_jabatan === 'Owner
 function isAdmin() { var s = getSession(); return s && s.user_jabatan === 'Admin'; }
 function isKepalaToko() { var s = getSession(); return s && s.user_jabatan === 'Kepala Toko'; }
 function isKaryawan() { var s = getSession(); return s && s.user_jabatan === 'Karyawan'; }
-
 function bisaIklan() { return !isOwner() && !isDemo(); }
 
 /* ============================================================
    ROLE-BASED ACCESS — ATURAN FINAL
-   - Owner & Admin: TIDAK ajukan izin, TIDAK payroll pribadi, TIDAK ajukan kerusakan
-                    TAPI: ACC izin, ACC kerusakan, ACC permintaan payroll
-   - Kepala Toko & Karyawan: AJUKAN izin, AJUKAN kerusakan, PUNYA payroll pribadi
-                    Kepala Toko: ACC izin tahap 1
 ============================================================ */
+// Pengajuan (hanya KT & Karyawan)
 function canAjukanIzin() { return isKepalaToko() || isKaryawan(); }
 function canAjukanKerusakan() { return isKepalaToko() || isKaryawan(); }
 function canAjukanPayrollReq() { return isKepalaToko() || isKaryawan(); }
+function canAjukanKasbon() { return isKepalaToko() || isKaryawan(); }
 function hasPayrollPribadi() { return isKepalaToko() || isKaryawan(); }
 
+// ACC (Owner & Admin)
 function canAccIzinTahap1() { return isKepalaToko(); }
 function canAccIzinTahap2() { return isOwner() || isAdmin(); }
 function canAccKerusakan() { return isOwner() || isAdmin(); }
 function canAccPermintaanPayroll() { return isOwner() || isAdmin(); }
+function canAccKasbon() { return isOwner() || isAdmin(); }
 
+// Akses operasional
 function canAturTarget() { return isOwner(); }
 function canAksesPengeluaran() { return isOwner() || isAdmin(); }
 function canAksesManusia() { return isOwner(); }
 function canInputPendapatan() { return isOwner() || isAdmin() || isKepalaToko(); }
 function canModifPayrollAll() { return isOwner(); }
+function canKelolaCabang() { return isOwner(); }
+function canBuatLaporan() { return isKepalaToko(); }
+function canLihatLaporan() { return isOwner() || isAdmin() || isKepalaToko(); }
 
 function logout() {
   if (!confirm('Keluar dari aplikasi?')) return;
@@ -455,14 +462,14 @@ function fmtRupiah(n) { n = parseInt(n) || 0; return 'Rp ' + n.toLocaleString('i
 function nowISO() { return new Date().toISOString(); }
 
 /* ============================================================
-   MENU — Sesuai aturan final
+   MENU
 ============================================================ */
 function getMenuByRole(jabatan) {
   var allMenus = [
     {id:'pendapatan_owner', nama:'Pendapatan Owner', desc:'Rekap semua cabang (1 unit = 4rb)', ico:'📈', highlight:true},
     {id:'pendapatan', nama:'Input Pendapatan', desc:'Catat pendapatan harian', ico:'💰'},
     {id:'riwayat_pendapatan', nama:'Unit Cabang', desc:'Total unit per hari', ico:'📋'},
-    {id:'kasbon', nama:'Kasbon', desc:'Pengajuan & riwayat kasbon', ico:'💸'},
+    {id:'kasbon', nama:'Kasbon', desc:'Ajukan / ACC kasbon', ico:'💸'},
     {id:'izin', nama:'Izin', desc:'Ajukan / ACC izin', ico:'📅'},
     {id:'kerusakan', nama:'Kerusakan/Kendala', desc:'Lapor & ACC kerusakan', ico:'🔧'},
     {id:'permintaan_payroll', nama:'Permintaan Payroll', desc:'Ajukan & ACC lihat payroll', ico:'📨'},
@@ -471,31 +478,27 @@ function getMenuByRole(jabatan) {
     {id:'pengeluaran', nama:'Pengeluaran', desc:'Catat pengeluaran cabang', ico:'📉'},
     {id:'laporan', nama:'Laporan', desc:'Buat & lihat laporan', ico:'📊'},
     {id:'target', nama:'Target Cabang', desc:'Atur target harian', ico:'🎯'},
+    {id:'cabang', nama:'Kelola Cabang', desc:'Tambah & atur cabang', ico:'🏪', highlight:true},
     {id:'manusia', nama:'Manajemen Manusia', desc:'Kelola anggota + lihat password', ico:'👥'},
     {id:'pengaturan', nama:'Pengaturan', desc:'Bonus & pengaturan global', ico:'⚙️'},
     {id:'profil', nama:'Profil', desc:'Data akun', ico:'👤'}
   ];
 
-  if (jabatan === 'Owner') {
-    // Owner: SEMUA MENU
-    return allMenus;
-  }
+  if (jabatan === 'Owner') return allMenus;
 
-  // Admin: semua operasional + ACC, TANPA payroll pribadi, izin, kerusakan-ajukan, manusia, target, pendapatan_owner
   if (jabatan === 'Admin') {
-    var adminIds = ['pendapatan','riwayat_pendapatan','izin','kerusakan','permintaan_payroll',
+    var adminIds = ['pendapatan','riwayat_pendapatan','kasbon','izin','kerusakan','permintaan_payroll',
                     'pengeluaran','laporan','profil'];
     return allMenus.filter(function(m){ return adminIds.indexOf(m.id) > -1; });
   }
 
-  // Kepala Toko: input pendapatan cabang + ajukan izin/kerusakan/payroll req + payroll pribadi + ACC izin tahap 1
   if (jabatan === 'Kepala Toko') {
     var ktIds = ['pendapatan','riwayat_pendapatan','kasbon','izin','kerusakan',
-                 'permintaan_payroll','payroll','profil'];
+                 'permintaan_payroll','payroll','laporan','profil'];
     return allMenus.filter(function(m){ return ktIds.indexOf(m.id) > -1; });
   }
 
-  // Karyawan: ajukan izin/kerusakan/payroll req, kasbon, payroll pribadi, unit cabang
+  // Karyawan
   var karIds = ['riwayat_pendapatan','kasbon','izin','kerusakan','permintaan_payroll','payroll','profil'];
   return allMenus.filter(function(m){ return karIds.indexOf(m.id) > -1; });
 }
@@ -512,9 +515,9 @@ function getBottomNavByRole(jabatan) {
   if (jabatan === 'Admin') {
     return [
       {id:'home', nama:'Beranda', ico:'🏠'},
+      {id:'kasbon', nama:'ACC Kasbon', ico:'💸'},
       {id:'izin', nama:'ACC Izin', ico:'📅'},
-      {id:'kerusakan', nama:'ACC Rusak', ico:'🔧'},
-      {id:'pengeluaran', nama:'Keluar', ico:'📉'}
+      {id:'kerusakan', nama:'ACC Rusak', ico:'🔧'}
     ];
   }
   if (jabatan === 'Kepala Toko') {
@@ -601,6 +604,7 @@ function navigasi(pageId) {
     case 'manusia': renderManusia(session); break;
     case 'pengaturan': renderPengaturan(session); break;
     case 'target': renderTarget(session); break;
+    case 'cabang': renderKelolaCabang(session); break;
     case 'profil': renderProfil(session); break;
     default: renderHome(session);
   }
@@ -823,7 +827,7 @@ function hitungRekapOwner(pendapatan, target, pengeluaran, dari, sampai) {
 ============================================================ */
 function renderPendapatan(session) {
   if (!canInputPendapatan()) {
-    showToast('Hanya Owner/Admin/Kepala Toko yang bisa input pendapatan','error');
+    showToast('Hanya Owner/Admin/Kepala Toko yang bisa input','error');
     navigasi('home'); return;
   }
 
@@ -921,7 +925,7 @@ function renderPendapatan(session) {
     }
 
     document.getElementById('pdSubmit').addEventListener('click', function(){
-      if (isDemo()) { showToast('Mode demo — tidak bisa menyimpan','warning'); return; }
+      if (isDemo()) { showToast('Mode demo','warning'); return; }
       var btn = this;
       btn.disabled = true; btn.innerHTML = 'Menyimpan...';
 
@@ -1067,7 +1071,7 @@ function renderRiwayatPendapatan(session) {
     '<div class="note-box warn">' +
     (isFullAccess
       ? '<b>Mode Full Access:</b> Anda dapat melihat semua data.'
-      : '<b>Privasi Rekan Terjaga:</b> Anda hanya bisa melihat <b>total unit cabang</b> per hari. Untuk pendapatan pribadi → lihat <b>Payroll Saya</b>.') +
+      : '<b>Privasi Rekan Terjaga:</b> Anda hanya bisa melihat <b>total unit cabang</b> per hari.') +
     '</div>' +
     '<div id="rpList"><div class="empty"><div class="ei">⏳</div>Memuat...</div></div>';
 
@@ -1127,64 +1131,145 @@ function renderRiwayatPendapatan(session) {
 
 /* ============================================================
    HALAMAN: KASBON
+   - Karyawan/KT: ajukan
+   - Owner/Admin: ACC kasbon > 20rb + lihat semua riwayat
 ============================================================ */
 function renderKasbon(session) {
   var el = document.getElementById('appContent');
+  var canAjukan = canAjukanKasbon();
+  var canAcc = canAccKasbon();
+
   var html = '';
   html += '<div class="page-title">💸 Kasbon</div>';
-  html += '<div class="page-sub">Ajukan dan lihat riwayat kasbon</div>';
-  html += '<div class="card"><h3>Ajukan Kasbon</h3>';
-  html += '<div class="fgroup"><label>Jumlah Kasbon</label><input type="number" id="ksJumlah" value="0" min="0"></div>';
-  html += '<div class="fgroup"><label>Keterangan</label><input type="text" id="ksKet" placeholder="Opsional"></div>';
-  html += '<button class="btn btn-primary" id="ksSubmit">Ajukan Kasbon</button>';
-  html += '<p style="font-size:11px;color:#9CA3AF;margin-top:8px">*Rewarded ad akan ditampilkan</p>';
+  html += '<div class="page-sub">';
+  if (canAjukan) html += 'Ajukan & lihat riwayat kasbon';
+  else if (canAcc) html += 'ACC kasbon & lihat riwayat';
   html += '</div>';
-  html += '<div class="card"><h3>Riwayat Kasbon Saya</h3><div id="ksList"><div class="empty">Memuat...</div></div></div>';
+
+  // Info aturan
+  html += '<div class="note-box">';
+  html += '<b>Aturan Kasbon:</b><br>';
+  html += '• ≤ ' + fmtRupiah(BATAS_KASBON_AUTO) + ' → <b>auto disetujui</b><br>';
+  html += '• > ' + fmtRupiah(BATAS_KASBON_AUTO) + ' → perlu <b>ACC Owner/Admin</b>';
+  html += '</div>';
+
+  if (canAjukan) {
+    html += '<div class="card"><h3>Ajukan Kasbon</h3>';
+    html += '<div class="fgroup"><label>Jumlah Kasbon</label><input type="number" id="ksJumlah" value="0" min="0"></div>';
+    html += '<div class="fgroup"><label>Keterangan</label><input type="text" id="ksKet" placeholder="Opsional"></div>';
+    html += '<button class="btn btn-primary" id="ksSubmit">Ajukan Kasbon</button>';
+    html += '<p style="font-size:11px;color:#9CA3AF;margin-top:8px">*Rewarded ad akan ditampilkan</p>';
+    html += '</div>';
+  }
+
+  html += '<div class="card"><h3>' + (canAjukan ? 'Riwayat Kasbon Saya' : 'Semua Pengajuan Kasbon') + '</h3><div id="ksList"><div class="empty">Memuat...</div></div></div>';
   el.innerHTML = html;
 
   ambilData('Pengajuan_Kasbon').then(function(res){
     var data = res.ok ? res.data : [];
-    data = data.filter(function(d){ return String(d.id_karyawan) === String(session.user_id); });
+    if (canAjukan) {
+      // Karyawan: hanya milik sendiri. KT: milik sendiri + cabangnya
+      if (isKepalaToko()) {
+        data = data.filter(function(d){
+          return String(d.id_karyawan) === String(session.user_id) ||
+                 String(d.kode_cabang) === String(session.kode_cabang);
+        });
+      } else {
+        data = data.filter(function(d){ return String(d.id_karyawan) === String(session.user_id); });
+      }
+    }
+    // Owner & Admin: lihat semua
+
     var listEl = document.getElementById('ksList');
     if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada kasbon</div>'; return; }
-    var h = '<div class="table-wrap"><table><thead><tr><th>ID</th><th>Tanggal</th><th>Jumlah</th><th>Status</th></tr></thead><tbody>';
+
+    data.sort(function(a,b){ return String(b.tanggal_pengajuan).localeCompare(String(a.tanggal_pengajuan)); });
+
+    var h = '';
     data.forEach(function(d){
       var st = String(d.status || '').toLowerCase();
-      var bc = st === 'disetujui' || st === 'auto_disetujui' ? 'badge-green' : st === 'ditolak' ? 'badge-red' : 'badge-yellow';
-      h += '<tr><td>' + esc(d.id_pengajuan) + '</td><td>' + esc(d.tanggal_pengajuan) + '</td><td>' + fmtRupiah(d.jumlah_kasbon) + '</td><td><span class="badge ' + bc + '">' + esc(d.status) + '</span></td></tr>';
+      var stLabel = d.status || 'menunggu';
+      var bc = 'badge-yellow';
+      if (st === 'auto_disetujui') bc = 'badge-blue';
+      else if (st === 'disetujui') bc = 'badge-green';
+      else if (st === 'ditolak') bc = 'badge-red';
+
+      var jml = parseInt(d.jumlah_kasbon) || 0;
+
+      h += '<div style="border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:10px">';
+      h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">';
+      h += '<div style="flex:1;min-width:160px">';
+      h += '<div style="font-size:13px;font-weight:700;color:#1F2937">' + esc(d.nama_karyawan || d.id_karyawan) + '</div>';
+      h += '<div style="font-size:11px;color:#6B7280;margin-top:2px">' + esc(d.tanggal_pengajuan) + (d.kode_cabang ? ' • ' + esc(d.kode_cabang) : '') + '</div>';
+      h += '<div style="font-size:16px;font-weight:800;color:#C8102E;margin-top:6px">' + fmtRupiah(jml) + '</div>';
+      h += '</div>';
+      h += '<span class="badge ' + bc + '">' + esc(stLabel) + '</span>';
+      h += '</div>';
+
+      if (canAcc && st === 'menunggu' && jml > BATAS_KASBON_AUTO) {
+        h += '<div class="btn-row" style="margin-top:10px">';
+        h += '<button class="btn btn-sm btn-primary" data-acc-ks="' + d._row + '" style="width:auto">✅ ACC</button>';
+        h += '<button class="btn btn-sm btn-danger" data-rej-ks="' + d._row + '">❌ Tolak</button>';
+        h += '</div>';
+      }
+      h += '</div>';
     });
-    h += '</tbody></table></div>';
     listEl.innerHTML = h;
+
+    listEl.querySelectorAll('[data-acc-ks]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if (isDemo()) { showToast('Mode demo','warning'); return; }
+        var row = parseInt(this.getAttribute('data-acc-ks'));
+        updateData('Pengajuan_Kasbon', row, { status: 'disetujui', acc_by: session.user_nama, acc_time: nowISO() }).then(function(r){
+          if (r && r.ok) { showToast('Kasbon di-ACC','success'); renderKasbon(session); }
+          else showToast(r.pesan || 'Gagal','error');
+        });
+      });
+    });
+    listEl.querySelectorAll('[data-rej-ks]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if (isDemo()) { showToast('Mode demo','warning'); return; }
+        if (!confirm('Tolak kasbon ini?')) return;
+        var row = parseInt(this.getAttribute('data-rej-ks'));
+        updateData('Pengajuan_Kasbon', row, { status: 'ditolak', acc_by: session.user_nama, acc_time: nowISO() }).then(function(r){
+          if (r && r.ok) { showToast('Kasbon ditolak','success'); renderKasbon(session); }
+          else showToast(res.pesan || 'Gagal','error');
+        });
+      });
+    });
   });
 
-  document.getElementById('ksSubmit').addEventListener('click', function(){
-    if (isDemo()) { showToast('Mode demo','warning'); return; }
-    var jumlah = parseInt(document.getElementById('ksJumlah').value) || 0;
-    if (jumlah <= 0) { showToast('Masukkan jumlah kasbon','error'); return; }
-    tampilkanIklan('rewarded');
-    var btn = this;
-    btn.disabled = true; btn.textContent = 'Mengajukan...';
-    var data = {
-      id_pengajuan: 'KSB-' + Date.now(),
-      tanggal_pengajuan: todayStr(),
-      id_karyawan: session.user_id,
-      nama_karyawan: session.user_nama,
-      jumlah_kasbon: jumlah,
-      status: jumlah <= 20000 ? 'auto_disetujui' : 'menunggu'
-    };
-    simpanData('Pengajuan_Kasbon', data).then(function(res){
-      btn.disabled = false; btn.textContent = 'Ajukan Kasbon';
-      if (res && res.ok) { showToast('Kasbon berhasil diajukan','success'); renderKasbon(session); }
-      else showToast(res.pesan || 'Gagal','error');
+  if (canAjukan && document.getElementById('ksSubmit')) {
+    document.getElementById('ksSubmit').addEventListener('click', function(){
+      if (isDemo()) { showToast('Mode demo','warning'); return; }
+      var jumlah = parseInt(document.getElementById('ksJumlah').value) || 0;
+      if (jumlah <= 0) { showToast('Masukkan jumlah kasbon','error'); return; }
+      tampilkanIklan('rewarded');
+      var btn = this;
+      btn.disabled = true; btn.textContent = 'Mengajukan...';
+      var isAuto = jumlah <= BATAS_KASBON_AUTO;
+      var data = {
+        id_pengajuan: 'KSB-' + Date.now(),
+        tanggal_pengajuan: todayStr(),
+        id_karyawan: session.user_id,
+        nama_karyawan: session.user_nama,
+        kode_cabang: session.kode_cabang,
+        jumlah_kasbon: jumlah,
+        status: isAuto ? 'auto_disetujui' : 'menunggu'
+      };
+      simpanData('Pengajuan_Kasbon', data).then(function(res){
+        btn.disabled = false; btn.textContent = 'Ajukan Kasbon';
+        if (res && res.ok) {
+          showToast(isAuto ? 'Kasbon auto-disetujui' : 'Kasbon menunggu ACC', 'success');
+          renderKasbon(session);
+        } else showToast(res.pesan || 'Gagal','error');
+      });
     });
-  });
+  }
 }
 
 /* ============================================================
    HALAMAN: IZIN
-   - Owner & Admin: HANYA ACC (tidak ajukan)
-   - Kepala Toko: AJUKAN + ACC tahap 1
-   - Karyawan: AJUKAN
 ============================================================ */
 function renderIzin(session) {
   var el = document.getElementById('appContent');
@@ -1222,7 +1307,6 @@ function renderIzin(session) {
 
   ambilData('Izin_Istirahat').then(function(res){
     var data = res.ok ? res.data : [];
-
     if (isKaryawan()) {
       data = data.filter(function(d){ return String(d.id_karyawan) === String(session.user_id); });
     } else if (isKepalaToko()) {
@@ -1231,7 +1315,6 @@ function renderIzin(session) {
                String(d.id_karyawan) === String(session.user_id);
       });
     }
-    // Owner & Admin lihat semua
 
     var listEl = document.getElementById('izList');
     if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada izin</div>'; return; }
@@ -1320,9 +1403,7 @@ function renderIzin(session) {
 }
 
 /* ============================================================
-   HALAMAN: KERUSAKAN / KENDALA RUKO
-   - Owner & Admin: ACC only
-   - Kepala Toko & Karyawan: ajukan
+   HALAMAN: KERUSAKAN / KENDALA
 ============================================================ */
 function renderKerusakan(session) {
   var el = document.getElementById('appContent');
@@ -1356,7 +1437,6 @@ function renderKerusakan(session) {
 
   ambilData('Kerusakan_Kendala').then(function(res){
     var data = res.ok ? res.data : [];
-
     if (isKaryawan()) {
       data = data.filter(function(d){ return String(d.pelapor) === String(session.user_id); });
     } else if (isKepalaToko()) {
@@ -1449,8 +1529,6 @@ function renderKerusakan(session) {
 
 /* ============================================================
    HALAMAN: PERMINTAAN LIHAT PAYROLL
-   - Owner & Admin: ACC
-   - Kepala Toko & Karyawan: ajukan
 ============================================================ */
 function renderPermintaanPayroll(session) {
   var el = document.getElementById('appContent');
@@ -1460,11 +1538,11 @@ function renderPermintaanPayroll(session) {
   var html = '';
   html += '<div class="page-title">📨 Permintaan Lihat Payroll</div>';
   html += '<div class="page-sub">';
-  if (canAjukan) html += 'Ajukan permintaan untuk membuka detail payroll pribadi';
-  else html += 'ACC permintaan anggota untuk melihat payroll';
+  if (canAjukan) html += 'Ajukan permintaan untuk membuka detail payroll';
+  else html += 'ACC permintaan anggota';
   html += '</div>';
 
-  html += '<div class="note-box"><b>Info:</b> Payroll bersifat privasi. Untuk melihat rincian lengkap (dari awal kerja), ajukan permintaan. Owner/Admin akan ACC.</div>';
+  html += '<div class="note-box"><b>Info:</b> Payroll bersifat privasi. Untuk melihat rincian lengkap, ajukan permintaan. Owner/Admin akan ACC.</div>';
 
   if (canAjukan) {
     html += '<div class="card"><h3>Ajukan Permintaan</h3>';
@@ -1479,7 +1557,6 @@ function renderPermintaanPayroll(session) {
 
   ambilData('Permintaan_Payroll').then(function(res){
     var data = res.ok ? res.data : [];
-
     if (isKaryawan() || isKepalaToko()) {
       data = data.filter(function(d){ return String(d.id_karyawan) === String(session.user_id); });
     }
@@ -1509,7 +1586,6 @@ function renderPermintaanPayroll(session) {
         h += '<button class="btn btn-sm btn-danger" data-rej-pp="' + d._row + '">❌ Tolak</button>';
         h += '</div>';
       }
-      // Kalau sudah disetujui & ini milik sendiri → tampilkan shortcut lihat payroll
       if (st === 'disetujui' && String(d.id_karyawan) === String(session.user_id) && canAjukan) {
         h += '<div class="btn-row" style="margin-top:10px">';
         h += '<button class="btn btn-sm btn-gold" data-lihat-py="1">💵 Buka Payroll Saya</button>';
@@ -1572,7 +1648,6 @@ function renderPermintaanPayroll(session) {
 
 /* ============================================================
    HALAMAN: PAYROLL SAYA
-   - HANYA Kepala Toko & Karyawan (Owner & Admin TIDAK punya payroll)
 ============================================================ */
 function renderPayroll(session) {
   if (!hasPayrollPribadi()) {
@@ -1892,53 +1967,89 @@ function muatRiwayatPengeluaran(data, cabang) {
 
 /* ============================================================
    HALAMAN: LAPORAN
+   - Buat laporan: hanya Kepala Toko
+   - Lihat laporan: Owner, Admin, Kepala Toko
 ============================================================ */
 function renderLaporan(session) {
-  if (!isOwner() && !isAdmin()) {
+  if (!canLihatLaporan()) {
     showToast('Akses ditolak','error');
     navigasi('home'); return;
   }
+  var canBuat = canBuatLaporan();
+
   var el = document.getElementById('appContent');
   var html = '';
   html += '<div class="page-title">📊 Laporan</div>';
-  html += '<div class="page-sub">Buat & lihat laporan</div>';
-  html += '<div class="card"><h3>Buat Laporan</h3>';
-  html += '<div class="fgroup"><label>Judul</label><input type="text" id="lpJudul" placeholder="Judul laporan"></div>';
-  html += '<div class="fgroup"><label>Isi</label><textarea id="lpIsi" rows="3" placeholder="Isi laporan" style="font-family:Poppins;font-size:16px;padding:12px;border:1.5px solid #E5E7EB;border-radius:8px;width:100%;outline:none;resize:vertical"></textarea></div>';
-  html += '<button class="btn btn-primary" id="lpSubmit">Buat Laporan</button></div>';
+  html += '<div class="page-sub">';
+  if (canBuat) html += 'Buat & lihat laporan';
+  else html += 'Lihat laporan dari Kepala Toko';
+  html += '</div>';
+
+  if (canBuat) {
+    html += '<div class="card"><h3>Buat Laporan</h3>';
+    html += '<div class="fgroup"><label>Judul</label><input type="text" id="lpJudul" placeholder="Judul laporan"></div>';
+    html += '<div class="fgroup"><label>Isi</label><textarea id="lpIsi" rows="3" placeholder="Isi laporan" style="font-family:Poppins;font-size:16px;padding:12px;border:1.5px solid #E5E7EB;border-radius:8px;width:100%;outline:none;resize:vertical"></textarea></div>';
+    html += '<button class="btn btn-primary" id="lpSubmit">Buat Laporan</button></div>';
+  } else {
+    html += '<div class="note-box warn"><b>Info:</b> Hanya Kepala Toko yang bisa membuat laporan. Anda dapat melihat semua laporan yang masuk.</div>';
+  }
+
   html += '<div class="card"><h3>Daftar Laporan</h3><div id="lpList"><div class="empty">Memuat...</div></div></div>';
   el.innerHTML = html;
 
   ambilData('Laporan').then(function(res){
     var listEl = document.getElementById('lpList');
     var data = res.ok ? res.data : [];
+    // KT: hanya lihat laporan miliknya / cabangnya? Kita tampilkan semua agar owner bisa pantau
+    if (isKepalaToko()) {
+      data = data.filter(function(d){
+        return String(d.pembuat) === String(session.user_nama) ||
+               String(d.kode_cabang) === String(session.kode_cabang);
+      });
+    }
+
     if (data.length === 0) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div>Belum ada laporan</div>'; return; }
+
+    data.sort(function(a,b){ return String(b.tanggal).localeCompare(String(a.tanggal)); });
     var h = '';
     data.forEach(function(d){
-      h += '<div class="info-row"><span class="lbl">' + esc(d.judul || '-') + '</span><span class="val"><span class="badge badge-blue">' + esc(d.status || '-') + '</span></span></div>';
+      h += '<div style="border:1px solid #E5E7EB;border-radius:10px;padding:12px;margin-bottom:10px">';
+      h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">';
+      h += '<div style="flex:1;min-width:160px">';
+      h += '<div style="font-size:11px;color:#6B7280">' + esc(d.tanggal) + ' • ' + esc(d.pembuat) + '</div>';
+      h += '<div style="font-size:13px;font-weight:700;color:#1F2937;margin-top:2px">' + esc(d.judul) + '</div>';
+      h += '<div style="font-size:11px;color:#374151;margin-top:4px">' + esc(d.isi) + '</div>';
+      h += '</div>';
+      h += '<span class="badge badge-blue">' + esc(d.status || '-') + '</span>';
+      h += '</div></div>';
     });
     listEl.innerHTML = h;
   });
 
-  document.getElementById('lpSubmit').addEventListener('click', function(){
-    if (isDemo()) { showToast('Mode demo','warning'); return; }
-    var btn = this; btn.disabled = true;
-    var data = {
-      id_laporan: 'LP-' + Date.now(), tanggal: todayStr(),
-      judul: document.getElementById('lpJudul').value || '-',
-      isi: document.getElementById('lpIsi').value || '-',
-      pembuat: session.user_nama, status: 'draft'
-    };
-    simpanData('Laporan', data).then(function(res){
-      btn.disabled = false;
-      if (res && res.ok) { showToast('Laporan dibuat','success'); renderLaporan(session); }
-      else showToast(res.pesan || 'Gagal','error');
+  if (canBuat && document.getElementById('lpSubmit')) {
+    document.getElementById('lpSubmit').addEventListener('click', function(){
+      if (isDemo()) { showToast('Mode demo','warning'); return; }
+      var judul = document.getElementById('lpJudul').value.trim();
+      if (!judul) { showToast('Judul wajib diisi','error'); return; }
+      var btn = this; btn.disabled = true;
+      var data = {
+        id_laporan: 'LP-' + Date.now(), tanggal: todayStr(),
+        kode_cabang: session.kode_cabang,
+        judul: judul,
+        isi: document.getElementById('lpIsi').value || '-',
+        pembuat: session.user_nama, status: 'draft'
+      };
+      simpanData('Laporan', data).then(function(res){
+        btn.disabled = false;
+        if (res && res.ok) { showToast('Laporan dibuat','success'); renderLaporan(session); }
+        else showToast(res.pesan || 'Gagal','error');
+      });
     });
-  });
+  }
 }
 
 /* ============================================================
-   HALAMAN: MANAJEMEN MANUSIA — OWNER (LIHAT PASSWORD)
+   HALAMAN: MANAJEMEN MANUSIA
 ============================================================ */
 function renderManusia(session) {
   if (!canAksesManusia()) {
@@ -1950,7 +2061,7 @@ function renderManusia(session) {
   var html = '';
   html += '<div class="page-title">👥 Manajemen Manusia</div>';
   html += '<div class="page-sub">Kelola anggota, ID & password (khusus Owner)</div>';
-  html += '<div class="note-box owner"><b>👑 Akses Owner:</b> Anda bisa melihat password asli, mengubah ID, reset password, dan mengelola semua anggota.</div>';
+  html += '<div class="note-box owner"><b>👑 Akses Owner:</b> Anda bisa melihat password asli, mengubah ID, reset password.</div>';
   html += '<button class="btn btn-gold btn-block" id="mhTambah" style="margin-bottom:14px">+ Tambah Anggota</button>';
   html += '<div class="search-bar">';
   html += '<input type="text" id="mhSearch" placeholder="Cari nama/ID...">';
@@ -2029,7 +2140,6 @@ function muatManusia() {
     h += '</tbody></table></div>';
     listEl.innerHTML = h;
 
-    // Toggle password
     listEl.querySelectorAll('[data-toggle]').forEach(function(btn){
       btn.addEventListener('click', function(){
         var id = this.getAttribute('data-toggle');
@@ -2211,7 +2321,7 @@ function renderPengaturan(session) {
   var el = document.getElementById('appContent');
   var html = '';
   html += '<div class="page-title">⚙️ Pengaturan</div>';
-  html += '<div class="page-sub">Bonus, WiFi, dan target cabang</div>';
+  html += '<div class="page-sub">Bonus, WiFi, dan konfigurasi global</div>';
   html += '<div class="card"><h3>Pengaturan Global</h3><div id="stGlobal"><div class="empty">Memuat...</div></div></div>';
   el.innerHTML = html;
 
@@ -2284,6 +2394,131 @@ function renderTarget(session) {
 }
 
 /* ============================================================
+   HALAMAN: KELOLA CABANG (OWNER) — BARU
+============================================================ */
+function renderKelolaCabang(session) {
+  if (!canKelolaCabang()) {
+    showToast('Hanya Owner yang bisa kelola cabang','error');
+    navigasi('home'); return;
+  }
+
+  var el = document.getElementById('appContent');
+  var html = '';
+  html += '<div class="page-title">🏪 Kelola Cabang</div>';
+  html += '<div class="page-sub">Tambah, edit & hapus cabang (khusus Owner)</div>';
+  html += '<div class="note-box owner"><b>👑 Akses Owner:</b> Kelola daftar cabang, nama, dan target harian.</div>';
+  html += '<button class="btn btn-gold btn-block" id="cbTambah" style="margin-bottom:14px">+ Tambah Cabang</button>';
+  html += '<div class="card"><h3>Daftar Cabang</h3><div id="cbList"><div class="empty">Memuat...</div></div></div>';
+  el.innerHTML = html;
+
+  muatCabang();
+
+  document.getElementById('cbTambah').addEventListener('click', function(){
+    if (isDemo()) { showToast('Mode demo','warning'); return; }
+    bukaFormCabang(null);
+  });
+}
+
+function muatCabang() {
+  ambilData('Target_Cabang').then(function(res){
+    var listEl = document.getElementById('cbList');
+    if (!listEl) return;
+    var data = res.ok ? res.data : [];
+
+    if (data.length === 0) {
+      listEl.innerHTML = '<div class="empty"><div class="ei">🏪</div>Belum ada cabang</div>';
+      return;
+    }
+
+    var h = '<div class="table-wrap"><table><thead><tr>';
+    h += '<th>Kode</th><th>Nama Cabang</th><th>Target Harian</th><th>Aksi</th>';
+    h += '</tr></thead><tbody>';
+    data.forEach(function(d){
+      h += '<tr>';
+      h += '<td><b>' + esc(d.kode_cabang) + '</b></td>';
+      h += '<td>' + esc(d.nama_cabang || '-') + '</td>';
+      h += '<td>' + (parseInt(d.target_harian) || 0) + ' unit</td>';
+      h += '<td style="white-space:nowrap">';
+      h += '<button class="btn btn-sm btn-outline" data-cbedit="' + d._row + '">✏️</button> ';
+      h += '<button class="btn btn-sm btn-danger" data-cbdel="' + d._row + '" data-cbkode="' + esc(d.kode_cabang) + '">🗑️</button>';
+      h += '</td></tr>';
+    });
+    h += '</tbody></table></div>';
+    listEl.innerHTML = h;
+
+    listEl.querySelectorAll('[data-cbedit]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if (isDemo()) { showToast('Mode demo','warning'); return; }
+        var row = parseInt(this.getAttribute('data-cbedit'));
+        var item = data.find(function(d){ return d._row === row; });
+        if (item) bukaFormCabang(item);
+      });
+    });
+    listEl.querySelectorAll('[data-cbdel]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if (isDemo()) { showToast('Mode demo','warning'); return; }
+        var row = parseInt(this.getAttribute('data-cbdel'));
+        var kode = this.getAttribute('data-cbkode');
+        if (!confirm('Hapus cabang ' + kode + '? Pastikan tidak ada data terkait.')) return;
+        hapusData('Target_Cabang', row).then(function(r){
+          if (r && r.ok) { showToast('Cabang dihapus','success'); muatCabang(); }
+          else showToast(r.pesan || 'Gagal','error');
+        });
+      });
+    });
+  });
+}
+
+function bukaFormCabang(item) {
+  var isEdit = !!item;
+  var ov = document.createElement('div');
+  ov.className = 'modal-overlay show';
+  var h = '<div class="modal">';
+  h += '<div class="modal-head"><h3>' + (isEdit ? 'Edit' : 'Tambah') + ' Cabang</h3><button class="modal-close" id="cbClose">✕</button></div>';
+  h += '<div class="fgroup"><label>Kode Cabang</label><input type="text" id="cbKode" value="' + (item ? esc(item.kode_cabang) : '') + '" ' + (isEdit ? 'readonly style="background:#F3F4F6"' : '') + ' placeholder="Contoh: GROBOGAN"></div>';
+  if (isEdit) h += '<p style="font-size:10px;color:#9CA3AF;margin-top:-8px;margin-bottom:10px">Kode cabang tidak bisa diubah</p>';
+  h += '<div class="fgroup"><label>Nama Cabang</label><input type="text" id="cbNama" value="' + (item ? esc(item.nama_cabang) : '') + '" placeholder="Contoh: Grobogan"></div>';
+  h += '<div class="fgroup"><label>Target Harian (unit)</label><input type="number" id="cbTarget" value="' + (item ? esc(item.target_harian) : '0') + '" min="0"></div>';
+  h += '<button class="btn btn-primary" id="cbSimpan">Simpan Cabang</button></div>';
+  ov.innerHTML = h;
+  document.body.appendChild(ov);
+
+  document.getElementById('cbClose').addEventListener('click', function(){ ov.remove(); });
+  ov.addEventListener('click', function(e){ if (e.target === ov) ov.remove(); });
+
+  document.getElementById('cbSimpan').addEventListener('click', function(){
+    var kode = document.getElementById('cbKode').value.trim().toUpperCase();
+    var nama = document.getElementById('cbNama').value.trim();
+    var target = parseInt(document.getElementById('cbTarget').value) || 0;
+
+    if (!kode) { showToast('Kode cabang wajib','error'); return; }
+    if (!nama) { showToast('Nama cabang wajib','error'); return; }
+
+    var data = {
+      kode_cabang: kode,
+      nama_cabang: nama,
+      target_harian: target
+    };
+
+    if (isEdit) {
+      updateData('Target_Cabang', item._row, data).then(function(r){
+        if (r && r.ok) { showToast('Cabang diperbarui','success'); ov.remove(); muatCabang(); }
+        else showToast(r.pesan || 'Gagal','error');
+      });
+    } else {
+      ambilData('Target_Cabang').then(function(res){
+        var exists = (res.data || []).some(function(c){ return String(c.kode_cabang) === String(kode); });
+        if (exists) { showToast('Kode cabang sudah ada','error'); return; }
+        simpanData('Target_Cabang', data).then(function(r){
+          if (r && r.ok) { showToast('Cabang ditambahkan','success'); ov.remove(); muatCabang(); }
+          else showToast(r.pesan || 'Gagal','error');
+        });
+      });
+    }
+  });
+}
+
+/* ============================================================
    HALAMAN: PROFIL
 ============================================================ */
 function renderProfil(session) {
@@ -2299,11 +2534,10 @@ function renderProfil(session) {
   html += '<div class="info-row"><span class="lbl">Mode</span><span class="val">' + (session.is_demo ? 'Demo' : 'Aktif') + '</span></div>';
   html += '</div>';
 
-  // Info payroll untuk KT/Karyawan
   if (hasPayrollPribadi()) {
     html += '<div class="note-box"><b>💵 Payroll Pribadi:</b> Buka menu <b>Payroll Saya</b> untuk melihat data penggajian Anda.</div>';
   } else {
-    html += '<div class="note-box warn"><b>ℹ️ Info:</b> Owner & Admin tidak memiliki payroll pribadi di sistem ini. Anda hanya bisa ACC payroll anggota.</div>';
+    html += '<div class="note-box warn"><b>ℹ️ Info:</b> Owner & Admin tidak memiliki payroll pribadi di sistem ini.</div>';
   }
 
   html += '<button class="btn btn-outline btn-block" id="prLogout">🚪 Keluar</button>';

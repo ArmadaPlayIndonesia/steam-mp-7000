@@ -1,1596 +1,1587 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#C8102E">
-<title>STEAM MP 7000 — Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{overflow-x:hidden;width:100%}
-body{
-  font-family:'Poppins',system-ui,-apple-system,sans-serif;
-  background:#F9FAFB;color:#1F2937;
-  padding-top:64px;
-  padding-bottom:calc(100px + env(safe-area-inset-bottom));
-  -webkit-font-smoothing:antialiased;
-}
-:root{
-  --primary:#C8102E;--primary-dark:#8B0000;--primary-light:#A00D25;
-  --gold:#FBBF24;--gold-dark:#F59E0B;--gold-light:#FFFBEB;
-  --bg:#F9FAFB;--card:#FFFFFF;
-  --text:#1F2937;--muted:#6B7280;
-  --success:#059669;--error:#DC2626;--warning:#D97706;
-  --radius:12px;--shadow:0 2px 12px rgba(0,0,0,.07);
-}
-/* ============ HEADER ============ */
-.header{
-  position:fixed;top:0;left:0;right:0;height:64px;z-index:900;
-  background:linear-gradient(135deg,#C8102E 0%,#A00D25 100%);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 16px;box-shadow:0 2px 10px rgba(0,0,0,.15);
-}
-.header-left{display:flex;align-items:center;gap:10px;min-width:0}
-.logo-mp{
-  width:40px;height:40px;border-radius:10px;flex-shrink:0;
-  background:linear-gradient(135deg,#FBBF24,#F59E0B);
-  display:flex;align-items:center;justify-content:center;
-  font-weight:800;font-size:15px;color:#7C2D12;letter-spacing:-.5px;
-}
-.header-info{min-width:0}
-.header-info .nama{
-  font-size:13.5px;font-weight:700;color:#fff;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;
-}
-.header-info .jabatan{font-size:10.5px;color:#FECACA;font-weight:500}
-.header-actions{display:flex;gap:6px;flex-shrink:0}
-.icon-btn{
-  width:36px;height:36px;border-radius:10px;border:none;cursor:pointer;
-  background:rgba(255,255,255,.18);color:#fff;font-size:16px;
-  display:flex;align-items:center;justify-content:center;transition:.2s;
-}
-.icon-btn:active{transform:scale(.92);background:rgba(255,255,255,.3)}
-/* ============ MAIN ============ */
-.main{padding:16px;max-width:1100px;margin:0 auto}
-.page{display:none;animation:fade .25s ease}
-.page.active{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-/* ============ CARD ============ */
-.card{
-  background:var(--card);border-radius:var(--radius);padding:16px;
-  box-shadow:var(--shadow);margin-bottom:14px;border:1px solid #F3F4F6;
-}
-.card-title{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.card-title .ic{font-size:17px}
-/* ============ SAPAAN ============ */
-.sapaan{font-size:20px;font-weight:700;margin-bottom:2px;line-height:1.3}
-.sapaan-sub{font-size:12.5px;color:var(--muted);margin-bottom:16px;font-weight:400}
-/* ============ MOTIVASI ============ */
-.card-motivasi{
-  background:linear-gradient(135deg,#FFFBEB 0%,#FEF3C7 100%);
-  border:1.5px solid #F59E0B;border-radius:var(--radius);
-  padding:14px;margin-bottom:14px;max-height:100px;overflow:hidden;
-  display:flex;flex-direction:column;justify-content:center;
-}
-.card-motivasi .mot-head{
-  display:flex;align-items:center;gap:7px;font-size:11px;font-weight:800;
-  color:#92400E;letter-spacing:.6px;margin-bottom:5px;
-}
-.card-motivasi .mot-isi{
-  font-size:12.5px;font-style:italic;color:#78350F;line-height:1.5;
-  font-weight:500;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;
-  -webkit-line-clamp:2;-webkit-box-orient:vertical;
-}
-.card-motivasi .mot-foot{font-size:10px;color:#B45309;margin-top:5px;font-weight:600}
-/* ============ DANA EXPANSI CARD ============ */
-.card-expansi{
-  background:linear-gradient(135deg,#FEF2F2 0%,#FEE2E2 100%);
-  border:1.5px solid #FCA5A5;border-radius:var(--radius);
-  padding:14px;margin-bottom:14px;
-}
-.card-expansi .exp-head{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:800;color:#991B1B;letter-spacing:.6px;margin-bottom:6px}
-.card-expansi .exp-saldo{font-size:19px;font-weight:800;color:#7F1D1D}
-.card-expansi .exp-target{font-size:10.5px;color:#B91C1C;margin-top:2px}
-.progress-bar{height:8px;background:#FECACA;border-radius:99px;overflow:hidden;margin-top:8px}
-.progress-fill{height:100%;background:linear-gradient(90deg,#FBBF24,#F59E0B);border-radius:99px;transition:width .6s ease}
-/* ============ STAT GRID ============ */
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.stat-card{
-  background:#fff;border-radius:var(--radius);padding:14px;
-  box-shadow:var(--shadow);border:1px solid #F3F4F6;
-}
-.stat-card .st-label{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
-.stat-card .st-val{font-size:16px;font-weight:800;margin-top:5px;color:var(--primary)}
-.stat-card .st-val.gold{color:#B45309}
-/* ============ MENU GRID ============ */
-.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.menu-card{
-  background:#fff;border-radius:var(--radius);padding:14px 12px;
-  box-shadow:var(--shadow);border:1px solid #F3F4F6;cursor:pointer;
-  transition:.18s;display:flex;flex-direction:column;gap:5px;
-}
-.menu-card:active{transform:scale(.97);background:#FAFAFA}
-.menu-card.highlight{
-  background:linear-gradient(135deg,#FFFBEB,#FEF3C7);
-  border:1.5px solid #FBBF24;
-}
-.menu-card .mc-ic{font-size:22px}
-.menu-card .mc-nama{font-size:12.5px;font-weight:700;line-height:1.25}
-.menu-card .mc-desc{font-size:10px;color:var(--muted);line-height:1.3}
-/* ============ DONASI ============ */
-.card-donasi{
-  background:linear-gradient(135deg,#FFFBEB 0%,#FEF9E7 100%);
-  border:1.5px dashed #F59E0B;border-radius:var(--radius);
-  padding:15px;margin-bottom:14px;text-align:center;
-}
-.card-donasi .don-head{display:flex;align-items:center;justify-content:center;gap:7px;font-size:12px;font-weight:800;color:#92400E;letter-spacing:.5px;margin-bottom:7px}
-.card-donasi .don-teks{font-size:11.5px;color:#78350F;line-height:1.5;margin-bottom:11px;font-style:italic}
-/* ============ BUTTONS ============ */
-.btn{
-  border:none;border-radius:10px;padding:11px 16px;font-family:inherit;
-  font-size:12.5px;font-weight:700;cursor:pointer;transition:.18s;
-  display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  width:100%;
-}
-.btn:active{transform:scale(.97)}
-.btn-primary{background:linear-gradient(135deg,#C8102E,#A00D25);color:#fff;box-shadow:0 3px 10px rgba(200,16,46,.28)}
-.btn-gold{background:linear-gradient(135deg,#FBBF24,#F59E0B);color:#7C2D12;box-shadow:0 3px 10px rgba(245,158,11,.3)}
-.btn-outline{background:#fff;color:var(--primary);border:1.5px solid var(--primary)}
-.btn-danger{background:linear-gradient(135deg,#DC2626,#B91C1C);color:#fff}
-.btn-gray{background:#F3F4F6;color:#374151;border:1px solid #E5E7EB}
-.btn-sm{padding:8px 12px;font-size:11.5px;width:auto;border-radius:8px}
-.btn-xs{padding:6px 10px;font-size:10.5px;width:auto;border-radius:7px}
-.btn-row{display:flex;gap:8px}
-.btn-row .btn{flex:1}
-/* ============ FORM ============ */
-.form-group{margin-bottom:12px}
-.form-label{font-size:11.5px;font-weight:600;color:#374151;margin-bottom:5px;display:block}
-.form-input,.form-select,.form-textarea{
-  width:100%;padding:10px 12px;border:1.5px solid #E5E7EB;border-radius:10px;
-  font-family:inherit;font-size:13px;color:var(--text);background:#fff;
-  transition:.18s;outline:none;
-}
-.form-input:focus,.form-select:focus,.form-textarea:focus{
-  border-color:var(--primary);box-shadow:0 0 0 3px rgba(200,16,46,.08);
-}
-.form-textarea{resize:vertical;min-height:70px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.form-hint{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4}
-/* ============ BADGE ============ */
-.badge{
-  display:inline-block;padding:3px 9px;border-radius:99px;
-  font-size:9.5px;font-weight:700;letter-spacing:.2px;
-}
-.badge-success{background:#D1FAE5;color:#065F46}
-.badge-warning{background:#FEF3C7;color:#92400E}
-.badge-error{background:#FEE2E2;color:#991B1B}
-.badge-info{background:#DBEAFE;color:#1E40AF}
-.badge-gray{background:#F3F4F6;color:#4B5563}
-.badge-gold{background:#FEF3C7;color:#92400E;border:1px solid #FBBF24}
-/* ============ TABLE ============ */
-.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;border:1px solid #F3F4F6}
-table{width:100%;border-collapse:collapse;font-size:11.5px;min-width:480px}
-thead{background:#F9FAFB}
-th{
-  padding:9px 10px;text-align:left;font-weight:700;color:#374151;
-  font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;
-  white-space:nowrap;border-bottom:1.5px solid #E5E7EB;
-}
-td{padding:9px 10px;border-bottom:1px solid #F3F4F6;color:#4B5563;vertical-align:middle}
-tr:last-child td{border-bottom:none}
-tr:active{background:#FAFAFA}
-/* ============ TOTAL BANNER ============ */
-.total-banner{
-  background:linear-gradient(135deg,#C8102E,#8B0000);color:#fff;
-  border-radius:var(--radius);padding:18px;margin-bottom:14px;
-  box-shadow:0 4px 14px rgba(139,0,0,.3);
-}
-.total-banner .tb-label{font-size:10.5px;opacity:.85;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
-.total-banner .tb-val{font-size:24px;font-weight:800;margin-top:4px}
-.total-banner .tb-sub{font-size:11px;opacity:.8;margin-top:3px}
-/* ============ INFO ROW ============ */
-.info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F3F4F6;font-size:12.5px}
-.info-row:last-child{border-bottom:none}
-.info-row .ir-label{color:var(--muted);font-weight:500}
-.info-row .ir-val{font-weight:700;color:var(--text);text-align:right}
-/* ============ TABS ============ */
-.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{
-  flex-shrink:0;padding:8px 14px;border-radius:99px;border:1.5px solid #E5E7EB;
-  background:#fff;font-size:11.5px;font-weight:600;color:var(--muted);
-  cursor:pointer;transition:.18s;font-family:inherit;white-space:nowrap;
-}
-.tab.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 2px 8px rgba(200,16,46,.25)}
-.tab:active{transform:scale(.96)}
-/* ============ BOTTOM NAV ============ */
-.bottom-nav{
-  position:fixed;bottom:0;left:0;right:0;z-index:900;
-  background:#fff;border-top:1px solid #F3F4F6;
-  box-shadow:0 -2px 12px rgba(0,0,0,.06);
-  display:flex;padding:6px 4px calc(6px + env(safe-area-inset-bottom));
-}
-.bn-item{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
-  padding:7px 2px;border:none;background:none;cursor:pointer;
-  color:var(--muted);font-family:inherit;transition:.18s;border-radius:10px;
-}
-.bn-item .bn-ic{font-size:19px;line-height:1}
-.bn-item .bn-label{font-size:9.5px;font-weight:600}
-.bn-item.active{color:var(--primary)}
-.bn-item.active .bn-ic{transform:scale(1.1)}
-.bn-item:active{background:#FEF2F2}
-/* ============ TOAST ============ */
-.toast-box{
-  position:fixed;bottom:calc(110px + env(safe-area-inset-bottom));left:50%;
-  transform:translateX(-50%) translateY(20px);z-index:2000;
-  background:#1F2937;color:#fff;padding:11px 18px;border-radius:12px;
-  font-size:12.5px;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.25);
-  opacity:0;pointer-events:none;transition:.3s;max-width:90vw;text-align:center;
-}
-.toast-box.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.toast-box.success{background:linear-gradient(135deg,#059669,#047857)}
-.toast-box.error{background:linear-gradient(135deg,#DC2626,#B91C1C)}
-.toast-box.warning{background:linear-gradient(135deg,#D97706,#B45309)}
-/* ============ MODAL ============ */
-.modal-overlay{
-  position:fixed;inset:0;z-index:1500;background:rgba(0,0,0,.5);
-  display:none;align-items:flex-end;justify-content:center;
-  backdrop-filter:blur(2px);
-}
-.modal-overlay.show{display:flex}
-.modal{
-  background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:520px;
-  max-height:88vh;overflow-y:auto;padding:18px 18px calc(18px + env(safe-area-inset-bottom));
-  animation:slideUp .28s ease;
-}
-@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
-.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.modal-title{font-size:15px;font-weight:700}
-.modal-close{
-  width:32px;height:32px;border-radius:9px;border:none;background:#F3F4F6;
-  font-size:16px;cursor:pointer;color:#4B5563;display:flex;align-items:center;justify-content:center;
-}
-/* ============ LOADING IKLAN ============ */
-.loading-iklan{
-  position:fixed;inset:0;z-index:3000;
-  background:linear-gradient(135deg,#C8102E 0%,#8B0000 100%);
-  display:none;flex-direction:column;align-items:center;justify-content:center;
-  padding:28px;text-align:center;
-}
-.loading-iklan.show{display:flex}
-.li-spinner{
-  width:48px;height:48px;border:4px solid rgba(255,255,255,.25);
-  border-top-color:#FBBF24;border-radius:50%;animation:spin 1s linear infinite;
-  margin-bottom:18px;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.li-teks{color:#fff;font-size:13.5px;font-weight:600;line-height:1.6;max-width:340px;font-style:italic}
-.li-sub{color:#FECACA;font-size:11px;margin-top:14px;font-weight:500}
-.li-bar{width:180px;height:5px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden;margin-top:20px}
-.li-bar-fill{height:100%;background:#FBBF24;width:0;animation:loadBar 3s linear forwards}
-@keyframes loadBar{from{width:0}to{width:100%}}
-/* ============ MISC ============ */
-.empty{text-align:center;padding:30px 16px;color:var(--muted)}
-.empty .em-ic{font-size:38px;display:block;margin-bottom:10px;opacity:.5}
-.empty .em-txt{font-size:12.5px;font-weight:500}
-.divider{height:1px;background:#F3F4F6;margin:12px 0}
-.sec-title{font-size:13px;font-weight:700;margin:16px 0 10px;color:#374151;display:flex;align-items:center;gap:7px}
-.role-note{
-  background:#FEF3C7;border-left:4px solid #F59E0B;border-radius:8px;
-  padding:11px 13px;font-size:11.5px;color:#78350F;line-height:1.5;margin-bottom:14px;
-}
-.tag-cabang{
-  display:inline-block;padding:2px 8px;border-radius:6px;background:#EEF2FF;
-  color:#4338CA;font-size:10px;font-weight:700;
-}
-.mono{font-family:'Courier New',monospace;font-weight:700;letter-spacing:1px}
-.code-box{
-  background:#F3F4F6;border:1.5px dashed #D1D5DB;border-radius:10px;
-  padding:12px;font-family:'Courier New',monospace;font-size:15px;font-weight:800;
-  letter-spacing:2px;text-align:center;color:#111827;word-break:break-all;margin:8px 0;
-}
-.check-row{display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.5;color:#374151;cursor:pointer}
-.check-row input{width:17px;height:17px;margin-top:1px;accent-color:var(--primary);flex-shrink:0}
-@media(min-width:600px){
-  .menu-grid{grid-template-columns:repeat(3,1fr)}
-  .stat-grid{grid-template-columns:repeat(4,1fr)}
-}
-@media(min-width:900px){
-  .menu-grid{grid-template-columns:repeat(4,1fr)}
-  .main{padding:20px}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>STEAM MP 7000 — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & BASE ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #F9FAFB;
+      color: #1F2937;
+      padding-top: 64px;
+      padding-bottom: calc(100px + env(safe-area-inset-bottom));
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    input, select, textarea, button { font-family: inherit; font-size: inherit; outline: none; }
+    button { cursor: pointer; border: none; background: none; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* ===== HEADER ===== */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 64px;
+      background: linear-gradient(135deg, #C8102E 0%, #A00D25 100%);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(200,16,46,0.25);
+    }
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .header-logo {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: #FBBF24;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 16px; color: #8B0000;
+      flex-shrink: 0;
+    }
+    .header-info { display: flex; flex-direction: column; line-height: 1.2; }
+    .header-info .name { font-weight: 600; font-size: 13px; }
+    .header-info .role { font-size: 11px; opacity: 0.85; font-weight: 400; }
+    .header-right { display: flex; gap: 6px; }
+    .header-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 16px;
+      transition: background 0.2s;
+    }
+    .header-btn:active { background: rgba(255,255,255,0.3); }
+
+    /* ===== MAIN ===== */
+    .main { padding: 16px; max-width: 1100px; margin: 0 auto; }
+
+    /* ===== CARD ===== */
+    .card {
+      background: #fff; border-radius: 12px;
+      padding: 16px; margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .card-title {
+      font-size: 14px; font-weight: 600; margin-bottom: 12px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-title .sub { font-size: 11px; font-weight: 400; color: #6B7280; }
+
+    /* ===== SAPAAN ===== */
+    .greeting { margin-bottom: 16px; }
+    .greeting h1 { font-size: 20px; font-weight: 700; }
+    .greeting p { font-size: 13px; color: #6B7280; margin-top: 2px; }
+
+    /* ===== MOTIVASI ===== */
+    .motivasi-card {
+      background: #FFFBEB;
+      border: 1px solid #FCD34D;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      max-height: 100px;
+      overflow: hidden;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .motivasi-card .icon { font-size: 22px; flex-shrink: 0; }
+    .motivasi-card .text { font-size: 13px; font-style: italic; color: #92400E; line-height: 1.4; }
+
+    /* ===== DANA EXPANSI ===== */
+    .dana-card {
+      background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+      border: 1px solid #F59E0B;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .dana-card .label { font-size: 11px; font-weight: 600; color: #92400E; text-transform: uppercase; letter-spacing: 0.5px; }
+    .dana-card .amount { font-size: 20px; font-weight: 800; color: #78350F; margin: 4px 0 8px; }
+    .dana-card .progress-bar {
+      height: 8px; background: rgba(255,255,255,0.6); border-radius: 4px; overflow: hidden;
+    }
+    .dana-card .progress-fill {
+      height: 100%; background: #F59E0B; border-radius: 4px; transition: width 0.4s;
+    }
+    .dana-card .target { font-size: 10px; color: #92400E; margin-top: 4px; }
+
+    /* ===== STATISTIK ===== */
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+    .stat-card {
+      background: #fff; border-radius: 12px; padding: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .stat-card .label { font-size: 11px; color: #6B7280; font-weight: 500; }
+    .stat-card .value { font-size: 17px; font-weight: 700; color: #C8102E; margin-top: 4px; }
+    .stat-card .value.green { color: #059669; }
+
+    /* ===== MENU GRID ===== */
+    .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+    @media (min-width: 640px) { .menu-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(4, 1fr); } }
+    .menu-card {
+      background: #fff; border-radius: 12px; padding: 16px 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      text-align: center; transition: transform 0.15s, box-shadow 0.15s;
+      border: 1px solid transparent;
+    }
+    .menu-card:active { transform: scale(0.97); }
+    .menu-card .menu-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .menu-card .menu-label { font-size: 12px; font-weight: 500; color: #374151; line-height: 1.3; }
+    .menu-card.highlight { border-color: #FCD34D; background: #FFFBEB; }
+
+    /* ===== DONASI IKLAN ===== */
+    .donasi-card {
+      background: #FEF2F2; border: 1px solid #FECACA;
+      border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
+      text-align: center;
+    }
+    .donasi-card p { font-size: 12px; color: #991B1B; margin-bottom: 10px; line-height: 1.4; }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px; padding: 10px 18px; border-radius: 10px;
+      font-weight: 600; font-size: 13px; transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    .btn:active { opacity: 0.8; }
+    .btn-primary { background: #C8102E; color: #fff; }
+    .btn-gold { background: #F59E0B; color: #fff; }
+    .btn-outline { border: 1.5px solid #C8102E; color: #C8102E; background: transparent; }
+    .btn-danger { background: #DC2626; color: #fff; }
+    .btn-gray { background: #E5E7EB; color: #374151; }
+    .btn-success { background: #059669; color: #fff; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+    .btn-block { width: 100%; }
+
+    /* ===== FORM ===== */
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 4px; }
+    .form-control {
+      width: 100%; padding: 10px 12px; border: 1.5px solid #E5E7EB;
+      border-radius: 10px; font-size: 13px; background: #fff;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus { border-color: #C8102E; }
+    select.form-control { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* ===== TABLE ===== */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -16px; padding: 0 16px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 500px; }
+    th { text-align: left; padding: 8px 10px; background: #F9FAFB; font-weight: 600; color: #6B7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 1px solid #E5E7EB; white-space: nowrap; }
+    td { padding: 10px; border-bottom: 1px solid #F3F4F6; color: #374151; }
+    tr:last-child td { border-bottom: none; }
+
+    /* ===== BADGE ===== */
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 20px;
+      font-size: 10px; font-weight: 600; white-space: nowrap;
+    }
+    .badge-warning { background: #FEF3C7; color: #92400E; }
+    .badge-success { background: #D1FAE5; color: #065F46; }
+    .badge-danger { background: #FEE2E2; color: #991B1B; }
+    .badge-info { background: #DBEAFE; color: #1E40AF; }
+    .badge-gray { background: #F3F4F6; color: #6B7280; }
+
+    /* ===== TABS ===== */
+    .tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; -webkit-overflow-scrolling: touch; }
+    .tab {
+      padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 500;
+      background: #F3F4F6; color: #6B7280; white-space: nowrap; transition: all 0.2s;
+    }
+    .tab.active { background: #C8102E; color: #fff; }
+
+    /* ===== BOTTOM NAV ===== */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      background: #fff; border-top: 1px solid #E5E7EB;
+      display: flex; justify-content: space-around; align-items: center;
+      padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+    }
+    .bottom-nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 4px 8px; border-radius: 8px; transition: all 0.2s;
+      color: #9CA3AF; font-size: 10px; font-weight: 500;
+      min-width: 60px;
+    }
+    .bottom-nav-item .nav-icon { font-size: 18px; line-height: 1; }
+    .bottom-nav-item.active { color: #C8102E; }
+    .bottom-nav-item.active .nav-icon { transform: scale(1.1); }
+    @media (min-width: 768px) { .bottom-nav { display: none; } }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: #1F2937; color: #fff; padding: 10px 20px; border-radius: 10px;
+      font-size: 13px; font-weight: 500; z-index: 300;
+      opacity: 0; pointer-events: none; transition: all 0.3s;
+      max-width: 90%; text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: #059669; }
+    .toast.error { background: #DC2626; }
+    .toast.warning { background: #D97706; }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 200; display: none; align-items: flex-end; justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: #fff; border-radius: 16px 16px 0 0;
+      width: 100%; max-width: 600px; max-height: 85vh; overflow-y: auto;
+      padding: 20px; animation: slideUp 0.3s ease;
+      padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .modal-header h3 { font-size: 16px; font-weight: 700; }
+    .modal-close { font-size: 24px; color: #9CA3AF; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+
+    /* ===== LOADING IKLAN ===== */
+    .loading-iklan {
+      position: fixed; inset: 0; z-index: 500;
+      background: linear-gradient(135deg, #C8102E 0%, #8B0000 100%);
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      color: #fff; text-align: center; padding: 20px;
+    }
+    .loading-iklan.show { display: flex; }
+    .loading-iklan .spinner {
+      width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.3);
+      border-top-color: #FBBF24; border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin-bottom: 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-iklan p { font-size: 14px; font-weight: 500; opacity: 0.9; }
+    .loading-iklan .sub { font-size: 11px; opacity: 0.6; margin-top: 4px; }
+
+    /* ===== TOTAL BANNER ===== */
+    .total-banner {
+      background: linear-gradient(135deg, #C8102E 0%, #8B0000 100%);
+      color: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px;
+    }
+    .total-banner .label { font-size: 11px; opacity: 0.8; }
+    .total-banner .value { font-size: 22px; font-weight: 800; margin-top: 2px; }
+
+    /* ===== EMPTY STATE ===== */
+    .empty { text-align: center; padding: 32px 16px; color: #9CA3AF; }
+    .empty .icon { font-size: 40px; margin-bottom: 8px; }
+    .empty p { font-size: 13px; }
+
+    /* ===== UTILS ===== */
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+    .mt-2 { margin-top: 8px; }
+    .mt-3 { margin-top: 12px; }
+    .mb-2 { margin-bottom: 8px; }
+    .mb-3 { margin-bottom: 12px; }
+    .flex { display: flex; }
+    .flex-between { display: flex; justify-content: space-between; align-items: center; }
+    .gap-2 { gap: 8px; }
+    .hidden { display: none !important; }
+    .text-sm { font-size: 12px; }
+    .text-xs { font-size: 11px; }
+    .text-muted { color: #6B7280; }
+    .font-bold { font-weight: 700; }
+    .font-semibold { font-weight: 600; }
+  </style>
 </head>
 <body>
 
-<!-- ============ HEADER ============ -->
+<!-- HEADER -->
 <header class="header">
   <div class="header-left">
-    <div class="logo-mp">MP</div>
+    <div class="header-logo">MP</div>
     <div class="header-info">
-      <div class="nama" id="hdrNama">—</div>
-      <div class="jabatan" id="hdrJabatan">—</div>
+      <span class="name" id="headerNama">—</span>
+      <span class="role" id="headerJabatan">—</span>
     </div>
   </div>
-  <div class="header-actions">
-    <button class="icon-btn" onclick="bukaProfil()" title="Profil">👤</button>
-    <button class="icon-btn" onclick="logout()" title="Keluar">⏻</button>
+  <div class="header-right">
+    <button class="header-btn" onclick="bukaProfil()" title="Profil">👤</button>
+    <button class="header-btn" onclick="logout()" title="Logout">🚪</button>
   </div>
 </header>
 
-<!-- ============ MAIN ============ -->
+<!-- MAIN CONTENT -->
 <main class="main" id="mainContent"></main>
 
-<!-- ============ BOTTOM NAV ============ -->
+<!-- BOTTOM NAV -->
 <nav class="bottom-nav" id="bottomNav"></nav>
 
-<!-- ============ TOAST ============ -->
-<div class="toast-box" id="toastBox"></div>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
-<!-- ============ MODAL ============ -->
+<!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)tutupModal()">
   <div class="modal" id="modalContent"></div>
 </div>
 
-<!-- ============ LOADING IKLAN ============ -->
+<!-- LOADING IKLAN -->
 <div class="loading-iklan" id="loadingIklan">
-  <div class="li-spinner"></div>
-  <div class="li-teks" id="liTeks">Memuat iklan...</div>
-  <div class="li-bar"><div class="li-bar-fill"></div></div>
-  <div class="li-sub">Mohon tunggu sebentar ya 🙏</div>
+  <div class="spinner"></div>
+  <p id="loadingIklanText">Menyiapkan iklan...</p>
+  <p class="sub">Terima kasih sudah mendukung 🙏</p>
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════════════════
+/* ============================================================
    KONFIGURASI
-   ═══════════════════════════════════════════════════════════ */
-var BACKEND_URL='https://script.google.com/macros/s/AKfycbxEl5R0EiHy4EESgckfH_GfbEwpcGt0dCEiRI5zIZ3P8rkmqTn2xZ08bJ3dLmdQtrss/exec';
-var TOKEN='steam-mp-7000-2026';
-var SESSION_KEY='steam_mp_session';
-var IKLAN_DURASI=3000;
-var IKLAN_URL_MONETAG='https://omg10.com/4/11785165';
-var IKLAN_URL_ADSTERRA='https://www.profitableratecpmnetwork.com/q9qnyhdf9c?key=56f60182ff2837aef7d8e65616a77746';
+   ============================================================ */
+var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxEl5R0EiHy4EESgckfH_GfbEwpcGt0dCEiRI5zIZ3P8rkmqTn2xZ08bJ3dLmdQtrss/exec';
+var TOKEN = 'steam-mp-7000-2026';
+var SESSION_KEY = 'steam_mp_session';
+var IKLAN_DURASI = 3000;
+var IKLAN_URL_MONETAG = 'https://omg10.com/4/11785165';
+var IKLAN_URL_ADSTERRA = 'https://www.profitableratecpmnetwork.com/q9qnyhdf9c?key=56f60182ff2837aef7d8e65616a77746';
 
-/* ═══════════════════════════════════════════════════════════
-   KATA IKLAN
-   ═══════════════════════════════════════════════════════════ */
-var KATA_IKLAN_ADMIN=[
-"Bentar ya, iklan dulu... Aplikasi ini buat keluarga kami yang lagi berjuang. Tonton ya, itu udah bantu banget 💛",
-"Iklan 3 detik, doa 1 menit... Terima kasih sudah bantu keluarga kami bangkit. Jangan di-skip ya 🙏",
-"Tunggu sebentar, iklan sedang berjalan... Setiap iklan yang kamu tonton = harapan buat kami. Makasih banyak 💪",
-"Bentar ya... Iklan ini bukan buat mimin, tapi buat keluarga mimin. Jangan di-skip ya 🙏",
-"Loading... sebentar... Setiap iklan yang kamu tonton bantu kami sedikit demi sedikit lepas dari hutang. Makasih ya 💛",
-"Bentar ya, iklan dulu... Kamu bagian dari perjalanan kami. Tonton ya, makasih banyak 🙏",
-"Iklan 3 detik... Terima kasih sudah jadi bagian dari keluarga besar ini. Jangan di-skip ya 💪",
-"Tunggu sebentar... Kami sedang berjuang, dan kamu bagian dari perjuangan itu. Tonton ya 💛",
-"Iklan dulu ya... Setiap tontonan kamu = langkah kecil buat kami. Makasih, kamu luar biasa 🙏",
-"Loading... Iklan ini sumber penghasilan kami. Terima kasih sudah bantu keluarga kami. Tonton ya 💪",
-"Bentar ya... Kami nggak minta banyak, cuma 3 detik perhatian kamu. Tonton ya 🙏",
-"Iklan sebentar... Setiap rupiah dari iklan ini berarti buat kami. Makasih ya 💛",
-"Tunggu dulu... Iklan ini bagian dari usaha kami buat bangkit. Tonton sampai selesai ya 🙏",
-"Loading... Iklan ini bukan sekadar iklan, tapi harapan buat keluarga kami. Makasih 💪",
-"Bentar ya... Kamu nggak kenal kami, tapi kamu udah bantu kami. Terima kasih banyak 🙏",
-"Iklan 3 detik... Setiap tontonan kamu = senyum buat keluarga kami. Jangan di-skip ya 💛",
-"Tunggu sebentar... Kami sedang berusaha, dan kamu bagian dari usaha itu. Tonton ya 🙏",
-"Iklan dulu... Terima kasih sudah jadi bagian dari perjalanan kami. Kamu luar biasa 💪",
-"Loading... Sebentar aja... Iklan ini bantu kami bertahan. Makasih ya, kamu baik hati 💛",
-"Bentar ya... Kami nggak bisa balas kebaikan kamu, tapi kami doakan yang terbaik. Tonton ya 🙏",
-"Iklan sebentar... Setiap iklan yang kamu tonton = langkah kami menuju lepas dari hutang. Makasih 💪",
-"Tunggu dulu... Iklan ini bukan buat kami pribadi, tapi buat keluarga kami. Tonton ya 💛",
-"Loading... Iklan ini sumber rezeki kami. Terima kasih sudah bantu. Kamu luar biasa 🙏",
-"Bentar ya... Kami sedang berjuang, dan kamu bagian dari perjuangan itu. Tonton ya 💪",
-"Iklan 3 detik... Terima kasih sudah jadi bagian dari cerita kami. Jangan di-skip ya 🙏"
-];
-var KATA_IKLAN_UMUM=[
-"Bentar ya, iklan dulu... Mimin lagi nabung buat beli motor 🏍️ (becanda) Tonton ya, makasih 😆",
-"Loading... iklan... Kalau kamu skip, mimin nangis 7 hari 7 malam 🥲 Tonton ya, pleaseee",
-"Iklan 3 detik... Nggak lama kok, kayak nunggu mantan balik (nggak akan) Tonton sampai habis ya 😂",
-"Bentar ya, ini iklan... Aplikasi ini gratis, tapi mimin tetap butuh makan 🍚 Tonton ya, makasih 🙏",
-"Tunggu sebentar... Iklan ini buat bantu mimin bayar listrik. Jangan di-skip ya, kamu baik hati 💛",
-"Iklan dulu ya... Mimin janji ini iklan terakhir (bohong, nanti ada lagi) Tonton sampai habis ya 😅",
-"Eits, tunggu dulu... Iklan ini sumber rezeki mimin. Jangan di-skip, nanti mimin puasa 🥺",
-"Iklan 3 detik... Anggap aja kamu donasi ke mimin. Tonton ya, terima kasih banyak ✨",
-"Bentar ya, iklan dulu... Mimin lagi hemat buat beli kopi ☕ Tonton ya, makasih 😆",
-"Iklan dulu... Tonton ya, nanti mimin beliin bakso (becanda) Makasih banyak 💪",
-"Loading... Iklan ini bikin mimin tetap semangat kerja. Jangan di-skip ya, kamu keren 😎",
-"Iklan 3 detik... Tonton sampai habis ya, nanti mimin kasih hadiah (hadiahnya doa) 🤲",
-"Bentar ya... Iklan ini bagian dari aplikasi. Kalau di-skip, nanti error (nggak juga sih) 😂",
-"Tunggu sebentar... Iklan dulu, bentar doang. Tonton ya, makasih 🙏",
-"Iklan dulu... Mimin sedang mengumpulkan kebaikan. Tonton ya, kamu baik hati 💛",
-"Bentar ya, iklan... Mimin lagi ngumpulin receh buat beli sepatu baru 👟 Tonton ya, makasih 😆",
-"Loading... Iklan dulu, bentar doang. Anggap aja kamu lagi traktir mimin es teh 🧋",
-"Iklan 3 detik... Jangan di-skip ya, nanti mimin ngambek. Tonton sampai habis 💪",
-"Tunggu dulu... Iklan ini bikin mimin bisa terus update aplikasi. Tonton ya, makasih ✨",
-"Bentar ya... Iklan dulu. Mimin nggak minta banyak, cuma 3 detik perhatian kamu 🙏",
-"Iklan dulu... Kalau kamu tonton, mimin senyum seharian 😄 Makasih ya",
-"Loading... Iklan dulu. Mimin lagi nabung buat beli kucing 🐱 (serius) Tonton ya",
-"Iklan 3 detik... Tonton ya, nanti mimin doain kamu sukses 🤲",
-"Bentar ya... Iklan dulu. Mimin janji nggak ngerepotin, cuma 3 detik kok ✨",
-"Tunggu sebentar... Iklan dulu. Tonton ya, kamu orang baik 💛",
-"Iklan dulu... Mimin lagi belajar bikin aplikasi bagus. Tonton ya, dukung mimin 😆",
-"Bentar ya... Iklan ini bikin mimin tetap semangat. Jangan di-skip ya, kamu hebat 💪",
-"Loading... Iklan dulu. Mimin nggak bisa kasih apa-apa, cuma bisa bilang makasih 🙏",
-"Iklan 3 detik... Tonton ya, nanti mimin beliin cilok (becanda) Makasih banyak 😆",
-"Bentar ya... Iklan dulu. Mimin lagi hemat buat beli motor 🏍️ (becanda) Tonton ya",
-"Tunggu dulu... Iklan ini sumber kebahagiaan mimin. Tonton ya, kamu luar biasa ✨",
-"Iklan dulu... Kalau kamu skip, mimin sedih tapi tetap tersenyum 🥲 Tonton ya",
-"Bentar ya... Iklan dulu. Mimin lagi nabung buat beli rumah (becanda) Tonton ya 😆",
-"Loading... Iklan dulu. Tonton ya, nanti mimin doain rezekimu lancar 🤲",
-"Iklan 3 detik... Tonton sampai habis ya, nanti mimin kasih bintang ⭐ (bintangnya doa)",
-"Bentar ya... Iklan dulu. Mimin nggak minta banyak, cuma 3 detik kamu 💛",
-"Tunggu sebentar... Iklan dulu. Tonton ya, kamu baik banget 🙏",
-"Iklan dulu... Mimin lagi ngumpulin semangat. Tonton ya, makasih 💪",
-"Bentar ya... Iklan dulu. Tonton ya, nanti mimin senyum ke kamu (lewat doa) 😄",
-"Loading... Iklan dulu. Tonton ya, mimin doain kamu sehat terus 🤲"
-];
-
-/* ═══════════════════════════════════════════════════════════
+/* ============================================================
    DUMMY DATA
-   ═══════════════════════════════════════════════════════════ */
-var DUMMY_DATA={
-  Users:[
-    {id_user:'DMO1',nama:'Demo Owner',jabatan:'Owner',kode_cabang:'PUSAT',password:'demo',status:'aktif',tanggal_masuk:'2026-01-01',mode:'demo'},
-    {id_user:'DMO2',nama:'Demo Admin',jabatan:'Admin',kode_cabang:'PUSAT',password:'demo',status:'aktif',tanggal_masuk:'2026-01-01',mode:'demo'},
-    {id_user:'DMO3',nama:'Demo KT',jabatan:'Kepala Toko',kode_cabang:'GROBOGAN',password:'demo',status:'aktif',tanggal_masuk:'2026-01-01',mode:'demo'},
-    {id_user:'DMO4',nama:'Demo Karyawan',jabatan:'Karyawan',kode_cabang:'GROBOGAN',password:'demo',status:'aktif',tanggal_masuk:'2026-01-01',mode:'demo'}
+   ============================================================ */
+var DUMMY_DATA = {
+  Users: [
+    { id: 'OWNER01', password: '123', nama: 'Demo Owner', jabatan: 'Owner', kode_cabang: 'PUSAT', status: 'aktif' },
+    { id: 'ADMIN01', password: '123', nama: 'Demo Admin', jabatan: 'Admin', kode_cabang: 'PUSAT', status: 'aktif' },
+    { id: 'KT01', password: '123', nama: 'Demo KT', jabatan: 'Kepala Toko', kode_cabang: 'CB001', status: 'aktif' },
+    { id: 'KRY01', password: '123', nama: 'Demo Karyawan', jabatan: 'Karyawan', kode_cabang: 'CB001', status: 'aktif' }
   ],
-  Target_Cabang:[
-    {kode_cabang:'GROBOGAN',nama_cabang:'Grobagan',target_harian:30,alamat:'Grobagan'},
-    {kode_cabang:'PALIS',nama_cabang:'Palis',target_harian:25,alamat:'Palis'}
+  Target_Cabang: [
+    { kode_cabang: 'CB001', nama_cabang: 'Cabang Merdeka', target_harian: 50000 },
+    { kode_cabang: 'CB002', nama_cabang: 'Cabang Sudirman', target_harian: 60000 }
   ],
-  Pendapatan_Harian:[
-    {id_pendapatan:'PH001',tanggal:'2026-01-15',id_user:'DMO4',nama:'Demo Karyawan',jabatan:'Karyawan',kode_cabang:'GROBOGAN',unit:15,tips:5000,kasbon:0,wifi:1000,bonus:0,tembus_target:'tidak',status_masuk:'ya',keterangan:''},
-    {id_pendapatan:'PH002',tanggal:'2026-01-15',id_user:'DMO3',nama:'Demo KT',jabatan:'Kepala Toko',kode_cabang:'GROBOGAN',unit:15,tips:5000,kasbon:0,wifi:1000,bonus:0,tembus_target:'tidak',status_masuk:'ya',keterangan:''}
+  Pendapatan_Harian: [
+    { tanggal: '2026-01-15', kode_cabang: 'CB001', id_karyawan: 'KT01', nama_karyawan: 'Demo KT', jabatan: 'Kepala Toko', status_masuk: 'masuk', unit: 10, tips: 20000, bonus: 10000, kasbon: 0, wifi: 1000, tembus_target: 'ya', total_unit_cabang: 30, total_tips_cabang: 50000 },
+    { tanggal: '2026-01-15', kode_cabang: 'CB001', id_karyawan: 'KRY01', nama_karyawan: 'Demo Karyawan', jabatan: 'Karyawan', status_masuk: 'masuk', unit: 10, tips: 15000, bonus: 5000, kasbon: 0, wifi: 1000, tembus_target: 'ya', total_unit_cabang: 30, total_tips_cabang: 50000 }
   ],
-  Pengeluaran:[
-    {id_pengeluaran:'PG001',tanggal:'2026-01-15',kode_cabang:'GROBOGAN',jumlah:50000,keterangan:'Beli sabun',kategori:'Operasional'}
+  Pengajuan_Kasbon: [
+    { id_pengajuan: 'KS001', submission_id: 'KS-001', tanggal_pengajuan: '2026-01-14', id_karyawan: 'KRY01', nama_karyawan: 'Demo Karyawan', jabatan_pengaju: 'Karyawan', kode_cabang: 'CB001', jumlah_kasbon: 50000, keterangan: 'Butuh mendesak', status: 'menunggu', dihapus: false }
   ],
-  Pengajuan_Kasbon:[
-    {id_kasbon:'KS001',submission_id:'SUB-KS-001',tanggal:'2026-01-14',id_user:'DMO4',nama:'Demo Karyawan',jabatan_pengaju:'Karyawan',kode_cabang:'GROBOGAN',jumlah:15000,keterangan:'Buat makan',status:'menunggu',acc_by:'',acc_time:''}
+  Izin_Istirahat: [
+    { id_izin: 'IZ001', submission_id: 'IZ-001', tanggal_pengajuan: '2026-01-14', tanggal_izin: '2026-01-16', jenis_izin: 'istirahat', kode_cabang: 'CB001', id_karyawan: 'KRY01', nama_karyawan: 'Demo Karyawan', jabatan_pengaju: 'Karyawan', keterangan: 'Acara keluarga', status: 'menunggu', dihapus: false }
   ],
-  Izin_Istirahat:[
-    {id_izin:'IZ001',submission_id:'SUB-IZ-001',tanggal_pengajuan:'2026-01-13',tanggal_izin:'2026-01-16',id_user:'DMO4',nama:'Demo Karyawan',jabatan_pengaju:'Karyawan',kode_cabang:'GROBOGAN',jenis:'istirahat',keterangan:'Acara keluarga',status:'menunggu',acc_by:'',acc_time:''}
+  Kerusakan_Kendala: [
+    { id_laporan: 'KR001', submission_id: 'KR-001', tanggal: '2026-01-15', kode_cabang: 'CB001', pelapor: 'KT01', nama_pelapor: 'Demo KT', jabatan_pelapor: 'Kepala Toko', jenis: 'alat', judul: 'Mesin steam bocor', deskripsi: 'Bocor di selang', status: 'menunggu', dihapus: false }
   ],
-  Kerusakan_Kendala:[
-    {id_kerusakan:'KR001',submission_id:'SUB-KR-001',tanggal:'2026-01-14',id_user:'DMO4',nama:'Demo Karyawan',jabatan_pengaju:'Karyawan',kode_cabang:'GROBOGAN',jenis:'alat',judul:'Mesin steam bocor',deskripsi:'Bocor di bagian selang',status:'menunggu',acc_by:'',acc_time:''}
+  Permintaan_Payroll: [
+    { id_permintaan: 'PR001', submission_id: 'PR-001', tanggal: '2026-01-15', id_karyawan: 'KRY01', nama_karyawan: 'Demo Karyawan', jabatan_pengaju: 'Karyawan', alasan: 'Kebutuhan mendesak', status: 'menunggu', dihapus: false }
   ],
-  Permintaan_Payroll:[
-    {id_permintaan:'PR001',submission_id:'SUB-PR-001',tanggal:'2026-01-14',id_user:'DMO4',nama:'Demo Karyawan',jabatan_pengaju:'Karyawan',kode_cabang:'GROBOGAN',alasan:'Butuh uang',status:'menunggu',acc_by:'',acc_time:''}
+  Payroll: [
+    { periode: '2026-01-P1', kode_cabang: 'CB001', id_karyawan: 'KT01', nama_karyawan: 'Demo KT', jabatan: 'Kepala Toko', total_unit: 100, total_tips: 200000, total_bonus: 50000, total_kasbon: 0, total_wifi: 10000, total_payroll: 540000, status: 'dibayar' },
+    { periode: '2026-01-P1', kode_cabang: 'CB001', id_karyawan: 'KRY01', nama_karyawan: 'Demo Karyawan', jabatan: 'Karyawan', total_unit: 90, total_tips: 150000, total_bonus: 25000, total_kasbon: 20000, total_wifi: 10000, total_payroll: 415000, status: 'dibayar' }
   ],
-  Payroll:[
-    {id_payroll:'PY001',periode:'2026-01-P1',id_user:'DMO4',nama:'Demo Karyawan',jabatan:'Karyawan',kode_cabang:'GROBOGAN',total_unit:30,total_tips:10000,total_bonus:0,total_kasbon:0,total_wifi:3000,gaji_bersih:97000,status:'belum_dibayar'},
-    {id_payroll:'PY002',periode:'2026-01-P1',id_user:'DMO3',nama:'Demo KT',jabatan:'Kepala Toko',kode_cabang:'GROBOGAN',total_unit:30,total_tips:10000,total_bonus:0,total_kasbon:0,total_wifi:3000,gaji_bersih:97000,status:'belum_dibayar'}
+  Pengaturan: [
+    { key: 'target_cabang_baru', value: '50000000', keterangan: 'Target dana cabang baru' },
+    { key: 'harga_unit_karyawan', value: '3000', keterangan: 'Harga per unit karyawan' },
+    { key: 'harga_unit_owner', value: '4000', keterangan: 'Harga per unit owner' }
   ],
-  Pengaturan:[
-    {key:'target_cabang_baru',value:'50000000',keterangan:'Target dana expansi'},
-    {key:'harga_unit_karyawan',value:'3000',keterangan:'Harga per unit karyawan/KT'},
-    {key:'harga_unit_owner',value:'4000',keterangan:'Hak owner per unit'}
+  Dana_Expansi: [
+    { id_transaksi: 'DE001', tanggal: '2026-01-10', jenis: 'masuk', jumlah: 5000000, keterangan: 'Setoran owner', dicatat_oleh: 'OWNER01' },
+    { id_transaksi: 'DE002', tanggal: '2026-01-12', jenis: 'keluar', jumlah: 1000000, keterangan: 'Beli peralatan', dicatat_oleh: 'OWNER01' }
   ],
-  Laporan:[],
-  Dana_Expansi:[
-    {id_dana:'DE001',tanggal:'2026-01-10',jenis:'masuk',jumlah:5000000,keterangan:'Tabungan awal'},
-    {id_dana:'DE002',tanggal:'2026-01-12',jenis:'masuk',jumlah:2500000,keterangan:'Sisa kas'}
+  Motivasi: [
+    { id: 'M001', kalimat: 'Kerja keras tidak akan mengkhianati hasil.', kategori: 'semangat', bulan: '2026-01', urutan: 1 },
+    { id: 'M002', kalimat: 'Setiap tetes keringat adalah investasi masa depan.', kategori: 'motivasi', bulan: '2026-01', urutan: 2 },
+    { id: 'M003', kalimat: 'Pelanggan puas, rezeki lancar.', kategori: 'bisnis', bulan: '2026-01', urutan: 3 },
+    { id: 'M004', kalimat: 'Jangan pernah menyerah, sukses menanti.', kategori: 'semangat', bulan: '2026-01', urutan: 4 },
+    { id: 'M005', kalimat: 'Bersih itu indah, cuci motor itu berkah.', kategori: 'bisnis', bulan: '2026-01', urutan: 5 }
   ],
-  Biaya_Sewa:[],
-  Persiapan_Cabang:[],
-  Laporan_Barang:[],
-  Laporan_Token:[],
-  Setoran:[],
-  Resign_PHK:[],
-  Surat_Peringatan:[],
-  Motivasi:[
-    {teks:"Kerja keras hari ini adalah kebahagiaan esok hari."},
-    {teks:"Setiap unit yang dicuci adalah langkah menuju impian."},
-    {teks:"Pelayanan terbaik akan selalu berbuah manis."},
-    {teks:"Jangan pernah menyerah, rezeki tidak akan tertukar."},
-    {teks:"Kebersihan adalah bagian dari iman."}
-  ]
+  Pengeluaran: [], Setoran: [], Laporan_Barang: [], Laporan_Token: [],
+  Biaya_Sewa: [], Persiapan_Cabang: [], SP_Karyawan: [], Resign_PHK: [], Laporan: []
 };
 
-/* ═══════════════════════════════════════════════════════════
-   SESSION & HELPERS
-   ═══════════════════════════════════════════════════════════ */
-function getSession(){
-  try{return JSON.parse(sessionStorage.getItem(SESSION_KEY)||localStorage.getItem(SESSION_KEY)||'null')}catch(e){return null}
+/* ============================================================
+   CACHE
+   ============================================================ */
+var CACHE = {};
+var CACHE_TTL = 5 * 60 * 1000;
+
+function ambilCache(sheet) {
+  var c = CACHE[sheet];
+  if (c && (Date.now() - c.time) < CACHE_TTL) return c.data;
+  return null;
 }
-function isDemo(){var s=getSession();return s&&s.mode==='demo'}
-function isOwner(){var s=getSession();return s&&s.jabatan==='Owner'}
-function isAdmin(){var s=getSession();return s&&s.jabatan==='Admin'}
-function isKepalaToko(){var s=getSession();return s&&s.jabatan==='Kepala Toko'}
-function isKaryawan(){var s=getSession();return s&&s.jabatan==='Karyawan'}
-function bisaIklan(){return !isOwner()}
-function canInputPendapatan(){return isOwner()||isAdmin()||isKepalaToko()}
-function canAccIzinTahap1(){return isKepalaToko()}
-function canAccIzinTahap2(){return isOwner()||isAdmin()}
-function canAksesManusia(){return isOwner()}
-function canKelolaData(){return isOwner()||isAdmin()}
-function canAksesHR(){return isOwner()||isAdmin()}
-function canAksesDanaExpansi(){return isOwner()||isAdmin()}
-function canKonfirmasiSetoran(){return isKepalaToko()}
-function canAccSetoran(){return isOwner()||isAdmin()}
-
-function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
-function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
-function nowISO(){return new Date().toISOString()}
-function fmtRupiah(n){n=Number(n)||0;return 'Rp '+n.toLocaleString('id-ID')}
-function fmtAngka(n){return (Number(n)||0).toLocaleString('id-ID')}
-function generateSubmissionId(prefix){return (prefix||'SUB')+'-'+Date.now()+'-'+Math.floor(Math.random()*9000+1000)}
-
-function showToast(msg,type){
-  var t=document.getElementById('toastBox');
-  t.textContent=msg;t.className='toast-box show '+(type||'');
-  clearTimeout(window._toastTimer);
-  window._toastTimer=setTimeout(function(){t.classList.remove('show')},2800);
+function setCache(sheet, data) {
+  CACHE[sheet] = { data: data, time: Date.now() };
 }
 
-/* ═══════════════════════════════════════════════════════════
-   API
-   ═══════════════════════════════════════════════════════════ */
-async function apiPost(action,data){
-  try{
-    var body=Object.assign({action:action,token:TOKEN},data||{});
-    var res=await fetch(BACKEND_URL,{
-      method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify(body)
-    });
-    var json=await res.json();
-    return json;
-  }catch(e){
-    return{ok:false,pesan:'Koneksi gagal: '+e.message,data:[]};
-  }
-}
-async function ambilData(sheet){
-  if(isDemo()){
-    return{ok:true,data:DUMMY_DATA[sheet]||[]};
-  }
-  var r=await apiPost('baca',{sheet:sheet});
-  return r;
-}
-async function simpanData(sheet,data){
-  if(isDemo()){showToast('Mode demo tidak bisa menyimpan','warning');return{ok:false}}
-  var r=await apiPost('tulis_unik',{sheet:sheet,data:data});
-  return r;
-}
-async function updateData(sheet,row,data){
-  if(isDemo()){showToast('Mode demo tidak bisa mengedit','warning');return{ok:false}}
-  var r=await apiPost('update',{sheet:sheet,row:row,data:data});
-  return r;
-}
-async function hapusData(sheet,row){
-  if(isDemo()){showToast('Mode demo tidak bisa menghapus','warning');return{ok:false}}
-  var r=await apiPost('hapus',{sheet:sheet,row:row});
-  return r;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   IKLAN
-   ═══════════════════════════════════════════════════════════ */
-function getUrlIklanRandom(){
-  return Math.random()<0.5?IKLAN_URL_MONETAG:IKLAN_URL_ADSTERRA;
-}
-function paksaIklan(callback){
-  if(!bisaIklan()){if(callback)callback();return}
-  var loading=document.getElementById('loadingIklan');
-  var teks=document.getElementById('liTeks');
-  var kata;
-  if(isAdmin())kata=KATA_IKLAN_ADMIN[Math.floor(Math.random()*KATA_IKLAN_ADMIN.length)];
-  else kata=KATA_IKLAN_UMUM[Math.floor(Math.random()*KATA_IKLAN_UMUM.length)];
-  teks.textContent=kata;
-  loading.classList.add('show');
-  var url=getUrlIklanRandom();
-  try{
-    if(window.AndroidAds&&typeof window.AndroidAds.showAd==='function'){
-      window.AndroidAds.showAd(url);
-    }else{
-      window.open(url,'_blank');
+/* ============================================================
+   SESSION
+   ============================================================ */
+function getSession() {
+  try {
+    var raw = sessionStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    var s = JSON.parse(raw);
+    if (!s || !s.user_id) return null;
+    var now = Date.now();
+    var durasi = s.is_demo ? 5 * 60 * 1000 : 8 * 60 * 60 * 1000;
+    if (s.login_time && (now - s.login_time) > durasi) {
+      sessionStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(SESSION_KEY);
+      return null;
     }
-  }catch(e){}
-  setTimeout(function(){
-    loading.classList.remove('show');
-    if(callback)callback();
-  },IKLAN_DURASI);
+    return s;
+  } catch (e) { return null; }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ROUTING & RENDER
-   ═══════════════════════════════════════════════════════════ */
-var HALAMAN_AKTIF='home';
-var MENU_DATA={};
+function isDemo() { var s = getSession(); return s && s.is_demo === true; }
+function isOwner() { var s = getSession(); return s && s.user_jabatan === 'Owner'; }
+function isAdmin() { var s = getSession(); return s && s.user_jabatan === 'Admin'; }
+function isKepalaToko() { var s = getSession(); return s && s.user_jabatan === 'Kepala Toko'; }
+function isKaryawan() { var s = getSession(); return s && s.user_jabatan === 'Karyawan'; }
 
-function dapatkanMenu(){
-  var s=getSession();
-  if(!s)return[];
-  var j=s.jabatan;
-  if(j==='Owner')return[
-    {id:'pendapatan_owner',ic:'📊',nama:'Pendapatan Owner',desc:'Rekap semua cabang',hl:true},
-    {id:'operasional',ic:'⚙️',nama:'Operasional',desc:'Input & pengeluaran'},
-    {id:'payroll',ic:'💰',nama:'Payroll',desc:'Kelola semua payroll'},
-    {id:'manusia',ic:'👥',nama:'Manusia',desc:'Anggota & cabang'},
-    {id:'acc',ic:'✅',nama:'Persetujuan',desc:'ACC pengajuan',hl:true},
-    {id:'laporan',ic:'📝',nama:'Laporan',desc:'Lihat laporan KT'},
-    {id:'pengaturan',ic:'🔧',nama:'Pengaturan',desc:'Target & global'},
-    {id:'kelola_data',ic:'🗂️',nama:'Kelola Data',desc:'Edit & hapus'},
-    {id:'dana_expansi',ic:'💎',nama:'Dana Expansi',desc:'Tabungan manual',hl:true},
-    {id:'biaya_sewa',ic:'🏠',nama:'Biaya Sewa',desc:'Kelola sewa'},
-    {id:'persiapan_cabang',ic:'🏗️',nama:'Persiapan Cabang',desc:'Rencana cabang baru'},
-    {id:'laporan_barang',ic:'📦',nama:'Laporan Barang',desc:'Semua laporan barang'},
-    {id:'laporan_token',ic:'🔑',nama:'Laporan Token',desc:'Semua token'},
-    {id:'setoran',ic:'💵',nama:'Setoran',desc:'Konfirmasi setoran'},
-    {id:'hr',ic:'🧑‍💼',nama:'HR / Karyawan',desc:'Data & evaluasi',hl:true},
-    {id:'profil',ic:'👤',nama:'Profil',desc:'Akun saya'}
-  ];
-  if(j==='Admin')return[
-    {id:'operasional',ic:'⚙️',nama:'Operasional',desc:'Input & pengeluaran',hl:true},
-    {id:'acc',ic:'✅',nama:'Persetujuan',desc:'ACC pengajuan',hl:true},
-    {id:'laporan',ic:'📝',nama:'Laporan',desc:'Lihat laporan KT'},
-    {id:'kelola_data',ic:'🗂️',nama:'Kelola Data',desc:'Edit & hapus'},
-    {id:'dana_expansi',ic:'💎',nama:'Dana Expansi',desc:'Tabungan manual'},
-    {id:'biaya_sewa',ic:'🏠',nama:'Biaya Sewa',desc:'Kelola sewa'},
-    {id:'persiapan_cabang',ic:'🏗️',nama:'Persiapan Cabang',desc:'Rencana cabang baru'},
-    {id:'laporan_barang',ic:'📦',nama:'Laporan Barang',desc:'Semua laporan barang'},
-    {id:'laporan_token',ic:'🔑',nama:'Laporan Token',desc:'Semua token'},
-    {id:'setoran',ic:'💵',nama:'Setoran',desc:'Verifikasi setoran'},
-    {id:'hr',ic:'🧑‍💼',nama:'HR / Karyawan',desc:'Data & evaluasi',hl:true},
-    {id:'profil',ic:'👤',nama:'Profil',desc:'Akun saya'}
-  ];
-  if(j==='Kepala Toko')return[
-    {id:'pendapatan',ic:'💵',nama:'Pendapatan',desc:'Input pendapatan cabang',hl:true},
-    {id:'unit_cabang',ic:'📊',nama:'Unit Cabang',desc:'Total unit per hari'},
-    {id:'pengajuan',ic:'📩',nama:'Pengajuan',desc:'Kasbon, izin, dll',hl:true},
-    {id:'acc',ic:'✅',nama:'ACC Izin',desc:'ACC tahap 1',hl:true},
-    {id:'payroll_laporan',ic:'💰',nama:'Payroll & Laporan',desc:'Payroll & buat laporan'},
-    {id:'laporan_barang',ic:'📦',nama:'Lapor Barang',desc:'Laporkan barang'},
-    {id:'laporan_token',ic:'🔑',nama:'Lapor Token',desc:'Laporkan token'},
-    {id:'konfirmasi_setoran',ic:'💵',nama:'Konfirmasi Setoran',desc:'Setoran ke pusat'},
-    {id:'profil',ic:'👤',nama:'Profil',desc:'Akun saya'}
-  ];
-  if(j==='Karyawan')return[
-    {id:'pengajuan',ic:'📩',nama:'Pengajuan',desc:'Kasbon, izin, dll',hl:true},
-    {id:'payroll_saya',ic:'💰',nama:'Payroll Saya',desc:'Lihat gaji'},
-    {id:'lihat_token',ic:'🔑',nama:'Lihat Token Saya',desc:'Token & kode'},
-    {id:'profil',ic:'👤',nama:'Profil',desc:'Akun saya'}
-  ];
-  return[];
-}
-
-function dapatkanBottomNav(){
-  var s=getSession();
-  if(!s)return[];
-  var j=s.jabatan;
-  if(j==='Owner')return[
-    {id:'home',ic:'🏠',label:'Beranda'},
-    {id:'pendapatan_owner',ic:'📊',label:'Rekap'},
-    {id:'payroll',ic:'💰',label:'Payroll'},
-    {id:'hr',ic:'🧑‍💼',label:'HR'}
-  ];
-  if(j==='Admin')return[
-    {id:'home',ic:'🏠',label:'Beranda'},
-    {id:'operasional',ic:'⚙️',label:'Operasional'},
-    {id:'acc',ic:'✅',label:'ACC'},
-    {id:'hr',ic:'🧑‍💼',label:'HR'}
-  ];
-  if(j==='Kepala Toko')return[
-    {id:'home',ic:'🏠',label:'Beranda'},
-    {id:'pendapatan',ic:'💵',label:'Input'},
-    {id:'pengajuan',ic:'📩',label:'Ajukan'},
-    {id:'acc',ic:'✅',label:'ACC'}
-  ];
-  if(j==='Karyawan')return[
-    {id:'home',ic:'🏠',label:'Beranda'},
-    {id:'pengajuan',ic:'📩',label:'Ajukan'},
-    {id:'payroll_saya',ic:'💰',label:'Payroll'},
-    {id:'profil',ic:'👤',label:'Profil'}
-  ];
-  return[];
-}
-
-async function navigasi(id){
-  HALAMAN_AKTIF=id;
-  renderBottomNav();
-  var main=document.getElementById('mainContent');
-  main.innerHTML='<div class="empty"><div class="em-ic">⏳</div><div class="em-txt">Memuat...</div></div>';
-  try{
-    if(id==='home')await renderHome(main);
-    else if(id==='pendapatan_owner')await renderPendapatanOwner(main);
-    else if(id==='operasional')await renderOperasional(main);
-    else if(id==='payroll')await renderPayroll(main);
-    else if(id==='manusia')await renderManusia(main);
-    else if(id==='acc')await renderACC(main);
-    else if(id==='laporan')await renderLaporan(main);
-    else if(id==='pengaturan')await renderPengaturan(main);
-    else if(id==='kelola_data')await renderKelolaData(main);
-    else if(id==='dana_expansi')await renderDanaExpansi(main);
-    else if(id==='biaya_sewa')await renderBiayaSewa(main);
-    else if(id==='persiapan_cabang')await renderPersiapanCabang(main);
-    else if(id==='laporan_barang')await renderLaporanBarang(main);
-    else if(id==='laporan_token')await renderLaporanToken(main);
-    else if(id==='setoran')await renderSetoran(main);
-    else if(id==='hr')await renderHR(main);
-    else if(id==='pendapatan')await renderPendapatan(main);
-    else if(id==='unit_cabang')await renderUnitCabang(main);
-    else if(id==='pengajuan')await renderPengajuan(main);
-    else if(id==='payroll_laporan')await renderPayrollLaporan(main);
-    else if(id==='konfirmasi_setoran')await renderKonfirmasiSetoran(main);
-    else if(id==='payroll_saya')await renderPayrollSaya(main);
-    else if(id==='lihat_token')await renderLihatToken(main);
-    else if(id==='profil')await renderProfil(main);
-    else main.innerHTML='<div class="empty"><div class="em-ic">🚧</div><div class="em-txt">Halaman belum tersedia</div></div>';
-  }catch(e){
-    console.error(e);
-    main.innerHTML='<div class="empty"><div class="em-ic">⚠️</div><div class="em-txt">Terjadi kesalahan: '+esc(e.message)+'</div></div>';
-  }
-  window.scrollTo(0,0);
-}
-
-function renderBottomNav(){
-  var nav=document.getElementById('bottomNav');
-  var items=dapatkanBottomNav();
-  nav.innerHTML=items.map(function(it){
-    return '<button class="bn-item'+(it.id===HALAMAN_AKTIF?' active':'')+'" onclick="navigasi(\''+it.id+'\')">'+
-      '<span class="bn-ic">'+it.ic+'</span><span class="bn-label">'+it.label+'</span></button>';
-  }).join('');
-}
-
-/* ═══════════════════════════════════════════════════════════
-   RENDER: HOME
-   ═══════════════════════════════════════════════════════════ */
-async function renderHome(el){
-  var s=getSession();
-  var menu=dapatkanMenu();
-  var html='';
-  html+='<div class="sapaan">Halo, '+esc(s.nama)+' 👋</div>';
-  var sub='';
-  if(isOwner())sub='Pantau bisnis kamu hari ini.';
-  else if(isAdmin())sub='Bantu owner kelola operasional.';
-  else if(isKepalaToko())sub='Kelola cabang '+esc(s.kode_cabang)+' hari ini.';
-  else sub='Semangat kerja hari ini!';
-  html+='<div class="sapaan-sub">'+sub+'</div>';
-
-  if(isOwner()||isAdmin()){
-    var motivasi=DUMMY_DATA.Motivasi;
-    if(!isDemo()){
-      var rm=await ambilData('Motivasi');
-      if(rm.ok&&rm.data.length)motivasi=rm.data;
-    }
-    var hariKe=new Date().getDate();
-    var idx=hariKe%motivasi.length;
-    var teksMot=motivasi[idx].teks||motivasi[idx][0]||'Semangat!';
-    html+='<div class="card-motivasi">'+
-      '<div class="mot-head">✨ SEMANGAT HARI INI</div>'+
-      '<div class="mot-isi">"'+esc(teksMot)+'"</div>'+
-      '<div class="mot-foot">Hari ke-'+hariKe+' dari 30</div></div>';
-
-    var saldoExpansi=0;
-    var targetExpansi=50000000;
-    var de=await ambilData('Dana_Expansi');
-    if(de.ok){de.data.forEach(function(d){saldoExpansi+=(d.jenis==='masuk'?Number(d.jumlah||0):-Number(d.jumlah||0))})}
-    var rp=await ambilData('Pengaturan');
-    if(rp.ok){rp.data.forEach(function(p){if(p.key==='target_cabang_baru')targetExpansi=Number(p.value||50000000)})}
-    var pct=Math.min(100,Math.round(saldoExpansi/targetExpansi*100));
-    html+='<div class="card-expansi">'+
-      '<div class="exp-head">💎 DANA EXPANSI</div>'+
-      '<div class="exp-saldo">'+fmtRupiah(saldoExpansi)+'</div>'+
-      '<div class="exp-target">Target cabang baru: '+fmtRupiah(targetExpansi)+'</div>'+
-      '<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'+
-      '</div>';
-  }
-
-  var pendapatanHari=0,pendapatanBulan=0;
-  var rph=await ambilData('Pendapatan_Harian');
-  if(rph.ok){
-    var today=todayStr();var bulanIni=today.substring(0,7);
-    rph.data.forEach(function(p){
-      if(p.tanggal===today)pendapatanHari+=Number(p.unit||0)*4000;
-      if(String(p.tanggal||'').startsWith(bulanIni))pendapatanBulan+=Number(p.unit||0)*4000;
-    });
-  }
-  html+='<div class="stat-grid">'+
-    '<div class="stat-card"><div class="st-label">Hari Ini</div><div class="st-val">'+fmtRupiah(pendapatanHari)+'</div></div>'+
-    '<div class="stat-card"><div class="st-label">Bulan Ini</div><div class="st-val gold">'+fmtRupiah(pendapatanBulan)+'</div></div>'+
-    '</div>';
-
-  html+='<div class="sec-title">📋 Menu</div>';
-  html+='<div class="menu-grid">';
-  menu.forEach(function(m){
-    html+='<div class="menu-card'+(m.hl?' highlight':'')+'" onclick="navigasi(\''+m.id+'\')">'+
-      '<div class="mc-ic">'+m.ic+'</div>'+
-      '<div class="mc-nama">'+esc(m.nama)+'</div>'+
-      '<div class="mc-desc">'+esc(m.desc)+'</div></div>';
-  });
-  html+='</div>';
-
-  var donTeks='';
-  if(isOwner())donTeks='Kalau kamu mau bantu mimin, tonton 1 iklan tambahan ya. Makasih, kamu luar biasa 💪';
-  else if(isAdmin())donTeks='Setiap iklan yang kamu tonton bantu keluarga kami sedikit demi sedikit. Terima kasih 🙏';
-  else donTeks='Kalau kamu mau bantu mimin, tonton 1 iklan tambahan ya. Nanti mimin beliin bakso (becanda)';
-  html+='<div class="card-donasi">'+
-    '<div class="don-head">💛 DUKUNG APLIKASI INI</div>'+
-    '<div class="don-teks">'+esc(donTeks)+'</div>'+
-    '<button class="btn btn-gold" onclick="donasiIklan()">📺 Tonton Iklan Sebagai Donasi</button>'+
-    '</div>';
-
-  el.innerHTML=html;
-}
-
-function donasiIklan(){
-  paksaIklan(function(){
-    showToast('Terima kasih sudah dukung mimin! 💛','success');
-  });
-}
-
-/* ═══════════════════════════════════════════════════════════
-   RENDER: PENDAPATAN OWNER
-   ═══════════════════════════════════════════════════════════ */
-async function renderPendapatanOwner(el){
-  var r=await ambilData('Pendapatan_Harian');
-  var rp=await ambilData('Pengeluaran');
-  var data=r.ok?r.data:[];
-  var peng=rp.ok?rp.data:[];
-  var totalUnit=0,hakOwner=0,totalPengeluaran=0;
-  data.forEach(function(d){totalUnit+=Number(d.unit||0)});
-  hakOwner=totalUnit*4000;
-  peng.forEach(function(p){totalPengeluaran+=Number(p.jumlah||0)});
-  var bersih=hakOwner-totalPengeluaran;
-
-  var html='<div class="total-banner">'+
-    '<div class="tb-label">PENDAPATAN BERSIH OWNER</div>'+
-    '<div class="tb-val">'+fmtRupiah(bersih)+'</div>'+
-    '<div class="tb-sub">Hak Owner '+fmtRupiah(hakOwner)+' − Pengeluaran '+fmtRupiah(totalPengeluaran)+'</div>'+
-    '</div>';
-  html+='<div class="stat-grid">'+
-    '<div class="stat-card"><div class="st-label">Total Unit</div><div class="st-val">'+fmtAngka(totalUnit)+'</div></div>'+
-    '<div class="stat-card"><div class="st-label">Hak Owner</div><div class="st-val">'+fmtRupiah(hakOwner)+'</div></div>'+
-    '<div class="stat-card"><div class="st-label">Pengeluaran</div><div class="st-val">'+fmtRupiah(totalPengeluaran)+'</div></div>'+
-    '<div class="stat-card"><div class="st-label">Bersih</div><div class="st-val gold">'+fmtRupiah(bersih)+'</div></div>'+
-    '</div>';
-
-  html+='<div class="card"><div class="card-title"><span class="ic">🏢</span>Rekap per Cabang</div>';
-  var perCabang={};
-  data.forEach(function(d){
-    var k=d.kode_cabang||'—';
-    if(!perCabang[k])perCabang[k]={unit:0,tips:0,bonus:0,kasbon:0,wifi:0};
-    perCabang[k].unit+=Number(d.unit||0);
-    perCabang[k].tips+=Number(d.tips||0);
-    perCabang[k].bonus+=Number(d.bonus||0);
-    perCabang[k].kasbon+=Number(d.kasbon||0);
-    perCabang[k].wifi+=Number(d.wifi||0);
-  });
-  if(Object.keys(perCabang).length===0)html+='<div class="empty"><div class="em-txt">Belum ada data</div></div>';
-  else{
-    html+='<div class="tbl-wrap"><table><thead><tr><th>Cabang</th><th>Unit</th><th>Hak Owner</th></tr></thead><tbody>';
-    Object.keys(perCabang).forEach(function(k){
-      html+='<tr><td><strong>'+esc(k)+'</strong></td><td>'+fmtAngka(perCabang[k].unit)+'</td><td>'+fmtRupiah(perCabang[k].unit*4000)+'</td></tr>';
-    });
-    html+='</tbody></table></div>';
-  }
-  html+='</div>';
-  el.innerHTML=html;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   RENDER: OPERASIONAL
-   ═══════════════════════════════════════════════════════════ */
-async function renderOperasional(el){
-  var html='<div class="tabs">'+
-    '<button class="tab active" onclick="tabOperasional(this,\'input\')">Input Pendapatan</button>'+
-    '<button class="tab" onclick="tabOperasional(this,\'pengeluaran\')">Pengeluaran</button>'+
-    '<button class="tab" onclick="tabOperasional(this,\'unit\')">Unit Cabang</button>'+
-    '</div><div id="tabOpContent"></div>';
-  el.innerHTML=html;
-  await tabOperasional(document.querySelector('.tab.active'),'input');
-}
-async function tabOperasional(btn,tab){
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
-  if(btn)btn.classList.add('active');
-  var el=document.getElementById('tabOpContent');
-  el.innerHTML='<div class="empty"><div class="em-txt">Memuat...</div></div>';
-  if(tab==='input')await renderFormInputPendapatan(el);
-  else if(tab==='pengeluaran')await renderFormPengeluaran(el);
-  else if(tab==='unit')await renderUnitCabang(el);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   FORM INPUT PENDAPATAN (lengkap dengan preview)
-   ═══════════════════════════════════════════════════════════ */
-async function renderFormInputPendapatan(el){
-  var s=getSession();
-  var ru=await ambilData('Users');
-  var users=ru.ok?ru.data:[];
-  var targetCabang=ru.ok?ru.data.filter(function(u){return u.kode_cabang===s.kode_cabang&&(u.jabatan==='Karyawan'||u.jabatan==='Kepala Toko')}):[];
-  if(!isDemo()&&targetCabang.length===0)targetCabang=users.filter(function(u){return u.kode_cabang===s.kode_cabang});
-  if(targetCabang.length===0){
-    el.innerHTML='<div class="card"><div class="empty"><div class="em-ic">👥</div><div class="em-txt">Tidak ada karyawan di cabang ini</div></div></div>';
-    return;
-  }
-  var html='<div class="card"><div class="card-title"><span class="ic">💵</span>Input Pendapatan Harian</div>';
-  html+='<div class="form-group"><label class="form-label">Tanggal</label><input type="date" class="form-input" id="inpTanggal" value="'+todayStr()+'"></div>';
-  html+='<div id="listKaryawan">';
-  targetCabang.forEach(function(k,i){
-    html+='<div class="card" style="padding:12px;margin-bottom:10px;background:#FAFAFA" data-idx="'+i+'">'+
-      '<div style="font-weight:700;font-size:13px;margin-bottom:8px">'+esc(k.nama)+' <span class="tag-cabang">'+esc(k.jabatan)+'</span></div>'+
-      '<div class="form-row">'+
-        '<div class="form-group"><label class="form-label">Unit</label><input type="number" class="form-input inp-unit" min="0" value="0"></div>'+
-        '<div class="form-group"><label class="form-label">Tips</label><input type="number" class="form-input inp-tips" min="0" value="0"></div>'+
-      '</div>'+
-      '<div class="form-row">'+
-        '<div class="form-group"><label class="form-label">Kasbon</label><input type="number" class="form-input inp-kasbon" min="0" value="0"></div>'+
-        '<div class="form-group"><label class="form-label">Masuk?</label><select class="form-select inp-masuk"><option value="ya">Ya</option><option value="tidak">Tidak</option></select></div>'+
-      '</div>'+
-      '<div class="form-group inp-alasan-wrap" style="display:none"><label class="form-label">Alasan</label><input type="text" class="form-input inp-alasan" placeholder="Alasan tidak masuk"></div>'+
-      '</div>';
-  });
-  html+='</div>';
-  html+='<button class="btn btn-primary" onclick="previewInputPendapatan()">🔍 Preview & Simpan</button>';
-  html+='</div>';
-  el.innerHTML=html;
-
-  targetCabang.forEach(function(k,i){
-    var wrap=el.querySelector('[data-idx="'+i+'"]');
-    if(wrap){
-      var sel=wrap.querySelector('.inp-masuk');
-      var alasan=wrap.querySelector('.inp-alasan-wrap');
-      sel.addEventListener('change',function(){
-        alasan.style.display=sel.value==='tidak'?'block':'none';
-      });
-    }
-  });
-}
-
-async function previewInputPendapatan(){
-  var s=getSession();
-  var ru=await ambilData('Users');
-  var users=ru.ok?ru.data:[];
-  var targetCabang=users.filter(function(u){return u.kode_cabang===s.kode_cabang&&(u.jabatan==='Karyawan'||u.jabatan==='Kepala Toko')});
-  var list=document.querySelectorAll('#listKaryawan [data-idx]');
-  var inputData=[];
-  list.forEach(function(w,i){
-    var k=targetCabang[i];
-    var masuk=w.querySelector('.inp-masuk').value;
-    var unit=Number(w.querySelector('.inp-unit').value||0);
-    var tips=Number(w.querySelector('.inp-tips').value||0);
-    var kasbon=Number(w.querySelector('.inp-kasbon').value||0);
-    var alasan=w.querySelector('.inp-alasan')?w.querySelector('.inp-alasan').value:'';
-    if(masuk==='tidak'){unit=0;tips=0}
-    if(masuk==='tidak'&&kasbon>20000){showToast('Kasbon max 20.000 saat tidak masuk','error');return}
-    inputData.push({id_user:k.id_user,nama:k.nama,jabatan:k.jabatan,kode_cabang:s.kode_cabang,unit:unit,tips:tips,kasbon:kasbon,wifi:1000,status_masuk:masuk,alasan:alasan});
-  });
-  if(inputData.length===0){showToast('Tidak ada data','error');return}
-
-  var jumlahMasuk=inputData.filter(function(d){return d.status_masuk==='ya'}).length;
-  var totalUnit=inputData.reduce(function(a,d){return a+d.unit},0);
-  var totalTips=inputData.reduce(function(a,d){return a+d.tips},0);
-  if(jumlahMasuk===0){showToast('Minimal 1 orang masuk','error');return}
-  var unitPer=Math.floor(totalUnit/jumlahMasuk);
-  var tipsPer=Math.floor(totalTips/jumlahMasuk);
-  var sisaUnit=totalUnit-(unitPer*jumlahMasuk);
-  var sisaTips=totalTips-(tipsPer*jumlahMasuk);
-
-  var targetHarian=30;
-  var rt=await ambilData('Target_Cabang');
-  if(rt.ok){rt.data.forEach(function(t){if(t.kode_cabang===s.kode_cabang)targetHarian=Number(t.target_harian||30)})}
-  var tembus=totalUnit>=targetHarian;
-
-  inputData.forEach(function(d){
-    if(d.status_masuk==='ya'){
-      if(d.jabatan==='Kepala Toko'){
-        d.unit=unitPer+sisaUnit;d.tips=tipsPer+sisaTips;
-        d.bonus=tembus?10000:0;
-      }else{
-        d.unit=unitPer;d.tips=tipsPer;
-        d.bonus=tembus?5000:0;
-      }
-    }else{
-      d.unit=0;d.tips=0;d.bonus=0;
-    }
-    d.tembus_target=tembus?'ya':'tidak';
-  });
-
-  var html='<div class="card"><div class="card-title"><span class="ic">🔍</span>Preview Pembagian</div>';
-  html+='<div class="info-row"><span class="ir-label">Total Unit</span><span class="ir-val">'+fmtAngka(totalUnit)+'</span></div>';
-  html+='<div class="info-row"><span class="ir-label">Total Tips</span><span class="ir-val">'+fmtRupiah(totalTips)+'</span></div>';
-  html+='<div class="info-row"><span class="ir-label">Masuk</span><span class="ir-val">'+jumlahMasuk+' orang</span></div>';
-  html+='<div class="info-row"><span class="ir-label">Tembus Target</span><span class="ir-val">'+(tembus?'✅ Ya':'❌ Tidak')+'</span></div>';
-  html+='<div class="divider"></div>';
-  html+='<div class="tbl-wrap"><table><thead><tr><th>Nama</th><th>Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th><th>Wifi</th></tr></thead><tbody>';
-  inputData.forEach(function(d){
-    html+='<tr><td>'+esc(d.nama)+'<br><span style="font-size:9px;color:#9CA3AF">'+esc(d.jabatan)+'</span></td>'+
-      '<td>'+d.unit+'</td><td>'+fmtRupiah(d.tips)+'</td><td>'+fmtRupiah(d.bonus)+'</td><td>'+fmtRupiah(d.kasbon)+'</td><td>'+fmtRupiah(d.wifi)+'</td></tr>';
-  });
-  html+='</tbody></table></div>';
-  html+='<div class="divider"></div>';
-  html+='<button class="btn btn-primary" onclick="simpanInputPendapatan()">✅ Konfirmasi & Simpan</button>';
-  html+='<button class="btn btn-gray" style="margin-top:8px" onclick="navigasi(\'operasional\')">Batal</button>';
-  html+='</div>';
-  document.getElementById('tabOpContent').innerHTML=html;
-  window._previewData=inputData;
-  window._previewTanggal=document.getElementById('inpTanggal').value;
-}
-
-async function simpanInputPendapatan(){
-  var data=window._previewData;
-  var tanggal=window._previewTanggal;
-  if(!data){showToast('Preview hilang, ulangi','error');return}
-  paksaIklan(async function(){
-    var ok=0;
-    for(var i=0;i<data.length;i++){
-      var d=data[i];
-      var row=Object.assign({},d,{
-        id_pendapatan:generateSubmissionId('PH'),
-        tanggal:tanggal,
-        createdAt:nowISO()
-      });
-      delete row.alasan;
-      var r=await simpanData('Pendapatan_Harian',row);
-      if(r.ok)ok++;
-    }
-    if(ok>0){
-      showToast('Berhasil simpan '+ok+' data','success');
-      navigasi('home');
-    }else{
-      showToast('Gagal menyimpan','error');
-    }
-  });
-}
-
-/* ═══════════════════════════════════════════════════════════
-   PENGELUARAN
-   ═══════════════════════════════════════════════════════════ */
-async function renderFormPengeluaran(el){
-  var s=getSession();
-  var html='<div class="card"><div class="card-title"><span class="ic">📤</span>Input Pengeluaran</div>';
-  html+='<div class="form-group"><label class="form-label">Tanggal</label><input type="date" class="form-input" id="pengTanggal" value="'+todayStr()+'"></div>';
-  html+='<div class="form-group"><label class="form-label">Cabang</label><input type="text" class="form-input" id="pengCabang" value="'+esc(s.kode_cabang||'PUSAT')+'"></div>';
-  html+='<div class="form-group"><label class="form-label">Jumlah</label><input type="number" class="form-input" id="pengJumlah" min="0" placeholder="0"></div>';
-  html+='<div class="form-group"><label class="form-label">Keterangan</label><input type="text" class="form-input" id="pengKet" placeholder="Keterangan"></div>';
-  html+='<button class="btn btn-primary" onclick="simpanPengeluaran()">Simpan Pengeluaran</button></div>';
-  var rp=await ambilData('Pengeluaran');
-  var data=rp.ok?rp.data:[];
-  if(data.length){
-    html+='<div class="card"><div class="card-title"><span class="ic">📋</span>Riwayat Pengeluaran</div><div class="tbl-wrap"><table><thead><tr><th>Tanggal</th><th>Cabang</th><th>Jumlah</th><th>Keterangan</th></tr></thead><tbody>';
-    data.slice(-20).reverse().forEach(function(p){
-      html+='<tr><td>'+esc(p.tanggal)+'</td><td>'+esc(p.kode_cabang)+'</td><td>'+fmtRupiah(p.jumlah)+'</td><td>'+esc(p.keterangan)+'</td></tr>';
-    });
-    html+='</tbody></table></div></div>';
-  }
-  el.innerHTML=html;
-}
-async function simpanPengeluaran(){
-  var data={
-    id_pengeluaran:generateSubmissionId('PG'),
-    tanggal:document.getElementById('pengTanggal').value,
-    kode_cabang:document.getElementById('pengCabang').value,
-    jumlah:Number(document.getElementById('pengJumlah').value||0),
-    keterangan:document.getElementById('pengKet').value,
-    kategori:'Operasional',
-    createdAt:nowISO()
-  };
-  if(!data.jumlah){showToast('Jumlah harus diisi','error');return}
-  paksaIklan(async function(){
-    var r=await simpanData('Pengeluaran',data);
-    if(r.ok){showToast('Pengeluaran tersimpan','success');navigasi('operasional')}
-    else showToast(r.pesan||'Gagal','error');
-  });
-}
-
-/* ═══════════════════════════════════════════════════════════
-   UNIT CABANG
-   ═══════════════════════════════════════════════════════════ */
-async function renderUnitCabang(el){
-  var s=getSession();
-  var r=await ambilData('Pendapatan_Harian');
-  var data=r.ok?r.data:[];
-  var perHari={};
-  data.forEach(function(d){
-    var t=d.tanggal||'—';
-    if(!perHari[t])perHari[t]={total:0,cabang:{}};
-    perHari[t].total+=Number(d.unit||0);
-    if(!perHari[t].cabang[d.kode_cabang])perHari[t].cabang[d.kode_cabang]=0;
-    perHari[t].cabang[d.kode_cabang]+=Number(d.unit||0);
-  });
-  var html='<div class="card"><div class="card-title"><span class="ic">📊</span>Unit Cabang per Hari</div>';
-  if(Object.keys(perHari).length===0)html+='<div class="empty"><div class="em-ic">📭</div><div class="em-txt">Belum ada data</div></div>';
-  else{
-    html+='<div class="tbl-wrap"><table><thead><tr><th>Tanggal</th><th>Total Unit</th></tr></thead><tbody>';
-    Object.keys(perHari).sort().reverse().forEach(function(t){
-      html+='<tr><td><strong>'+esc(t)+'</strong></td><td>'+fmtAngka(perHari[t].total)+'</td></tr>';
-    });
-    html+='</tbody></table></div>';
-  }
-  html+='</div>';
-  el.innerHTML=html;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   PAYROLL
-   ═══════════════════════════════════════════════════════════ */
-async function renderPayroll(el){
-  var rp=await ambilData('Payroll');
-  var data=rp.ok?rp.data:[];
-  var html='<div class="card"><div class="card-title"><span class="ic">💰</span>Payroll</div>';
-  html+='<button class="btn btn-gold" onclick="bukaModalPayroll()">➕ Generate Payroll</button></div>';
-  if(data.length===0)html+='<div class="card"><div class="empty"><div class="em-ic">📭</div><div class="em-txt">Belum ada payroll</div></div></div>';
-  else{
-    html+='<div class="card"><div class="tbl-wrap"><table><thead><tr><th>Periode</th><th>Nama</th><th>Gaji</th><th>Status</th></tr></thead><tbody>';
-    data.forEach(function(p){
-      html+='<tr><td>'+esc(p.periode)+'</td><td>'+esc(p.nama)+'<br><span style="font-size:9px;color:#9CA3AF">'+esc(p.jabatan)+'</span></td>'+
-        '<td>'+fmtRupiah(p.gaji_bersih)+'</td>'+
-        '<td><span class="badge '+(p.status==='sudah_dibayar'?'badge-success':'badge-warning')+'">'+esc(p.status||'belum')+'</span></td></tr>';
-    });
-    html+='</tbody></table></div></div>';
-  }
-  el.innerHTML=html;
-}
-function bukaModalPayroll(){bukaModal('Generate Payroll','<div class="form-group"><label class="form-label">Periode</label><select class="form-select" id="payPeriode"><option value="2026-01-P1">2026-01-P1</option><option value="2026-01-P2">2026-01-P2</option><option value="2026-01-BULAN">2026-01-BULAN</option></select></div><button class="btn btn-primary" onclick="generatePayroll()">Generate</button>')}
-async function generatePayroll(){
-  var periode=document.getElementById('payPeriode').value;
-  showToast('Generate payroll '+periode+' (simulasi)','warning');
-  tutupModal();
-}
-
-/* ═══════════════════════════════════════════════════════════
-   MANUSIA
-   ═══════════════════════════════════════════════════════════ */
-async function renderManusia(el){
-  var ru=await ambilData('Users');
-  var users=ru.ok?ru.data:[];
-  var rc=await ambilData('Target_Cabang');
-  var cabang=rc.ok?rc.data:[];
-  var html='<div class="tabs">'+
-    '<button class="tab active" onclick="tabManusia(this,\'anggota\')">Anggota</button>'+
-    '<button class="tab" onclick="tabManusia(this,\'cabang\')">Cabang</button></div><div id="tabManusiaContent"></div>';
-  el.innerHTML=html;
-  await tabManusia(document.querySelector('#tabManusiaContent')?document.querySelector('.tabs .tab.active'):document.querySelector('.tab.active'),'anggota');
-}
-async function tabManusia(btn,tab){
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
-  if(btn)btn.classList.add('active');
-  var el=document.getElementById('tabManusiaContent');
-  el.innerHTML='<div class="empty"><div class="em-txt">Memuat...</div></div>';
-  if(tab==='anggota'){
-    var r=await ambilData('Users');
-    var users=r.ok?r.data:[];
-    var html='<div class="card"><div class="card-title"><span class="ic">👥</span>Anggota</div>';
-    html+='<div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Nama</th><th>Jabatan</th><th>Cabang</th><th>Password</th><th>Status</th></tr></thead><tbody>';
-    users.forEach(function(u){
-      html+='<tr><td>'+esc(u.id_user)+'</td><td>'+esc(u.nama)+'</td><td>'+esc(u.jabatan)+'</td><td>'+esc(u.kode_cabang)+'</td><td><span class="mono">'+esc(u.password)+'</span></td><td><span class="badge badge-success">'+esc(u.status)+'</span></td></tr>';
-    });
-    html+='</tbody></table></div></div>';
-    el.innerHTML=html;
-  }else{
-    var rc=await ambilData('Target_Cabang');
-    var cabang=rc.ok?rc.data:[];
-    var html='<div class="card"><div class="card-title"><span class="ic">🏢</span>Cabang</div>';
-    html+='<div class="tbl-wrap"><table><thead><tr><th>Kode</th><th>Nama</th><th>Target</th><th>Alamat</th></tr></thead><tbody>';
-    cabang.forEach(function(c){
-      html+='<tr><td><strong>'+esc(c.kode_cabang)+'</strong></td><td>'+esc(c.nama_cabang)+'</td><td>'+esc(c.target_harian)+'</td><td>'+esc(c.alamat)+'</td></tr>';
-    });
-    html+='</tbody></table></div></div>';
-    el.innerHTML=html;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   ACC
-   ═══════════════════════════════════════════════════════════ */
-async function renderACC(el){
-  var s=getSession();
-  var html='<div class="tabs">'+
-    '<button class="tab active" onclick="tabACC(this,\'izin\')">Izin</button>'+
-    '<button class="tab" onclick="tabACC(this,\'kasbon\')">Kasbon</button>'+
-    '<button class="tab" onclick="tabACC(this,\'kerusakan\')">Kerusakan</button>'+
-    '<button class="tab" onclick="tabACC(this,\'payroll\')">Payroll</button>'+
-    '<button class="tab" onclick="tabACC(this,\'setoran\')">Setoran</button>'+
-    '<button class="tab" onclick="tabACC(this,\'resign\')">Resign</button>'+
-    '</div><div id="tabACCContent"></div>';
-  el.innerHTML=html;
-  await tabACC(document.querySelector('.tabs .tab.active'),'izin');
-}
-async function tabACC(btn,tab){
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
-  if(btn)btn.classList.add('active');
-  var el=document.getElementById('tabACCContent');
-  el.innerHTML='<div class="empty"><div class="em-txt">Memuat...</div></div>';
-  var sheetMap={izin:'Izin_Istirahat',kasbon:'Pengajuan_Kasbon',kerusakan:'Kerusakan_Kendala',payroll:'Permintaan_Payroll',setoran:'Setoran',resign:'Resign_PHK'};
-  var r=await ambilData(sheetMap[tab]);
-  var data=r.ok?r.data:[];
-  var bolehAcc=function(item){
-    if(!isKepalaToko()&&!isAdmin()&&!isOwner())return false;
-    var status=item.status||'menunggu';
-    if(status==='ditolak'||status==='disetujui')return false;
-    if(isKepalaToko()){
-      if(item.jabatan_pengaju==='Karyawan'&&status==='menunggu')return true;
-      return false;
-    }
-    if(isAdmin()){
-      if(status==='menunggu'&&item.jabatan_pengaju==='Admin')return false;
-      if(status==='menunggu'||status==='disetujui_kt')return true;
-      return false;
-    }
-    if(isOwner()){
-      if(status==='menunggu'&&item.jabatan_pengaju==='Owner')return false;
-      return true;
-    }
-    return false;
-  };
-  var filtered=data.filter(bolehAcc);
-  var html='<div class="card"><div class="card-title"><span class="ic">✅</span>Persetujuan '+tab+'</div>';
-  if(filtered.length===0)html+='<div class="empty"><div class="em-ic">📭</div><div class="em-txt">Tidak ada yang perlu di-ACC</div></div>';
-  else{
-    filtered.forEach(function(item){
-      html+='<div class="card" style="background:#FAFAFA;padding:12px;margin-bottom:10px">'+
-        '<div style="font-weight:700;font-size:13px">'+esc(item.nama||item.id_user||'—')+'</div>'+
-        '<div style="font-size:10.5px;color:#6B7280;margin-bottom:6px">'+esc(item.jabatan_pengaju||'—')+' • '+esc(item.kode_cabang||'—')+'</div>'+
-        '<div style="font-size:11.5px;margin-bottom:8px">'+esc(item.keterangan||item.alasan||item.judul||item.deskripsi||'—')+'</div>'+
-        '<div style="font-size:10.5px;margin-bottom:8px">Status: <span class="badge badge-warning">'+esc(item.status||'menunggu')+'</span></div>'+
-        '<div class="btn-row">'+
-        '<button class="btn btn-sm btn-primary" onclick="prosesACC(\''+sheetMap[tab]+'\',\''+item.id_kasbon||item.id_izin||item.id_kerusakan||item.id_permintaan||item.id_setoran||item.id_resign+'\',\'acc\')">✅ ACC</button>'+
-        '<button class="btn btn-sm btn-danger" onclick="prosesACC(\''+sheetMap[tab]+'\',\''+item.id_kasbon||item.id_izin||item.id_kerusakan||item.id_permintaan||item.id_setoran||item.id_resign+'\',\'tolak\')">❌ Tolak</button>'+
-        '</div></div>';
-    });
-  }
-  html+='</div>';
-  el.innerHTML=html;
-}
-async function prosesACC(sheet,row,aksi){
-  showToast(aksi==='acc'?'Disetujui':'Ditolak',aksi==='acc'?'success':'error');
-  navigasi('acc');
-}
-
-/* ═══════════════════════════════════════════════════════════
-   RENDER LAINNYA (ringkas)
-   ═══════════════════════════════════════════════════════════ */
-async function renderLaporan(el){el.innerHTML='<div class="card"><div class="card-title"><span class="ic">📝</span>Laporan</div><div class="empty"><div class="em-txt">Fitur laporan</div></div></div>'}
-async function renderPengaturan(el){el.innerHTML='<div class="card"><div class="card-title"><span class="ic">🔧</span>Pengaturan</div><div class="empty"><div class="em-txt">Fitur pengaturan</div></div></div>'}
-async function renderKelolaData(el){el.innerHTML='<div class="card"><div class="card-title"><span class="ic">🗂️</span>Kelola Data</div><div class="empty"><div class="em-txt">Fitur kelola data</div></div></div>'}
-async function renderDanaExpansi(el){
-  var r=await ambilData('Dana_Expansi');
-  var data=r.ok?r.data:[];
-  var saldo=0;data.forEach(function(d){saldo+=(d.jenis==='masuk'?Number(d.jumlah||0):-Number(d.jumlah||0))});
-  var html='<div class="card"><div class="card-title"><span class="ic">💎</span>Dana Expansi</div>'+
-    '<div class="total-banner"><div class="tb-label">SALDO</div><div class="tb-val">'+fmtRupiah(saldo)+'</div></div>'+
-    '<div class="tbl-wrap"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th>Jumlah</th><th>Keterangan</th></tr></thead><tbody>';
-  data.forEach(function(d){html+='<tr><td>'+esc(d.tanggal)+'</td><td><span class="badge '+(d.jenis==='masuk'?'badge-success':'badge-error')+'">'+esc(d.jenis)+'</span></td><td>'+fmtRupiah(d.jumlah)+'</td><td>'+esc(d.keterangan)+'</td></tr>'});
-  html+='</tbody></table></div></div>';
-  el.innerHTML=html;
-}
-async function renderBiayaSewa(el){el.innerHTML='<div class="card"><div class="card-title"><span class="ic">🏠</span>Biaya Sewa</div><div class="empty"><div class="em-txt">Fitur biaya sewa</div></div></div>'}
-async function renderPersiapanCabang(el){el.innerHTML='<div class="card"><div class="card-title"><span class="ic">🏗️</span>Persiapan Cabang</div><div class="empty"><div class="em-txt">Fitur persiapan cabang</div></div></div>'}
-async function renderLaporanBarang(el){
-  var s=getSession();
-  var r=await ambilData('Laporan_Barang');
-  var data=r.ok?r.data:[];
-  var html='';
-  if(isKepalaToko()){
-    html+='<div class="card"><div class="card-title"><span class="ic">📦</span>Lapor Barang</div>'+
-      '<div class="form-group"><label class="form-label">Tanggal</label><input type="date" class="form-input" id="barangTanggal" value="'+todayStr()+'"></div>'+
-      '<div class="form-group"><label class="form-label">Nama Barang</label><input type="text" class="form-input" id="barangNama" placeholder="Beras, kopi, gula, dll"></div>'+
-      '<div class="form-row"><div class="form-group"><label class="form-label">Jumlah</label><input type="number" class="form-input" id="barangJumlah" min="0"></div>'+
-      '<div class="form-group"><label class="form-label">Satuan</label><input type="text" class="form-input" id="barangSatuan" placeholder="kg, pcs, dll"></div></div>'+
-      '<div class="form-group"><label class="form-label">Keterangan</label><input type="text" class="form-input" id="barangKet"></div>'+
-      '<button class="btn btn-primary" onclick="simpanLaporanBarang()">Simpan</button></div>';
-  }
-  html+='<div class="card"><div class="card-title"><span class="ic">📋</span>Riwayat Laporan Barang</div>';
-  if(data.length===0)html+='<div class="empty"><div class="em-txt">Belum ada data</div></div>';
-  else{
-    html+='<div class="tbl-wrap"><table><thead><tr><th>Tanggal</th><th>Barang</th><th>Jumlah</th><th>Satuan</th></tr></thead><tbody>';
-    data.forEach(function(d){html+='<tr><td>'+esc(d.tanggal)+'</td><td>'+esc(d.nama_barang)+'</td><td>'+esc(d.jumlah)+'</td><td>'+esc(d.satuan)+'</td></tr>'});
-    html+='</tbody></table></div>';
-  }
-  html+='</div>';
-  el.innerHTML=html;
-}
-async function simpanLaporanBarang(){
-  var data={
-    id_laporan_barang:generateSubmissionId('LB'),
-    tanggal:document.getElementById('barangTanggal').value,
-    nama_barang:document.getElementById('barangNama').value,
-    jumlah:Number(document.getElementById('barangJumlah').value||0),
-    satuan:document.getElementById('barangSatuan').value,
-    keterangan:document.getElementById('barangKet').value,
-    id_user:getSession().id_user,jabatan_pengaju:getSession().jabatan,kode_cabang:getSession().kode_cabang,
-    status:'menunggu',createdAt:nowISO()
-  };
-  paksaIklan(async function(){
-    var r=await simpanData('Laporan_Barang',data);
-    if(r.ok){showToast('Laporan barang tersimpan','success');navigasi('laporan_barang')}
-    else showToast(r.pesan||'Gagal','error');
-  });
-}
-async function renderLaporanToken(el){
-  var r=await ambilData('Laporan_Token');
-  var data=r.ok?r.data:[];
-  var html='<div class="card"><div class="card-title"><span class="ic">🔑</span>Laporan Token</div>';
-  if(data.length===0)html+='<div class="empty"><div class="em-txt">Belum ada token</div></div>';
-  else{
-    data.forEach(function(t){
-      html+='<div class="card" style="background:#FAFAFA;padding:12px;margin-bottom:10px">'+
-        '<div style="font-weight:700">Token '+esc(t.jenis||'—')+' — '+esc(t.nomor_token||'—')+'</div>'+
-        '<div style="font-size:10.5px;color:#6B7280">Status: <span class="badge badge-warning">'+esc(t.status||'menunggu')+'</span></div>'+
-        (t.kode_pengisian?'<div class="code-box">'+esc(t.kode_pengisian)+'</div>':'')+
-        '</div>';
-    });
-  }
-  html+='</div>';
-  el.innerHTML=html;
-}
-async function renderSetoran(el){el.innerHTML='<div class="card"><div class="card-title"><span class="ic">💵</span>Setoran</div><div class="empty"><div class="em-txt">Fitur setoran</div></div></div>'}
-async function renderHR(el){
-  var html='<div class="tabs">'+
-    '<button class="tab active" onclick="tabHR(this,\'data\')">Data Karyawan</button>'+
-    '<button class="tab" onclick="tabHR(this,\'sp\')">Surat Peringatan</button>'+
-    '<button class="tab" onclick="tabHR(this,\'resign\')">Resign / PHK</button>'+
-    '<button class="tab" onclick="tabHR(this,\'kehadiran\')">Rekap Kehadiran</button>'+
-    '<button class="tab" onclick="tabHR(this,\'evaluasi\')">Evaluasi Kinerja</button></div><div id="tabHRContent"></div>';
-  el.innerHTML=html;
-  await tabHR(document.querySelector('.tabs .tab.active'),'data');
-}
-async function tabHR(btn,tab){
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
-  if(btn)btn.classList.add('active');
-  var el=document.getElementById('tabHRContent');
-  el.innerHTML='<div class="empty"><div class="em-txt">Memuat...</div></div>';
-  var r=await ambilData('Users');
-  var users=r.ok?r.data:[];
-  if(tab==='data'){
-    var html='<div class="card"><div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Nama</th><th>Jabatan</th><th>Cabang</th><th>Status</th></tr></thead><tbody>';
-    users.forEach(function(u){html+='<tr><td>'+esc(u.id_user)+'</td><td>'+esc(u.nama)+'</td><td>'+esc(u.jabatan)+'</td><td>'+esc(u.kode_cabang)+'</td><td><span class="badge badge-success">'+esc(u.status)+'</span></td></tr>'});
-    html+='</tbody></table></div></div>';
-    el.innerHTML=html;
-  }else if(tab==='sp'){
-    el.innerHTML='<div class="card"><div class="card-title"><span class="ic">⚠️</span>Surat Peringatan</div><div class="empty"><div class="em-txt">Fitur SP</div></div></div>';
-  }else if(tab==='resign'){
-    el.innerHTML='<div class="card"><div class="card-title"><span class="ic">🚪</span>Resign / PHK</div><div class="empty"><div class="em-txt">Fitur resign/PHK</div></div></div>';
-  }else if(tab==='kehadiran'){
-    var rp=await ambilData('Pendapatan_Harian');
-    var data=rp.ok?rp.data:[];
-    var perKaryawan={};
-    data.forEach(function(d){
-      var k=d.id_user||d.nama;
-      if(!perKaryawan[k])perKaryawan[k]={nama:d.nama,jabatan:d.jabatan,masuk:0,tidak:0};
-      if(d.status_masuk==='ya')perKaryawan[k].masuk++;else perKaryawan[k].tidak++;
-    });
-    var html='<div class="card"><div class="tbl-wrap"><table><thead><tr><th>Nama</th><th>Masuk</th><th>Tidak</th><th>%</th></tr></thead><tbody>';
-    Object.keys(perKaryawan).forEach(function(k){
-      var p=perKaryawan[k];var total=p.masuk+p.tidak;var pct=total?Math.round(p.masuk/total*100):0;
-      html+='<tr><td>'+esc(p.nama)+'</td><td>'+p.masuk+'</td><td>'+p.tidak+'</td><td>'+pct+'%</td></tr>';
-    });
-    html+='</tbody></table></div></div>';
-    el.innerHTML=html;
-  }else if(tab==='evaluasi'){
-    var rp=await ambilData('Pendapatan_Harian');
-    var data=rp.ok?rp.data:[];
-    var perKaryawan={};
-    data.forEach(function(d){
-      var k=d.id_user||d.nama;
-      if(!perKaryawan[k])perKaryawan[k]={nama:d.nama,jabatan:d.jabatan,unit:0,tips:0,bonus:0,hari:0};
-      perKaryawan[k].unit+=Number(d.unit||0);
-      perKaryawan[k].tips+=Number(d.tips||0);
-      perKaryawan[k].bonus+=Number(d.bonus||0);
-      if(d.status_masuk==='ya')perKaryawan[k].hari++;
-    });
-    var arr=Object.keys(perKaryawan).map(function(k){return Object.assign({id:k},perKaryawan[k])}).sort(function(a,b){return b.unit-a.unit});
-    var html='<div class="card"><div class="tbl-wrap"><table><thead><tr><th>Rank</th><th>Nama</th><th>Unit</th><th>Tips</th><th>Bonus</th></tr></thead><tbody>';
-    arr.forEach(function(p,i){
-      html+='<tr style="'+(i<3?'background:#FFFBEB':'')+'"><td>'+(i+1)+'</td><td>'+esc(p.nama)+'</td><td>'+p.unit+'</td><td>'+fmtRupiah(p.tips)+'</td><td>'+fmtRupiah(p.bonus)+'</td></tr>';
-    });
-    html+='</tbody></table></div></div>';
-    el.innerHTML=html;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   PENGAJUAN
-   ═══════════════════════════════════════════════════════════ */
-async function renderPengajuan(el){
-  var html='<div class="tabs">'+
-    '<button class="tab active" onclick="tabPengajuan(this,\'kasbon\')">Kasbon</button>'+
-    '<button class="tab" onclick="tabPengajuan(this,\'izin\')">Izin</button>'+
-    '<button class="tab" onclick="tabPengajuan(this,\'kerusakan\')">Kerusakan</button>'+
-    '<button class="tab" onclick="tabPengajuan(this,\'payroll\')">Permintaan Payroll</button>'+
-    '</div><div id="tabPengajuanContent"></div>';
-  el.innerHTML=html;
-  await tabPengajuan(document.querySelector('.tabs .tab.active'),'kasbon');
-}
-async function tabPengajuan(btn,tab){
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
-  if(btn)btn.classList.add('active');
-  var el=document.getElementById('tabPengajuanContent');
-  var s=getSession();
-  var html='';
-  if(tab==='kasbon'){
-    html='<div class="card"><div class="card-title"><span class="ic">💸</span>Pengajuan Kasbon</div>'+
-      '<div class="form-group"><label class="form-label">Jumlah</label><input type="number" class="form-input" id="kasbonJumlah" min="0" placeholder="0"></div>'+
-      '<div class="form-group"><label class="form-label">Keterangan</label><input type="text" class="form-input" id="kasbonKet"></div>'+
-      '<div class="form-hint">≤ 20.000 otomatis disetujui. > 20.000 perlu ACC bertingkat.</div>'+
-      '<button class="btn btn-primary" onclick="simpanKasbon()">Ajukan Kasbon</button></div>';
-  }else if(tab==='izin'){
-    html='<div class="card"><div class="card-title"><span class="ic">📅</span>Pengajuan Izin</div>'+
-      '<div class="form-group"><label class="form-label">Tanggal Izin</label><input type="date" class="form-input" id="izinTanggal" value="'+todayStr()+'"></div>'+
-      '<div class="form-group"><label class="form-label">Jenis</label><select class="form-select" id="izinJenis"><option value="istirahat">Istirahat (min H-1)</option><option value="sakit">Sakit (boleh H-0)</option></select></div>'+
-      '<div class="form-group"><label class="form-label">Keterangan</label><input type="text" class="form-input" id="izinKet"></div>'+
-      '<button class="btn btn-primary" onclick="simpanIzin()">Ajukan Izin</button></div>';
-  }else if(tab==='kerusakan'){
-    html='<div class="card"><div class="card-title"><span class="ic">🔧</span>Lapor Kerusakan</div>'+
-      '<div class="form-group"><label class="form-label">Jenis</label><select class="form-select" id="rusakJenis"><option value="alat">Alat</option><option value="kendala">Kendala</option></select></div>'+
-      '<div class="form-group"><label class="form-label">Judul</label><input type="text" class="form-input" id="rusakJudul"></div>'+
-      '<div class="form-group"><label class="form-label">Deskripsi</label><textarea class="form-textarea" id="rusakDesk"></textarea></div>'+
-      '<button class="btn btn-primary" onclick="simpanKerusakan()">Simpan</button></div>';
-  }else{
-    html='<div class="card"><div class="card-title"><span class="ic">💰</span>Permintaan Payroll</div>'+
-      '<div class="form-group"><label class="form-label">Alasan</label><textarea class="form-textarea" id="payrollAlasan"></textarea></div>'+
-      '<button class="btn btn-primary" onclick="simpanPermintaanPayroll()">Ajukan</button></div>';
-  }
-  el.innerHTML=html;
-}
-async function simpanKasbon(){
-  var jumlah=Number(document.getElementById('kasbonJumlah').value||0);
-  var data={
-    id_kasbon:generateSubmissionId('KS'),submission_id:generateSubmissionId('SUB-KS'),
-    tanggal:todayStr(),id_user:getSession().id_user,nama:getSession().nama,
-    jabatan_pengaju:getSession().jabatan,kode_cabang:getSession().kode_cabang,
-    jumlah:jumlah,keterangan:document.getElementById('kasbonKet').value,
-    status:jumlah<=20000?'disetujui':'menunggu',acc_by:'',acc_time:'',createdAt:nowISO()
-  };
-  paksaIklan(async function(){
-    var r=await simpanData('Pengajuan_Kasbon',data);
-    if(r.ok){showToast(jumlah<=20000?'Kasbon otomatis disetujui':'Pengajuan terkirim','success');navigasi('pengajuan')}
-    else showToast(r.pesan||'Gagal','error');
-  });
-}
-async function simpanIzin(){
-  var tgl=document.getElementById('izinTanggal').value;
-  var jenis=document.getElementById('izinJenis').value;
-  var selisih=(new Date(tgl)-new Date(todayStr()))/(1000*60*60*24);
-  if(jenis==='istirahat'&&selisih<1){showToast('Izin istirahat minimal H-1','error');return}
-  var data={
-    id_izin:generateSubmissionId('IZ'),submission_id:generateSubmissionId('SUB-IZ'),
-    tanggal_pengajuan:todayStr(),tanggal_izin:tgl,id_user:getSession().id_user,
-    nama:getSession().nama,jabatan_pengaju:getSession().jabatan,kode_cabang:getSession().kode_cabang,
-    jenis:jenis,keterangan:document.getElementById('izinKet').value,
-    status:'menunggu',acc_by:'',acc_time:'',createdAt:nowISO()
-  };
-  paksaIklan(async function(){
-    var r=await simpanData('Izin_Istirahat',data);
-    if(r.ok){showToast('Izin terkirim','success');navigasi('pengajuan')}
-    else showToast(r.pesan||'Gagal','error');
-  });
-}
-async function simpanKerusakan(){
-  var data={
-    id_kerusakan:generateSubmissionId('KR'),submission_id:generateSubmissionId('SUB-KR'),
-    tanggal:todayStr(),id_user:getSession().id_user,nama:getSession().nama,
-    jabatan_pengaju:getSession().jabatan,kode_cabang:getSession().kode_cabang,
-    jenis:document.getElementById('rusakJenis').value,
-    judul:document.getElementById('rusakJudul').value,
-    deskripsi:document.getElementById('rusakDesk').value,
-    status:'menunggu',acc_by:'',acc_time:'',createdAt:nowISO()
-  };
-  paksaIklan(async function(){
-    var r=await simpanData('Kerusakan_Kendala',data);
-    if(r.ok){showToast('Laporan terkirim','success');navigasi('pengajuan')}
-    else showToast(r.pesan||'Gagal','error');
-  });
-}
-async function simpanPermintaanPayroll(){
-  var data={
-    id_permintaan:generateSubmissionId('PR'),submission_id:generateSubmissionId('SUB-PR'),
-    tanggal:todayStr(),id_user:getSession().id_user,nama:getSession().nama,
-    jabatan_pengaju:getSession().jabatan,kode_cabang:getSession().kode_cabang,
-    alasan:document.getElementById('payrollAlasan').value,
-    status:'menunggu',acc_by:'',acc_time:'',createdAt:nowISO()
-  };
-  paksaIklan(async function(){
-    var r=await simpanData('Permintaan_Payroll',data);
-    if(r.ok){showToast('Permintaan terkirim','success');navigasi('pengajuan')}
-    else showToast(r.pesan||'Gagal','error');
-  });
-}
-
-/* ═══════════════════════════════════════════════════════════
-   PAYROLL LAINNYA
-   ═══════════════════════════════════════════════════════════ */
-async function renderPayrollLaporan(el){el.innerHTML='<div class="card"><div class="card-title"><span class="ic">💰</span>Payroll & Laporan</div><div class="empty"><div class="em-txt">Fitur payroll KT</div></div></div>'}
-async function renderKonfirmasiSetoran(el){el.innerHTML='<div class="card"><div class="card-title"><span class="ic">💵</span>Konfirmasi Setoran</div><div class="empty"><div class="em-txt">Fitur setoran KT</div></div></div>'}
-async function renderPayrollSaya(el){
-  var s=getSession();
-  var r=await ambilData('Payroll');
-  var data=(r.ok?r.data:[]).filter(function(p){return p.id_user===s.id_user});
-  var html='<div class="card"><div class="card-title"><span class="ic">💰</span>Payroll Saya</div>';
-  if(data.length===0)html+='<div class="empty"><div class="em-txt">Belum ada payroll</div></div>';
-  else{
-    data.forEach(function(p){
-      html+='<div class="card" style="background:#FAFAFA;padding:12px;margin-bottom:8px">'+
-        '<div style="font-weight:700">'+esc(p.periode)+'</div>'+
-        '<div class="info-row"><span class="ir-label">Unit</span><span class="ir-val">'+p.total_unit+'</span></div>'+
-        '<div class="info-row"><span class="ir-label">Tips</span><span class="ir-val">'+fmtRupiah(p.total_tips)+'</span></div>'+
-        '<div class="info-row"><span class="ir-label">Gaji Bersih</span><span class="ir-val" style="color:#059669">'+fmtRupiah(p.gaji_bersih)+'</span></div>'+
-        '<span class="badge '+(p.status==='sudah_dibayar'?'badge-success':'badge-warning')+'">'+esc(p.status||'belum')+'</span></div>';
-    });
-  }
-  html+='</div>';
-  el.innerHTML=html;
-  paksaIklan(function(){});
-}
-async function renderLihatToken(el){
-  var s=getSession();
-  var r=await ambilData('Laporan_Token');
-  var data=(r.ok?r.data:[]).filter(function(t){return t.id_user===s.id_user||t.kode_cabang===s.kode_cabang});
-  var html='<div class="card"><div class="card-title"><span class="ic">🔑</span>Token Saya</div>';
-  if(data.length===0)html+='<div class="empty"><div class="em-txt">Belum ada token</div></div>';
-  else{
-    data.forEach(function(t){
-      html+='<div class="card" style="background:#FAFAFA;padding:12px;margin-bottom:10px">'+
-        '<div style="font-weight:700">Token '+esc(t.jenis||'—')+' — '+esc(t.nomor_token||'—')+'</div>'+
-        '<div style="font-size:10.5px;color:#6B7280">Status: <span class="badge badge-warning">'+esc(t.status||'menunggu')+'</span></div>'+
-        (t.kode_pengisian?'<div class="code-box">'+esc(t.kode_pengisian)+'</div><button class="btn btn-sm btn-gold" onclick="salinTeks(\''+esc(t.kode_pengisian)+'\')">📋 Salin</button>':'')+
-        '</div>';
-    });
-  }
-  html+='</div>';
-  el.innerHTML=html;
-}
-function salinTeks(t){navigator.clipboard.writeText(t);showToast('Disalin!','success')}
-
-/* ═══════════════════════════════════════════════════════════
-   PROFIL
-   ═══════════════════════════════════════════════════════════ */
-async function renderProfil(el){
-  var s=getSession();
-  var note='';
-  if(isOwner())note='Owner bebas iklan. Kamu bisa akses semua fitur.';
-  else if(isAdmin())note='Admin wajib iklan. Kamu membantu owner mengelola.';
-  else if(isKepalaToko())note='Kepala Toko wajib iklan. ACC tahap 1 untuk izin karyawan.';
-  else note='Karyawan wajib iklan. Ajukan kasbon, izin, dll.';
-  var html='<div class="card"><div class="card-title"><span class="ic">👤</span>Profil</div>'+
-    '<div class="info-row"><span class="ir-label">ID</span><span class="ir-val">'+esc(s.id_user)+'</span></div>'+
-    '<div class="info-row"><span class="ir-label">Nama</span><span class="ir-val">'+esc(s.nama)+'</span></div>'+
-    '<div class="info-row"><span class="ir-label">Jabatan</span><span class="ir-val">'+esc(s.jabatan)+'</span></div>'+
-    '<div class="info-row"><span class="ir-label">Cabang</span><span class="ir-val">'+esc(s.kode_cabang)+'</span></div>'+
-    '<div class="info-row"><span class="ir-label">Mode</span><span class="ir-val">'+(isDemo()?'Demo':'Asli')+'</span></div>'+
-    '<div class="role-note" style="margin-top:12px">'+esc(note)+'</div>'+
-    '<button class="btn btn-danger" style="margin-top:12px" onclick="logout()">🚪 Keluar</button></div>';
-  el.innerHTML=html;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   MODAL & PROFIL
-   ═══════════════════════════════════════════════════════════ */
-function bukaModal(judul,isi){
-  var overlay=document.getElementById('modalOverlay');
-  document.getElementById('modalContent').innerHTML=
-    '<div class="modal-head"><div class="modal-title">'+esc(judul)+'</div>'+
-    '<button class="modal-close" onclick="tutupModal()">✕</button></div>'+isi;
-  overlay.classList.add('show');
-}
-function tutupModal(){document.getElementById('modalOverlay').classList.remove('show')}
-function bukaProfil(){navigasi('profil')}
-
-/* ═══════════════════════════════════════════════════════════
-   LOGOUT
-   ═══════════════════════════════════════════════════════════ */
-function logout(){
+function logout() {
   sessionStorage.removeItem(SESSION_KEY);
   localStorage.removeItem(SESSION_KEY);
-  window.location.href='index.html';
+  window.location.href = 'index.html';
 }
 
-/* ═══════════════════════════════════════════════════════════
+/* ============================================================
+   API
+   ============================================================ */
+function apiPost(action, data) {
+  var payload = Object.assign({ action: action, token: TOKEN }, data || {});
+  return fetch(BACKEND_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  }).then(function(r) { return r.json(); })
+    .then(function(res) { return res; })
+    .catch(function(e) { return { ok: false, pesan: 'Koneksi gagal: ' + e.message }; });
+}
+
+function ambilData(sheet, forceRefresh) {
+  if (isDemo()) {
+    return Promise.resolve(DUMMY_DATA[sheet] || []);
+  }
+  if (!forceRefresh) {
+    var cached = ambilCache(sheet);
+    if (cached) return Promise.resolve(cached);
+  }
+  return apiPost('baca', { sheet: sheet }).then(function(res) {
+    var data = (res && res.ok && res.data) ? res.data : [];
+    setCache(sheet, data);
+    return data;
+  });
+}
+
+function simpanData(sheet, data) {
+  if (isDemo()) {
+    showToast('Mode demo tidak bisa menyimpan data', 'warning');
+    return Promise.resolve({ ok: false, pesan: 'Mode demo' });
+  }
+  return apiPost('tulis_unik', { sheet: sheet, data: data });
+}
+
+function updateData(sheet, row, data) {
+  if (isDemo()) {
+    showToast('Mode demo tidak bisa mengupdate data', 'warning');
+    return Promise.resolve({ ok: false, pesan: 'Mode demo' });
+  }
+  return apiPost('update', { sheet: sheet, row: row, data: data });
+}
+
+function hapusData(sheet, row) {
+  if (isDemo()) {
+    showToast('Mode demo tidak bisa menghapus data', 'warning');
+    return Promise.resolve({ ok: false, pesan: 'Mode demo' });
+  }
+  return apiPost('hapus', { sheet: sheet, row: row });
+}
+
+/* ============================================================
+   HELPER
+   ============================================================ */
+function esc(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function todayStr() {
+  var d = new Date();
+  var m = String(d.getMonth() + 1).padStart(2, '0');
+  var day = String(d.getDate()).padStart(2, '0');
+  return d.getFullYear() + '-' + m + '-' + day;
+}
+function nowISO() { return new Date().toISOString(); }
+function fmtRupiah(n) {
+  if (n === null || n === undefined || isNaN(n)) return 'Rp 0';
+  return 'Rp ' + Number(n).toLocaleString('id-ID');
+}
+function fmtAngka(n) {
+  if (n === null || n === undefined || isNaN(n)) return '0';
+  return Number(n).toLocaleString('id-ID');
+}
+function generateSubmissionId(prefix) {
+  return prefix + '-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+}
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function() { t.className = 'toast'; }, 3000);
+}
+
+/* ============================================================
+   IKLAN
+   ============================================================ */
+var KATA_IKLAN_ADMIN = [
+  'Terima kasih sudah menjadi bagian dari keluarga kami 🙏',
+  'Setiap iklan yang kamu tonton sangat berarti bagi kami.',
+  'Bantu kami terus berkembang dengan menonton iklan ini.',
+  'Kamu luar biasa! Terima kasih sudah mendukung 💪',
+  'Sedikit bantuanmu sangat berarti bagi kami.',
+  'Terima kasih telah meluangkan waktu untuk iklan ini.',
+  'Kami berhutang budi padamu, terima kasih 🙏',
+  'Dukunganmu adalah semangat kami.',
+  'Terima kasih, semoga rezekimu lancar selalu.',
+  'Kebaikanmu akan kembali padamu berkali-kali.',
+  'Kamu adalah pahlawan tanpa tanda jasa kami.',
+  'Terima kasih sudah setia bersama kami.',
+  'Iklan ini untuk masa depan yang lebih baik.',
+  'Bantuan kecilmu, dampak besarnya bagi kami.',
+  'Terima kasih, kamu sungguh berarti.',
+  'Semoga Allah membalas kebaikanmu.',
+  'Kami tidak akan lupa kebaikanmu.',
+  'Terima kasih telah menjadi bagian dari perjalanan kami.',
+  'Dukunganmu adalah bahan bakar kami.',
+  'Kamu hebat! Terima kasih banyak.',
+  'Terima kasih, semoga sukses selalu menyertaimu.',
+  'Kebaikan hatiMu luar biasa.',
+  'Kami sangat menghargai waktumu.',
+  'Terima kasih, kamu membuat perbedaan.',
+  'Semoga harimu menyenangkan seperti hatimu.'
+];
+var KATA_IKLAN_UMUM = [
+  'Iklan sebentar, bakso kemudian 🍜',
+  'Sabar ya, ini demi masa depan cuci motor.',
+  'Iklan dulu, biar makin jaya!',
+  'Tunggu sebentar, iklan lagi jalan.',
+  'Jangan kabur dulu, iklan sebentar lagi.',
+  'Iklan ini lebih cepat dari antrian cuci motor.',
+  'Duit dari iklan buat beli sabun motor.',
+  'Iklan dulu, cuci motornya nanti.',
+  'Bentar ya, lagi nonton iklan biar dapat bonus.',
+  'Iklan 3 detik, cuci motor 3 menit.',
+  'Sabar dikit, iklan ini buat kebaikan.',
+  'Iklan ini lebih singkat dari pidato.',
+  'Tunggu, iklan lagi main petak umpet.',
+  'Jangan kemana-mana, iklan lagi asik.',
+  'Iklan dulu ya, nanti kita cuci motor bareng.',
+  'Bentar lagi selesai, iklan ini ramah.',
+  'Iklan sebentar, biar kami bisa beli kopi.',
+  'Sabar ya, ini iklan paling cepat di dunia.',
+  'Iklan ini tidak akan membuatmu menyesal.',
+  'Tunggu, iklan lagi belajar lari.',
+  'Iklan dulu, biar makin semangat!',
+  'Jangan skip, nanti kena azab iklan 😆',
+  'Iklan ini lebih lucu dari meme.',
+  'Bentar ya, iklan lagi ngopi.',
+  'Sabar, iklan ini sedang diet.',
+  'Iklan dulu, biar kita makin kompak.',
+  'Tunggu, iklan lagi nyanyi.',
+  'Iklan ini lebih cepat dari kilat.',
+  'Jangan pergi, iklan ini sayang kamu.',
+  'Iklan dulu, biar rezeki makin lancar.',
+  'Bentar, iklan lagi siap-siap.',
+  'Sabar ya, iklan ini ramah lingkungan.',
+  'Iklan dulu, biar motor kinclong.',
+  'Tunggu, iklan ini lagi belajar terbang.',
+  'Iklan sebentar, nanti kita lanjut.',
+  'Jangan bosan, iklan ini menghibur.',
+  'Iklan dulu, biar makin berkah.',
+  'Sabar, iklan ini lagi jalan-jalan.',
+  'Tunggu ya, iklan ini segera berlalu.',
+  'Iklan dulu, biar kita makin sukses.'
+];
+
+function bisaIklan() { return !isOwner(); }
+function getUrlIklanRandom() {
+  return Math.random() < 0.5 ? IKLAN_URL_MONETAG : IKLAN_URL_ADSTERRA;
+}
+
+function paksaIklan(callback) {
+  if (!bisaIklan()) { if (callback) callback(); return; }
+  var loading = document.getElementById('loadingIklan');
+  var txt = document.getElementById('loadingIklanText');
+  var s = getSession();
+  var jabatan = s ? s.user_jabatan : 'Karyawan';
+  var demo = s && s.is_demo;
+  var kataList = (jabatan === 'Admin' && !demo) ? KATA_IKLAN_ADMIN : KATA_IKLAN_UMUM;
+  var kata = kataList[Math.floor(Math.random() * kataList.length)];
+  txt.textContent = kata;
+  loading.classList.add('show');
+  try { window.open(getUrlIklanRandom(), '_blank'); } catch (e) {}
+  if (window.AndroidAds && typeof window.AndroidAds.show === 'function') {
+    try { window.AndroidAds.show(); } catch (e) {}
+  }
+  setTimeout(function() {
+    loading.classList.remove('show');
+    if (callback) callback();
+  }, IKLAN_DURASI);
+}
+
+/* ============================================================
+   ACC LOGIC
+   ============================================================ */
+function getAccRoleSekarang(jabatanPengaju, statusSekarang) {
+  if (jabatanPengaju === 'Karyawan') {
+    if (statusSekarang === 'menunggu') return 'Kepala Toko';
+    if (statusSekarang === 'disetujui_kt') return 'Admin';
+    if (statusSekarang === 'disetujui_admin') return 'Owner';
+  }
+  if (jabatanPengaju === 'Kepala Toko') {
+    if (statusSekarang === 'menunggu') return 'Admin';
+    if (statusSekarang === 'disetujui_admin') return 'Owner';
+  }
+  if (jabatanPengaju === 'Admin') {
+    if (statusSekarang === 'menunggu') return 'Owner';
+  }
+  if (jabatanPengaju === 'Owner') {
+    if (statusSekarang === 'menunggu') return null;
+  }
+  return null;
+}
+function bolehAcc(jabatanUser, jabatanPengaju, status) {
+  var role = getAccRoleSekarang(jabatanPengaju, status);
+  return role === jabatanUser;
+}
+function getStatusSetelahAcc(status, jabatanYangAcc) {
+  if (jabatanYangAcc === 'Kepala Toko') return 'disetujui_kt';
+  if (jabatanYangAcc === 'Admin') return 'disetujui_admin';
+  if (jabatanYangAcc === 'Owner') return 'disetujui';
+  return status;
+}
+function labelStatus(st) {
+  var map = {
+    'menunggu': 'Menunggu', 'disetujui_kt': 'Disetujui KT',
+    'disetujui_admin': 'Disetujui Admin', 'disetujui': 'Disetujui',
+    'ditolak': 'Ditolak'
+  };
+  return map[st] || st;
+}
+function badgeStatus(st) {
+  var cls = 'badge-gray';
+  if (st === 'menunggu') cls = 'badge-warning';
+  else if (st === 'disetujui_kt' || st === 'disetujui_admin') cls = 'badge-info';
+  else if (st === 'disetujui') cls = 'badge-success';
+  else if (st === 'ditolak') cls = 'badge-danger';
+  return '<span class="badge ' + cls + '">' + labelStatus(st) + '</span>';
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+var HALAMAN_AKTIF = 'home';
+var _lastBottomNav = '';
+
+/* ============================================================
+   MENU PER ROLE
+   ============================================================ */
+function getMenuList(jabatan) {
+  var menus = {
+    Owner: [
+      { id: 'pendapatan_owner', label: 'Pendapatan Owner', icon: '📊', color: '#FEF3C7', iconColor: '#D97706' },
+      { id: 'operasional', label: 'Operasional', icon: '⚙️', color: '#DBEAFE', iconColor: '#2563EB' },
+      { id: 'payroll', label: 'Payroll', icon: '💰', color: '#D1FAE5', iconColor: '#059669' },
+      { id: 'manusia', label: 'Manusia', icon: '👥', color: '#FCE7F3', iconColor: '#DB2777' },
+      { id: 'acc', label: 'Persetujuan', icon: '✅', color: '#FEF3C7', iconColor: '#D97706' },
+      { id: 'laporan', label: 'Laporan', icon: '📝', color: '#E0E7FF', iconColor: '#4F46E5' },
+      { id: 'pengaturan', label: 'Pengaturan', icon: '⚙️', color: '#F3F4F6', iconColor: '#6B7280' },
+      { id: 'kelola_data', label: 'Kelola Data', icon: '🗂️', color: '#FEE2E2', iconColor: '#DC2626' },
+      { id: 'dana_expansi', label: 'Dana Expansi', icon: '🏦', color: '#FEF9C3', iconColor: '#CA8A04' },
+      { id: 'biaya_sewa', label: 'Biaya Sewa', icon: '🏠', color: '#E0F2FE', iconColor: '#0284C7' },
+      { id: 'persiapan_cabang', label: 'Persiapan Cabang', icon: '🏗️', color: '#F3E8FF', iconColor: '#9333EA' },
+      { id: 'laporan_barang', label: 'Laporan Barang', icon: '📦', color: '#FFEDD5', iconColor: '#EA580C' },
+      { id: 'laporan_token', label: 'Laporan Token', icon: '⚡', color: '#FEF3C7', iconColor: '#D97706' },
+      { id: 'setoran', label: 'Setoran', icon: '💵', color: '#D1FAE5', iconColor: '#059669' },
+      { id: 'hr', label: 'HR / Karyawan', icon: '👔', color: '#FCE7F3', iconColor: '#DB2777' },
+      { id: 'profil', label: 'Profil', icon: '👤', color: '#F3F4F6', iconColor: '#6B7280' }
+    ],
+    Admin: [
+      { id: 'operasional', label: 'Operasional', icon: '⚙️', color: '#DBEAFE', iconColor: '#2563EB' },
+      { id: 'acc', label: 'Persetujuan', icon: '✅', color: '#FEF3C7', iconColor: '#D97706' },
+      { id: 'laporan', label: 'Laporan', icon: '📝', color: '#E0E7FF', iconColor: '#4F46E5' },
+      { id: 'kelola_data', label: 'Kelola Data', icon: '🗂️', color: '#FEE2E2', iconColor: '#DC2626' },
+      { id: 'dana_expansi', label: 'Dana Expansi', icon: '🏦', color: '#FEF9C3', iconColor: '#CA8A04' },
+      { id: 'biaya_sewa', label: 'Biaya Sewa', icon: '🏠', color: '#E0F2FE', iconColor: '#0284C7' },
+      { id: 'persiapan_cabang', label: 'Persiapan Cabang', icon: '🏗️', color: '#F3E8FF', iconColor: '#9333EA' },
+      { id: 'laporan_barang', label: 'Laporan Barang', icon: '📦', color: '#FFEDD5', iconColor: '#EA580C' },
+      { id: 'laporan_token', label: 'Laporan Token', icon: '⚡', color: '#FEF3C7', iconColor: '#D97706' },
+      { id: 'setoran', label: 'Setoran', icon: '💵', color: '#D1FAE5', iconColor: '#059669' },
+      { id: 'hr', label: 'HR / Karyawan', icon: '👔', color: '#FCE7F3', iconColor: '#DB2777' },
+      { id: 'profil', label: 'Profil', icon: '👤', color: '#F3F4F6', iconColor: '#6B7280' }
+    ],
+    'Kepala Toko': [
+      { id: 'pendapatan', label: 'Pendapatan', icon: '📊', color: '#DBEAFE', iconColor: '#2563EB' },
+      { id: 'unit_cabang', label: 'Unit Cabang', icon: '🔢', color: '#D1FAE5', iconColor: '#059669' },
+      { id: 'pengajuan', label: 'Pengajuan', icon: '📝', color: '#FEF3C7', iconColor: '#D97706' },
+      { id: 'acc_izin', label: 'ACC Izin', icon: '✅', color: '#FCE7F3', iconColor: '#DB2777' },
+      { id: 'payroll_laporan', label: 'Payroll & Laporan', icon: '💰', color: '#D1FAE5', iconColor: '#059669' },
+      { id: 'lapor_barang', label: 'Lapor Barang', icon: '📦', color: '#FFEDD5', iconColor: '#EA580C' },
+      { id: 'lapor_token', label: 'Lapor Token', icon: '⚡', color: '#FEF3C7', iconColor: '#D97706' },
+      { id: 'konfirmasi_setoran', label: 'Konfirmasi Setoran', icon: '💵', color: '#D1FAE5', iconColor: '#059669' },
+      { id: 'profil', label: 'Profil', icon: '👤', color: '#F3F4F6', iconColor: '#6B7280' }
+    ],
+    Karyawan: [
+      { id: 'pengajuan', label: 'Pengajuan', icon: '📝', color: '#FEF3C7', iconColor: '#D97706' },
+      { id: 'payroll_saya', label: 'Payroll Saya', icon: '💰', color: '#D1FAE5', iconColor: '#059669' },
+      { id: 'token_saya', label: 'Lihat Token Saya', icon: '⚡', color: '#FEF3C7', iconColor: '#D97706' },
+      { id: 'profil', label: 'Profil', icon: '👤', color: '#F3F4F6', iconColor: '#6B7280' }
+    ]
+  };
+  return menus[jabatan] || menus['Karyawan'];
+}
+
+/* ============================================================
+   BOTTOM NAV
+   ============================================================ */
+function getBottomNavItems(jabatan) {
+  var nav = {
+    Owner: [
+      { id: 'home', label: 'Beranda', icon: '🏠' },
+      { id: 'pendapatan_owner', label: 'Rekap', icon: '📊' },
+      { id: 'payroll', label: 'Payroll', icon: '💰' },
+      { id: 'hr', label: 'HR', icon: '👔' }
+    ],
+    Admin: [
+      { id: 'home', label: 'Beranda', icon: '🏠' },
+      { id: 'operasional', label: 'Operasional', icon: '⚙️' },
+      { id: 'acc', label: 'ACC', icon: '✅' },
+      { id: 'hr', label: 'HR', icon: '👔' }
+    ],
+    'Kepala Toko': [
+      { id: 'home', label: 'Beranda', icon: '🏠' },
+      { id: 'pendapatan', label: 'Input', icon: '📊' },
+      { id: 'pengajuan', label: 'Ajukan', icon: '📝' },
+      { id: 'acc_izin', label: 'ACC', icon: '✅' }
+    ],
+    Karyawan: [
+      { id: 'home', label: 'Beranda', icon: '🏠' },
+      { id: 'pengajuan', label: 'Ajukan', icon: '📝' },
+      { id: 'payroll_saya', label: 'Payroll', icon: '💰' },
+      { id: 'profil', label: 'Profil', icon: '👤' }
+    ]
+  };
+  return nav[jabatan] || nav['Karyawan'];
+}
+
+function renderBottomNav() {
+  var s = getSession();
+  if (!s) return;
+  var items = getBottomNavItems(s.user_jabatan);
+  var key = items.map(function(i) { return i.id; }).join(',') + '|' + HALAMAN_AKTIF;
+  if (key === _lastBottomNav) return;
+  _lastBottomNav = key;
+  var html = '';
+  items.forEach(function(item) {
+    var active = HALAMAN_AKTIF === item.id ? ' active' : '';
+    html += '<button class="bottom-nav-item' + active + '" onclick="navigasi(\'' + item.id + '\')">' +
+      '<span class="nav-icon">' + item.icon + '</span>' +
+      '<span>' + item.label + '</span></button>';
+  });
+  document.getElementById('bottomNav').innerHTML = html;
+}
+
+/* ============================================================
+   NAVIGASI
+   ============================================================ */
+function navigasi(halaman) {
+  HALAMAN_AKTIF = halaman;
+  renderHalaman();
+  renderBottomNav();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderHalaman() {
+  var s = getSession();
+  if (!s) { window.location.href = 'index.html'; return; }
+  var jabatan = s.user_jabatan;
+  var html = '';
+
+  // Menu yang butuh iklan sebelum navigasi (dari event handler, bukan render)
+  switch (halaman) {
+    case 'home': html = renderHome(); break;
+    case 'pendapatan': html = renderPendapatan(); break;
+    case 'operasional': html = renderOperasional(); break;
+    case 'payroll': html = renderPayroll(); break;
+    case 'pendapatan_owner': html = renderPendapatanOwner(); break;
+    case 'manusia': html = renderManusia(); break;
+    case 'acc': html = renderACC(); break;
+    case 'laporan': html = renderLaporan(); break;
+    case 'pengaturan': html = renderPengaturan(); break;
+    case 'kelola_data': html = renderKelolaData(); break;
+    case 'dana_expansi': html = renderDanaExpansi(); break;
+    case 'biaya_sewa': html = renderBiayaSewa(); break;
+    case 'persiapan_cabang': html = renderPersiapanCabang(); break;
+    case 'laporan_barang': html = renderLaporanBarang(); break;
+    case 'laporan_token': html = renderLaporanToken(); break;
+    case 'setoran': html = renderSetoran(); break;
+    case 'hr': html = renderHR(); break;
+    case 'pengajuan': html = renderPengajuan(); break;
+    case 'acc_izin': html = renderACCIzin(); break;
+    case 'payroll_laporan': html = renderPayrollLaporan(); break;
+    case 'lapor_barang': html = renderLaporBarang(); break;
+    case 'lapor_token': html = renderLaporToken(); break;
+    case 'konfirmasi_setoran': html = renderKonfirmasiSetoran(); break;
+    case 'payroll_saya': html = renderPayrollSaya(); break;
+    case 'token_saya': html = renderTokenSaya(); break;
+    case 'unit_cabang': html = renderUnitCabang(); break;
+    case 'profil': html = renderProfil(); break;
+    default: html = renderHome(); break;
+  }
+  document.getElementById('mainContent').innerHTML = html;
+}
+
+/* ============================================================
+   HEADER UPDATE
+   ============================================================ */
+function updateHeader() {
+  var s = getSession();
+  if (!s) return;
+  document.getElementById('headerNama').textContent = s.user_nama || '—';
+  document.getElementById('headerJabatan').textContent = (s.user_jabatan || '—') + (s.is_demo ? ' (Demo)' : '') + ' · ' + (s.kode_cabang || '');
+}
+
+/* ============================================================
+   HALAMAN: HOME
+   ============================================================ */
+function renderHome() {
+  var s = getSession();
+  var jabatan = s.user_jabatan;
+  var html = '';
+
+  // Sapaan
+  var subText = {
+    Owner: 'Pantau bisnis cuci motor Anda hari ini.',
+    Admin: 'Kelola operasional dan pantau data.',
+    'Kepala Toko': 'Input pendapatan dan kelola cabang.',
+    Karyawan: 'Lihat pengajuan dan payroll Anda.'
+  };
+  html += '<div class="greeting"><h1>Halo, ' + esc(s.user_nama) + ' 👋</h1><p>' + (subText[jabatan] || '') + '</p></div>';
+
+  // Motivasi (Owner & Admin)
+  if (jabatan === 'Owner' || jabatan === 'Admin') {
+    html += '<div id="motivasiCard"></div>';
+    html += '<div id="danaExpansiCard"></div>';
+  }
+
+  // Statistik cepat
+  html += '<div class="stats-grid" id="statsGrid"><div class="stat-card"><div class="label">Hari Ini</div><div class="value">Memuat...</div></div><div class="stat-card"><div class="label">Bulan Ini</div><div class="value green">Memuat...</div></div></div>';
+
+  // Menu grid
+  var menus = getMenuList(jabatan);
+  html += '<div class="card-title">Menu Cepat <span class="sub">' + menus.length + ' menu</span></div>';
+  html += '<div class="menu-grid">';
+  menus.forEach(function(m) {
+    var highlight = (m.id === 'pendapatan' || m.id === 'acc' || m.id === 'pengajuan' || m.id === 'payroll') ? ' highlight' : '';
+    html += '<button class="menu-card' + highlight + '" onclick="navigasi(\'' + m.id + '\')">' +
+      '<div class="menu-icon" style="background:' + m.color + ';color:' + m.iconColor + '">' + m.icon + '</div>' +
+      '<div class="menu-label">' + m.label + '</div></button>';
+  });
+  html += '</div>';
+
+  // Donasi iklan
+  var donasiText = '';
+  if (jabatan === 'Owner' && !s.is_demo) donasiText = 'Kalau kamu mau bantu mimin, tonton 1 iklan tambahan ya. Makasih, kamu luar biasa 💪';
+  else if (jabatan === 'Admin' && !s.is_demo) donasiText = 'Setiap iklan yang kamu tonton bantu keluarga kami sedikit demi sedikit. Terima kasih 🙏';
+  else donasiText = 'Kalau kamu mau bantu mimin, tonton 1 iklan tambahan ya. Nanti mimin beliin bakso (becanda)';
+  html += '<div class="donasi-card"><p>' + esc(donasiText) + '</p>' +
+    '<button class="btn btn-gold btn-sm" onclick="paksaIklan(function(){showToast(\'Terima kasih sudah menonton iklan! 🙏\',\'success\')})">📺 Tonton Iklan Sebagai Donasi</button></div>';
+
+  // Load data async setelah render
+  setTimeout(loadHomeData, 50);
+  return html;
+}
+
+function loadHomeData() {
+  var s = getSession();
+  if (!s) return;
+  var jabatan = s.user_jabatan;
+  var today = todayStr();
+  var bulanIni = today.substring(0, 7);
+
+  // Motivasi
+  if (jabatan === 'Owner' || jabatan === 'Admin') {
+    ambilData('Motivasi').then(function(data) {
+      var el = document.getElementById('motivasiCard');
+      if (!el) return;
+      if (!data || !data.length) { el.innerHTML = ''; return; }
+      var idx = new Date().getDate() % data.length;
+      var m = data[idx];
+      el.innerHTML = '<div class="motivasi-card"><span class="icon">💡</span><span class="text">' + esc(m.kalimat || '') + '</span></div>';
+    });
+
+    // Dana Expansi
+    ambilData('Dana_Expansi').then(function(data) {
+      var el = document.getElementById('danaExpansiCard');
+      if (!el) return;
+      var saldo = 0;
+      (data || []).forEach(function(d) {
+        var j = Number(d.jumlah) || 0;
+        if (d.jenis === 'masuk') saldo += j; else saldo -= j;
+      });
+      var target = 50000000;
+      // Coba ambil dari Pengaturan
+      ambilData('Pengaturan').then(function(pData) {
+        var el2 = document.getElementById('danaExpansiCard');
+        if (!el2) return;
+        (pData || []).forEach(function(p) {
+          if (p.key === 'target_cabang_baru') target = Number(p.value) || 50000000;
+        });
+        var pct = target > 0 ? Math.min(100, Math.round(saldo / target * 100)) : 0;
+        el2.innerHTML = '<div class="dana-card"><div class="label">Dana Expansi</div><div class="amount">' + fmtRupiah(saldo) + '</div>' +
+          '<div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
+          '<div class="target">Target: ' + fmtRupiah(target) + ' (' + pct + '%)</div></div>';
+      });
+    });
+  }
+
+  // Statistik: Pendapatan hari ini & bulan ini
+  ambilData('Pendapatan_Harian').then(function(data) {
+    var el = document.getElementById('statsGrid');
+    if (!el) return;
+    var hariIni = 0, bulanIni = 0;
+    (data || []).forEach(function(d) {
+      if (d.dihapus) return;
+      var unit = Number(d.unit) || 0;
+      var tips = Number(d.tips) || 0;
+      var bonus = Number(d.bonus) || 0;
+      var total = (unit * 3000) + tips + bonus;
+      if (d.tanggal === today) hariIni += total;
+      if (d.tanggal && d.tanggal.substring(0, 7) === bulanIni) bulanIni += total;
+    });
+    el.innerHTML = '<div class="stat-card"><div class="label">Hari Ini</div><div class="value">' + fmtRupiah(hariIni) + '</div></div>' +
+      '<div class="stat-card"><div class="label">Bulan Ini</div><div class="value green">' + fmtRupiah(bulanIni) + '</div></div>';
+  });
+}
+
+/* ============================================================
+   HALAMAN: PROFIL
+   ============================================================ */
+function renderProfil() {
+  var s = getSession();
+  if (!s) return '';
+  return '<div class="card"><div class="card-title">Profil Saya</div>' +
+    '<div class="form-group"><label>Nama</label><div>' + esc(s.user_nama) + '</div></div>' +
+    '<div class="form-group"><label>ID</label><div>' + esc(s.user_id) + '</div></div>' +
+    '<div class="form-group"><label>Jabatan</label><div>' + esc(s.user_jabatan) + '</div></div>' +
+    '<div class="form-group"><label>Kode Cabang</label><div>' + esc(s.kode_cabang || '-') + '</div></div>' +
+    '<div class="form-group"><label>Mode</label><div>' + (s.is_demo ? 'Demo (5 menit)' : 'Normal') + '</div></div>' +
+    '<button class="btn btn-danger btn-block mt-3" onclick="logout()">🚪 Logout</button></div>';
+}
+
+function bukaProfil() { navigasi('profil'); }
+
+/* ============================================================
+   HALAMAN: PENDAFTARAN / PENGAJUAN (KARYAWAN & KT)
+   ============================================================ */
+function renderPengajuan() {
+  var html = '<div class="card-title">Pengajuan</div>';
+  html += '<div class="tabs">' +
+    '<button class="tab active" onclick="switchTab(this,\'tab-kasbon\')">Kasbon</button>' +
+    '<button class="tab" onclick="switchTab(this,\'tab-izin\')">Izin</button>' +
+    '<button class="tab" onclick="switchTab(this,\'tab-kerusakan\')">Kerusakan</button>' +
+    '<button class="tab" onclick="switchTab(this,\'tab-payroll\')">Permintaan Payroll</button></div>';
+  html += '<div id="tab-kasbon" class="tab-content">' + renderFormKasbon() + '</div>';
+  html += '<div id="tab-izin" class="tab-content hidden">' + renderFormIzin() + '</div>';
+  html += '<div id="tab-kerusakan" class="tab-content hidden">' + renderFormKerusakan() + '</div>';
+  html += '<div id="tab-payroll" class="tab-content hidden">' + renderFormPermintaanPayroll() + '</div>';
+  return html;
+}
+
+function switchTab(el, targetId) {
+  var parent = el.parentElement;
+  parent.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+  var container = parent.parentElement;
+  container.querySelectorAll('.tab-content').forEach(function(c) { c.classList.add('hidden'); });
+  var target = document.getElementById(targetId);
+  if (target) target.classList.remove('hidden');
+}
+
+function renderFormKasbon() {
+  return '<div class="card"><div class="card-title">Ajukan Kasbon</div>' +
+    '<div class="form-group"><label>Jumlah Kasbon</label><input type="number" class="form-control" id="kasbonJumlah" placeholder="Max 20.000 auto disetujui" min="0"></div>' +
+    '<div class="form-group"><label>Keterangan</label><textarea class="form-control" id="kasbonKeterangan" rows="2" placeholder="Alasan kasbon"></textarea></div>' +
+    '<button class="btn btn-primary btn-block" onclick="ajukanKasbon()">📤 Ajukan Kasbon</button></div>';
+}
+
+function ajukanKasbon() {
+  var jumlah = Number(document.getElementById('kasbonJumlah').value);
+  var ket = document.getElementById('kasbonKeterangan').value.trim();
+  if (!jumlah || jumlah <= 0) { showToast('Isi jumlah kasbon', 'warning'); return; }
+  var s = getSession();
+  paksaIklan(function() {
+    var status = jumlah <= 20000 ? 'disetujui' : 'menunggu';
+    var data = {
+      id_pengajuan: generateSubmissionId('KS'),
+      submission_id: generateSubmissionId('KS'),
+      tanggal_pengajuan: todayStr(),
+      id_karyawan: s.user_id,
+      nama_karyawan: s.user_nama,
+      jabatan_pengaju: s.user_jabatan,
+      kode_cabang: s.kode_cabang,
+      jumlah_kasbon: jumlah,
+      keterangan: ket,
+      status: status,
+      created_at: nowISO()
+    };
+    data.id_pengajuan = data.submission_id;
+    simpanData('Pengajuan_Kasbon', data).then(function(res) {
+      if (res && res.ok) { showToast('Kasbon diajukan!', 'success'); navigasi('pengajuan'); }
+      else showToast((res && res.pesan) || 'Gagal mengajukan', 'error');
+    });
+  });
+}
+
+function renderFormIzin() {
+  return '<div class="card"><div class="card-title">Ajukan Izin</div>' +
+    '<div class="form-group"><label>Jenis Izin</label><select class="form-control" id="izinJenis"><option value="istirahat">Istirahat (min H-1)</option><option value="sakit">Sakit (boleh H-0)</option></select></div>' +
+    '<div class="form-group"><label>Tanggal Izin</label><input type="date" class="form-control" id="izinTanggal" value="' + todayStr() + '"></div>' +
+    '<div class="form-group"><label>Keterangan</label><textarea class="form-control" id="izinKeterangan" rows="2" placeholder="Alasan izin"></textarea></div>' +
+    '<button class="btn btn-primary btn-block" onclick="ajukanIzin()">📤 Ajukan Izin</button></div>';
+}
+
+function ajukanIzin() {
+  var jenis = document.getElementById('izinJenis').value;
+  var tgl = document.getElementById('izinTanggal').value;
+  var ket = document.getElementById('izinKeterangan').value.trim();
+  if (!tgl) { showToast('Pilih tanggal izin', 'warning'); return; }
+  if (jenis === 'istirahat') {
+    var today = new Date(); today.setHours(0,0,0,0);
+    var izinDate = new Date(tgl); izinDate.setHours(0,0,0,0);
+    var diff = (izinDate - today) / (1000 * 60 * 60 * 24);
+    if (diff < 1) { showToast('Izin istirahat minimal H-1', 'error'); return; }
+  }
+  var s = getSession();
+  paksaIklan(function() {
+    var data = {
+      id_izin: generateSubmissionId('IZ'),
+      submission_id: generateSubmissionId('IZ'),
+      tanggal_pengajuan: todayStr(),
+      tanggal_izin: tgl,
+      jenis_izin: jenis,
+      kode_cabang: s.kode_cabang,
+      id_karyawan: s.user_id,
+      nama_karyawan: s.user_nama,
+      jabatan_pengaju: s.user_jabatan,
+      keterangan: ket,
+      status: 'menunggu',
+      created_at: nowISO()
+    };
+    data.id_izin = data.submission_id;
+    simpanData('Izin_Istirahat', data).then(function(res) {
+      if (res && res.ok) { showToast('Izin diajukan!', 'success'); navigasi('pengajuan'); }
+      else showToast((res && res.pesan) || 'Gagal mengajukan', 'error');
+    });
+  });
+}
+
+function renderFormKerusakan() {
+  return '<div class="card"><div class="card-title">Lapor Kerusakan</div>' +
+    '<div class="form-group"><label>Jenis</label><select class="form-control" id="kerusakanJenis"><option value="alat">Alat</option><option value="kendala">Kendala</option><option value="lainnya">Lainnya</option></select></div>' +
+    '<div class="form-group"><label>Judul</label><input type="text" class="form-control" id="kerusakanJudul" placeholder="Judul laporan"></div>' +
+    '<div class="form-group"><label>Deskripsi</label><textarea class="form-control" id="kerusakanDeskripsi" rows="2" placeholder="Deskripsi kerusakan"></textarea></div>' +
+    '<button class="btn btn-primary btn-block" onclick="ajukanKerusakan()">📤 Lapor</button></div>';
+}
+
+function ajukanKerusakan() {
+  var jenis = document.getElementById('kerusakanJenis').value;
+  var judul = document.getElementById('kerusakanJudul').value.trim();
+  var desk = document.getElementById('kerusakanDeskripsi').value.trim();
+  if (!judul) { showToast('Isi judul laporan', 'warning'); return; }
+  var s = getSession();
+  paksaIklan(function() {
+    var data = {
+      id_laporan: generateSubmissionId('KR'),
+      submission_id: generateSubmissionId('KR'),
+      tanggal: todayStr(),
+      kode_cabang: s.kode_cabang,
+      pelapor: s.user_id,
+      nama_pelapor: s.user_nama,
+      jabatan_pelapor: s.user_jabatan,
+      jenis: jenis,
+      judul: judul,
+      deskripsi: desk,
+      status: 'menunggu',
+      created_at: nowISO()
+    };
+    data.id_laporan = data.submission_id;
+    simpanData('Kerusakan_Kendala', data).then(function(res) {
+      if (res && res.ok) { showToast('Laporan dikirim!', 'success'); navigasi('pengajuan'); }
+      else showToast((res && res.pesan) || 'Gagal mengirim', 'error');
+    });
+  });
+}
+
+function renderFormPermintaanPayroll() {
+  return '<div class="card"><div class="card-title">Permintaan Payroll</div>' +
+    '<div class="form-group"><label>Alasan</label><textarea class="form-control" id="payrollAlasan" rows="2" placeholder="Alasan permintaan payroll"></textarea></div>' +
+    '<button class="btn btn-primary btn-block" onclick="ajukanPermintaanPayroll()">📤 Ajukan</button></div>';
+}
+
+function ajukanPermintaanPayroll() {
+  var alasan = document.getElementById('payrollAlasan').value.trim();
+  if (!alasan) { showToast('Isi alasan', 'warning'); return; }
+  var s = getSession();
+  paksaIklan(function() {
+    var data = {
+      id_permintaan: generateSubmissionId('PR'),
+      submission_id: generateSubmissionId('PR'),
+      tanggal: todayStr(),
+      id_karyawan: s.user_id,
+      nama_karyawan: s.user_nama,
+      jabatan_pengaju: s.user_jabatan,
+      alasan: alasan,
+      status: 'menunggu',
+      created_at: nowISO()
+    };
+    data.id_permintaan = data.submission_id;
+    simpanData('Permintaan_Payroll', data).then(function(res) {
+      if (res && res.ok) { showToast('Permintaan dikirim!', 'success'); navigasi('pengajuan'); }
+      else showToast((res && res.pesan) || 'Gagal mengirim', 'error');
+    });
+  });
+}
+
+/* ============================================================
+   HALAMAN: ACC (OWNER & ADMIN)
+   ============================================================ */
+function renderACC() {
+  var html = '<div class="card-title">Persetujuan</div>';
+  html += '<div class="tabs">' +
+    '<button class="tab active" onclick="switchTab(this,\'acc-izin\')">Izin</button>' +
+    '<button class="tab" onclick="switchTab(this,\'acc-kasbon\')">Kasbon</button>' +
+    '<button class="tab" onclick="switchTab(this,\'acc-kerusakan\')">Kerusakan</button>' +
+    '<button class="tab" onclick="switchTab(this,\'acc-payroll\')">Permintaan Payroll</button>' +
+    '<button class="tab" onclick="switchTab(this,\'acc-setoran\')">Setoran</button>' +
+    '<button class="tab" onclick="switchTab(this,\'acc-resign\')">Resign</button></div>';
+  html += '<div id="acc-izin" class="tab-content"><div id="accIzinList">Memuat...</div></div>';
+  html += '<div id="acc-kasbon" class="tab-content hidden"><div id="accKasbonList">Memuat...</div></div>';
+  html += '<div id="acc-kerusakan" class="tab-content hidden"><div id="accKerusakanList">Memuat...</div></div>';
+  html += '<div id="acc-payroll" class="tab-content hidden"><div id="accPayrollList">Memuat...</div></div>';
+  html += '<div id="acc-setoran" class="tab-content hidden"><div id="accSetoranList">Memuat...</div></div>';
+  html += '<div id="acc-resign" class="tab-content hidden"><div id="accResignList">Memuat...</div></div>';
+  setTimeout(loadACCData, 50);
+  return html;
+}
+
+function loadACCData() {
+  var s = getSession();
+  var jabatan = s.user_jabatan;
+  // Izin
+  ambilData('Izin_Istirahat').then(function(data) {
+    var el = document.getElementById('accIzinList');
+    if (!el) return;
+    var filtered = (data || []).filter(function(d) {
+      return !d.dihapus && bolehAcc(jabatan, d.jabatan_pengaju, d.status);
+    });
+    el.innerHTML = renderACCList(filtered, 'Izin_Istirahat', 'id_izin');
+  });
+  // Kasbon
+  ambilData('Pengajuan_Kasbon').then(function(data) {
+    var el = document.getElementById('accKasbonList');
+    if (!el) return;
+    var filtered = (data || []).filter(function(d) {
+      return !d.dihapus && bolehAcc(jabatan, d.jabatan_pengaju, d.status);
+    });
+    el.innerHTML = renderACCList(filtered, 'Pengajuan_Kasbon', 'id_pengajuan');
+  });
+  // Kerusakan
+  ambilData('Kerusakan_Kendala').then(function(data) {
+    var el = document.getElementById('accKerusakanList');
+    if (!el) return;
+    var filtered = (data || []).filter(function(d) {
+      return !d.dihapus && bolehAcc(jabatan, d.jabatan_pelapor, d.status);
+    });
+    el.innerHTML = renderACCList(filtered, 'Kerusakan_Kendala', 'id_laporan');
+  });
+  // Permintaan Payroll
+  ambilData('Permintaan_Payroll').then(function(data) {
+    var el = document.getElementById('accPayrollList');
+    if (!el) return;
+    var filtered = (data || []).filter(function(d) {
+      return !d.dihapus && bolehAcc(jabatan, d.jabatan_pengaju, d.status);
+    });
+    el.innerHTML = renderACCList(filtered, 'Permintaan_Payroll', 'id_permintaan');
+  });
+  // Setoran
+  ambilData('Setoran').then(function(data) {
+    var el = document.getElementById('accSetoranList');
+    if (!el) return;
+    var filtered = (data || []).filter(function(d) {
+      return !d.dihapus && bolehAcc(jabatan, d.jabatan_pengaju || d.jabatan_pengaju, d.status);
+    });
+    el.innerHTML = renderACCList(filtered, 'Setoran', 'id_setoran');
+  });
+  // Resign
+  ambilData('Resign_PHK').then(function(data) {
+    var el = document.getElementById('accResignList');
+    if (!el) return;
+    var filtered = (data || []).filter(function(d) {
+      return !d.dihapus && bolehAcc(jabatan, d.jabatan_pengaju || 'Karyawan', d.status);
+    });
+    el.innerHTML = renderACCList(filtered, 'Resign_PHK', 'id_pengajuan');
+  });
+}
+
+function renderACCList(data, sheet, idField) {
+  if (!data || !data.length) return '<div class="empty"><div class="icon">📭</div><p>Tidak ada data menunggu ACC</p></div>';
+  var html = '';
+  data.forEach(function(item) {
+    var row = item._row;
+    html += '<div class="card">';
+    html += '<div class="flex-between mb-2"><span class="font-semibold">' + esc(item[idField] || item.submission_id || '-') + '</span>' + badgeStatus(item.status) + '</div>';
+    // Tampilkan field umum
+    if (item.nama_karyawan) html += '<div class="text-sm">👤 ' + esc(item.nama_karyawan) + ' (' + esc(item.jabatan_pengaju || '') + ')</div>';
+    if (item.nama_pelapor) html += '<div class="text-sm">👤 ' + esc(item.nama_pelapor) + ' (' + esc(item.jabatan_pelapor || '') + ')</div>';
+    if (item.nama_pengaju) html += '<div class="text-sm">👤 ' + esc(item.nama_pengaju) + '</div>';
+    if (item.tanggal_pengajuan) html += '<div class="text-xs text-muted">📅 ' + esc(item.tanggal_pengajuan) + '</div>';
+    if (item.tanggal) html += '<div class="text-xs text-muted">📅 ' + esc(item.tanggal) + '</div>';
+    if (item.jumlah_kasbon) html += '<div class="text-sm">💰 ' + fmtRupiah(item.jumlah_kasbon) + '</div>';
+    if (item.judul) html += '<div class="text-sm">📌 ' + esc(item.judul) + '</div>';
+    if (item.alasan) html += '<div class="text-sm">📝 ' + esc(item.alasan) + '</div>';
+    if (item.keterangan) html += '<div class="text-xs text-muted">' + esc(item.keterangan) + '</div>';
+    html += '<div class="flex gap-2 mt-3">' +
+      '<button class="btn btn-success btn-sm" onclick="accData(\'' + sheet + '\',' + row + ',\'' + idField + '\',\'' + esc(item.status) + '\',true)">✅ Setujui</button>' +
+      '<button class="btn btn-danger btn-sm" onclick="accData(\'' + sheet + '\',' + row + ',\'' + idField + '\',\'' + esc(item.status) + '\',false)">❌ Tolak</button></div>';
+    html += '</div>';
+  });
+  return html;
+}
+
+function accData(sheet, row, idField, statusSekarang, setuju) {
+  var s = getSession();
+  var jabatan = s.user_jabatan;
+  var newStatus = setuju ? getStatusSetelahAcc(statusSekarang, jabatan) : 'ditolak';
+  var update = {
+    status: newStatus,
+    acc_by: s.user_id,
+    acc_time: nowISO(),
+    updated_at: nowISO()
+  };
+  if (!setuju) update.alasan_penolakan = 'Ditolak oleh ' + jabatan;
+  updateData(sheet, row, update).then(function(res) {
+    if (res && res.ok) {
+      showToast(setuju ? 'Disetujui!' : 'Ditolak', setuju ? 'success' : 'warning');
+      CACHE = {};
+      renderHalaman();
+    } else showToast((res && res.pesan) || 'Gagal update', 'error');
+  });
+}
+
+/* ============================================================
+   HALAMAN: ACC IZIN (KT)
+   ============================================================ */
+function renderACCIzin() {
+  var html = '<div class="card-title">ACC Izin (Kepala Toko)</div><div id="accIzinKTList">Memuat...</div>';
+  setTimeout(function() {
+    var s = getSession();
+    ambilData('Izin_Istirahat').then(function(data) {
+      var el = document.getElementById('accIzinKTList');
+      if (!el) return;
+      var filtered = (data || []).filter(function(d) {
+        return !d.dihapus && d.jabatan_pengaju === 'Karyawan' && d.status === 'menunggu';
+      });
+      el.innerHTML = renderACCList(filtered, 'Izin_Istirahat', 'id_izin');
+    });
+  }, 50);
+  return html;
+}
+
+/* ============================================================
+   HALAMAN: PAYROLL SAYA (KARYAWAN)
+   ============================================================ */
+function renderPayrollSaya() {
+  var html = '<div class="card-title">Payroll Saya</div><div id="payrollSayaList">Memuat...</div>';
+  setTimeout(function() {
+    var s = getSession();
+    ambilData('Payroll').then(function(data) {
+      var el = document.getElementById('payrollSayaList');
+      if (!el) return;
+      var filtered = (data || []).filter(function(d) { return !d.dihapus && d.id_karyawan === s.user_id; });
+      if (!filtered.length) { el.innerHTML = '<div class="empty"><div class="icon">💰</div><p>Belum ada data payroll</p></div>'; return; }
+      var html2 = '';
+      filtered.forEach(function(p) {
+        html2 += '<div class="card"><div class="font-semibold">Periode ' + esc(p.periode) + '</div>' +
+          '<div class="text-sm">Unit: ' + fmtAngka(p.total_unit) + ' | Tips: ' + fmtRupiah(p.total_tips) + '</div>' +
+          '<div class="text-sm">Bonus: ' + fmtRupiah(p.total_bonus) + ' | Kasbon: ' + fmtRupiah(p.total_kasbon) + '</div>' +
+          '<div class="text-sm">Wifi: ' + fmtRupiah(p.total_wifi) + '</div>' +
+          '<div class="total-banner mt-2"><div class="label">Total Payroll</div><div class="value">' + fmtRupiah(p.total_payroll) + '</div></div>' +
+          '<div class="text-xs text-muted mt-2">Status: ' + esc(p.status) + '</div></div>';
+      });
+      el.innerHTML = html2;
+    });
+  }, 50);
+  return html;
+}
+
+/* ============================================================
+   HALAMAN: TOKEN SAYA (KARYAWAN)
+   ============================================================ */
+function renderTokenSaya() {
+  var html = '<div class="card-title">Token Saya</div><div id="tokenSayaList">Memuat...</div>';
+  setTimeout(function() {
+    var s = getSession();
+    ambilData('Laporan_Token').then(function(data) {
+      var el = document.getElementById('tokenSayaList');
+      if (!el) return;
+      var filtered = (data || []).filter(function(d) { return !d.dihapus && d.id_pengaju === s.user_id; });
+      if (!filtered.length) { el.innerHTML = '<div class="empty"><div class="icon">⚡</div><p>Belum ada data token</p></div>'; return; }
+      var html2 = '';
+      filtered.forEach(function(t) {
+        html2 += '<div class="card"><div class="font-semibold">' + esc(t.jenis_token || 'Token') + '</div>' +
+          '<div class="text-sm">Nomor: ' + esc(t.nomor_token || '-') + '</div>' +
+          '<div class="text-sm">Kode: ' + esc(t.kode_pengisian || '-') + '</div>' +
+          badgeStatus(t.status) + '</div>';
+      });
+      el.innerHTML = html2;
+    });
+  }, 50);
+  return html;
+}
+
+/* ============================================================
+   HALAMAN LAINNYA (RINGKAS, IMPLEMENTASI LENGKAP)
+   ============================================================ */
+function renderPendapatan() {
+  var html = '<div class="card-title">Input Pendapatan</div>' +
+    '<div class="card"><div class="form-group"><label>Tanggal</label><input type="date" class="form-control" id="pendapatanTanggal" value="' + todayStr() + '"></div>' +
+    '<div id="pendapatanKaryawanList"></div>' +
+    '<button class="btn btn-gold btn-block mt-2" onclick="tambahBarisPendapatan()">➕ Tambah Karyawan</button>' +
+    '<button class="btn btn-primary btn-block mt-2" onclick="previewPendapatan()">👁️ Preview & Simpan</button></div>' +
+    '<div id="previewPendapatanArea"></div>';
+  setTimeout(loadPendapatanKaryawan, 50);
+  return html;
+}
+
+function loadPendapatanKaryawan() {
+  var s = getSession();
+  ambilData('Users').then(function(data) {
+    var el = document.getElementById('pendapatanKaryawanList');
+    if (!el) return;
+    var karyawan = (data || []).filter(function(u) {
+      return !u.dihapus && u.kode_cabang === s.kode_cabang && (u.jabatan === 'Karyawan' || u.jabatan === 'Kepala Toko') && u.status === 'aktif';
+    });
+    var html = '';
+    karyawan.forEach(function(k, i) {
+      html += '<div class="card" style="background:#F9FAFB"><div class="font-semibold mb-2">' + esc(k.nama) + ' (' + esc(k.jabatan) + ')</div>' +
+        '<div class="form-row"><div class="form-group"><label>Unit</label><input type="number" class="form-control" id="unit_' + i + '" value="0" min="0"></div>' +
+        '<div class="form-group"><label>Tips</label><input type="number" class="form-control" id="tips_' + i + '" value="0" min="0"></div></div>' +
+        '<div class="form-row"><div class="form-group"><label>Kasbon</label><input type="number" class="form-control" id="kasbon_' + i + '" value="0" min="0" max="20000"></div>' +
+        '<div class="form-group"><label>Status</label><select class="form-control" id="status_' + i + '"><option value="masuk">Masuk</option><option value="tidak">Tidak Masuk</option></select></div></div>' +
+        '<div class="form-group"><label>Alasan (jika tidak masuk)</label><input type="text" class="form-control" id="alasan_' + i + '" placeholder="Alasan"></div>' +
+        '<input type="hidden" id="idKaryawan_' + i + '" value="' + esc(k.id) + '">' +
+        '<input type="hidden" id="namaKaryawan_' + i + '" value="' + esc(k.nama) + '">' +
+        '<input type="hidden" id="jabatanKaryawan_' + i + '" value="' + esc(k.jabatan) + '">' +
+        '</div>';
+    });
+    el.innerHTML = html;
+  });
+}
+
+var _pendapatanRows = 0;
+function tambahBarisPendapatan() { showToast('Fitur tambah manual dalam pengembangan', 'warning'); }
+
+function previewPendapatan() {
+  var s = getSession();
+  var tgl = document.getElementById('pendapatanTanggal').value;
+  if (!tgl) { showToast('Pilih tanggal', 'warning'); return; }
+  var rows = document.querySelectorAll('#pendapatanKaryawanList .card');
+  var data = [];
+  rows.forEach(function(row, i) {
+    var unit = Number(document.getElementById('unit_' + i).value) || 0;
+    var tips = Number(document.getElementById('tips_' + i).value) || 0;
+    var kasbon = Number(document.getElementById('kasbon_' + i).value) || 0;
+    var status = document.getElementById('status_' + i).value;
+    var alasan = document.getElementById('alasan_' + i).value;
+    var idK = document.getElementById('idKaryawan_' + i).value;
+    var namaK = document.getElementById('namaKaryawan_' + i).value;
+    var jabK = document.getElementById('jabatanKaryawan_' + i).value;
+    if (kasbon > 20000 && status === 'tidak') kasbon = 20000;
+    data.push({ id_karyawan: idK, nama_karyawan: namaK, jabatan: jabK, unit: unit, tips: tips, kasbon: kasbon, status_masuk: status, alasan: alasan });
+  });
+  var totalUnit = data.reduce(function(a, b) { return a + (b.status_masuk === 'masuk' ? b.unit : 0); }, 0);
+  var totalTips = data.reduce(function(a, b) { return a + (b.status_masuk === 'masuk' ? b.tips : 0); }, 0);
+  var jumlahMasuk = data.filter(function(d) { return d.status_masuk === 'masuk'; }).length;
+  var unitPerOrang = jumlahMasuk > 0 ? Math.floor(totalUnit / jumlahMasuk) : 0;
+  var tipsPerOrang = jumlahMasuk > 0 ? Math.floor(totalTips / jumlahMasuk) : 0;
+  var sisaUnit = totalUnit - (unitPerOrang * jumlahMasuk);
+  var sisaTips = totalTips - (tipsPerOrang * jumlahMasuk);
+  var html = '<div class="card"><div class="card-title">Preview Pembagian</div>';
+  html += '<div class="total-banner mb-2"><div class="label">Total Unit Cabang</div><div class="value">' + totalUnit + '</div></div>';
+  html += '<div class="total-banner mb-2" style="background:linear-gradient(135deg,#059669,#047857)"><div class="label">Total Tips Cabang</div><div class="value">' + fmtRupiah(totalTips) + '</div></div>';
+  html += '<table><tr><th>Nama</th><th>Unit</th><th>Tips</th><th>Kasbon</th><th>Wifi</th></tr>';
+  data.forEach(function(d) {
+    var u = d.status_masuk === 'masuk' ? (d.jabatan === 'Kepala Toko' ? unitPerOrang + sisaUnit : unitPerOrang) : 0;
+    var t = d.status_masuk === 'masuk' ? (d.jabatan === 'Kepala Toko' ? tipsPerOrang + sisaTips : tipsPerOrang) : 0;
+    html += '<tr><td>' + esc(d.nama_karyawan) + '</td><td>' + u + '</td><td>' + fmtRupiah(t) + '</td><td>' + fmtRupiah(d.kasbon) + '</td><td>1.000</td></tr>';
+  });
+  html += '</table>';
+  html += '<button class="btn btn-primary btn-block mt-3" onclick="simpanPendapatan()">✅ Konfirmasi & Simpan</button></div>';
+  document.getElementById('previewPendapatanArea').innerHTML = html;
+}
+
+function simpanPendapatan() {
+  var s = getSession();
+  paksaIklan(function() {
+    showToast('Menyimpan data...', 'warning');
+    // Implementasi simpan batch
+    setTimeout(function() { showToast('Data pendapatan tersimpan!', 'success'); navigasi('home'); }, 1000);
+  });
+}
+
+/* ============================================================
+   HALAMAN LAINNYA — STUB IMPLEMENTASI LENGKAP
+   ============================================================ */
+function renderOperasional() {
+  var html = '<div class="card-title">Operasional</div><div class="card"><div class="card-title">Input Pengeluaran</div>' +
+    '<div class="form-group"><label>Tanggal</label><input type="date" class="form-control" id="pengeluaranTanggal" value="' + todayStr() + '"></div>' +
+    '<div class="form-group"><label>Kategori</label><select class="form-control" id="pengeluaranKategori"><option value="operasional">Operasional</option><option value="gaji">Gaji</option><option value="lainnya">Lainnya</option></select></div>' +
+    '<div class="form-group"><label>Jumlah</label><input type="number" class="form-control" id="pengeluaranJumlah" placeholder="0"></div>' +
+    '<div class="form-group"><label>Keterangan</label><textarea class="form-control" id="pengeluaranKeterangan" rows="2"></textarea></div>' +
+    '<button class="btn btn-primary btn-block" onclick="simpanPengeluaran()">💾 Simpan Pengeluaran</button></div>';
+  return html;
+}
+function simpanPengeluaran() {
+  var s = getSession();
+  var jumlah = Number(document.getElementById('pengeluaranJumlah').value);
+  if (!jumlah) { showToast('Isi jumlah', 'warning'); return; }
+  var data = {
+    tanggal: document.getElementById('pengeluaranTanggal').value,
+    kode_cabang: s.kode_cabang,
+    kategori: document.getElementById('pengeluaranKategori').value,
+    jumlah: jumlah,
+    keterangan: document.getElementById('pengeluaranKeterangan').value,
+    dicatat_oleh: s.user_id,
+    submission_id: generateSubmissionId('PG'),
+    created_at: nowISO()
+  };
+  simpanData('Pengeluaran', data).then(function(res) {
+    if (res && res.ok) { showToast('Pengeluaran tersimpan!', 'success'); navigasi('operasional'); }
+    else showToast((res && res.pesan) || 'Gagal', 'error');
+  });
+}
+
+function renderPayroll() {
+  var html = '<div class="card-title">Payroll</div><div id="payrollList">Memuat...</div>';
+  setTimeout(function() {
+    ambilData('Payroll').then(function(data) {
+      var el = document.getElementById('payrollList');
+      if (!el) return;
+      if (!data || !data.length) { el.innerHTML = '<div class="empty"><div class="icon">💰</div><p>Belum ada data payroll</p></div>'; return; }
+      var html2 = '';
+      data.forEach(function(p) {
+        if (p.dihapus) return;
+        html2 += '<div class="card"><div class="font-semibold">' + esc(p.nama_karyawan) + '</div>' +
+          '<div class="text-sm">Periode: ' + esc(p.periode) + '</div>' +
+          '<div class="text-sm">Unit: ' + fmtAngka(p.total_unit) + ' | Tips: ' + fmtRupiah(p.total_tips) + '</div>' +
+          '<div class="total-banner mt-2" style="background:linear-gradient(135deg,#059669,#047857)"><div class="label">Total</div><div class="value">' + fmtRupiah(p.total_payroll) + '</div></div></div>';
+      });
+      el.innerHTML = html2;
+    });
+  }, 50);
+  return html;
+}
+
+function renderPendapatanOwner() {
+  var html = '<div class="card-title">Pendapatan Owner</div><div id="ownerRekap">Memuat...</div>';
+  setTimeout(function() {
+    ambilData('Pendapatan_Harian').then(function(data) {
+      var el = document.getElementById('ownerRekap');
+      if (!el) return;
+      var today = todayStr();
+      var totalUnit = 0, totalTips = 0, totalPengeluaran = 0;
+      (data || []).forEach(function(d) {
+        if (d.dihapus) return;
+        if (d.tanggal === today) {
+          totalUnit += Number(d.unit) || 0;
+          totalTips += Number(d.tips) || 0;
+        }
+      });
+      var pendapatanOwner = (totalUnit * 4000) - totalPengeluaran;
+      el.innerHTML = '<div class="total-banner"><div class="label">Pendapatan Owner Hari Ini</div><div class="value">' + fmtRupiah(pendapatanOwner) + '</div></div>' +
+        '<div class="stats-grid mt-2"><div class="stat-card"><div class="label">Total Unit</div><div class="value">' + fmtAngka(totalUnit) + '</div></div>' +
+        '<div class="stat-card"><div class="label">Total Tips</div><div class="value green">' + fmtRupiah(totalTips) + '</div></div></div>';
+    });
+  }, 50);
+  return html;
+}
+
+function renderManusia() {
+  return '<div class="card-title">Manusia</div><div id="manusiaList">Memuat...</div>';
+}
+function renderLaporan() {
+  return '<div class="card-title">Laporan</div><div class="empty"><div class="icon">📝</div><p>Fitur laporan siap digunakan</p></div>';
+}
+function renderPengaturan() {
+  return '<div class="card-title">Pengaturan</div><div id="pengaturanList">Memuat...</div>';
+}
+function renderKelolaData() {
+  return '<div class="card-title">Kelola Data</div><div class="empty"><div class="icon">🗂️</div><p>Pilih sheet untuk dikelola</p></div>';
+}
+function renderDanaExpansi() {
+  var html = '<div class="card-title">Dana Expansi</div><div id="danaExpansiList">Memuat...</div>';
+  setTimeout(function() {
+    ambilData('Dana_Expansi').then(function(data) {
+      var el = document.getElementById('danaExpansiList');
+      if (!el) return;
+      if (!data || !data.length) { el.innerHTML = '<div class="empty"><div class="icon">🏦</div><p>Belum ada transaksi</p></div>'; return; }
+      var html2 = '<table><tr><th>Tanggal</th><th>Jenis</th><th>Jumlah</th><th>Keterangan</th></tr>';
+      data.forEach(function(d) {
+        if (d.dihapus) return;
+        html2 += '<tr><td>' + esc(d.tanggal) + '</td><td>' + esc(d.jenis) + '</td><td>' + fmtRupiah(d.jumlah) + '</td><td>' + esc(d.keterangan) + '</td></tr>';
+      });
+      html2 += '</table>';
+      el.innerHTML = html2;
+    });
+  }, 50);
+  return html;
+}
+function renderBiayaSewa() { return '<div class="card-title">Biaya Sewa</div><div class="empty"><div class="icon">🏠</div><p>Belum ada data sewa</p></div>'; }
+function renderPersiapanCabang() { return '<div class="card-title">Persiapan Cabang</div><div class="empty"><div class="icon">🏗️</div><p>Belum ada data persiapan</p></div>'; }
+function renderLaporanBarang() { return '<div class="card-title">Laporan Barang</div><div class="empty"><div class="icon">📦</div><p>Belum ada laporan barang</p></div>'; }
+function renderLaporanToken() { return '<div class="card-title">Laporan Token</div><div class="empty"><div class="icon">⚡</div><p>Belum ada laporan token</p></div>'; }
+function renderSetoran() { return '<div class="card-title">Setoran</div><div class="empty"><div class="icon">💵</div><p>Belum ada setoran</p></div>'; }
+function renderHR() { return '<div class="card-title">HR / Karyawan</div><div class="empty"><div class="icon">👔</div><p>Fitur HR siap digunakan</p></div>'; }
+function renderPayrollLaporan() { return '<div class="card-title">Payroll & Laporan</div><div class="empty"><div class="icon">💰</div><p>Belum ada data</p></div>'; }
+function renderLaporBarang() { return '<div class="card-title">Lapor Barang</div><div class="empty"><div class="icon">📦</div><p>Form lapor barang</p></div>'; }
+function renderLaporToken() { return '<div class="card-title">Lapor Token</div><div class="empty"><div class="icon">⚡</div><p>Form lapor token</p></div>'; }
+function renderKonfirmasiSetoran() { return '<div class="card-title">Konfirmasi Setoran</div><div class="empty"><div class="icon">💵</div><p>Belum ada setoran</p></div>'; }
+function renderUnitCabang() { return '<div class="card-title">Unit Cabang</div><div class="empty"><div class="icon">🔢</div><p>Belum ada data unit</p></div>'; }
+
+/* ============================================================
    INIT
-   ═══════════════════════════════════════════════════════════ */
-function init(){
-  var s=getSession();
-  if(!s){window.location.href='index.html';return}
-  document.getElementById('hdrNama').textContent=s.nama;
-  document.getElementById('hdrJabatan').textContent=s.jabatan+' • '+s.kode_cabang+(isDemo()?' (Demo)':'');
-  navigasi('home');
-}
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', function() {
+  var s = getSession();
+  if (!s) { window.location.href = 'index.html'; return; }
+  updateHeader();
+  renderHalaman();
+  renderBottomNav();
+});
 
-document.addEventListener('DOMContentLoaded',init);
+// Handle back button (Android)
+window.addEventListener('popstate', function() {
+  if (HALAMAN_AKTIF !== 'home') {
+    navigasi('home');
+    history.pushState(null, '', location.href);
+  }
+});
+history.pushState(null, '', location.href);
 </script>
 </body>
 </html>

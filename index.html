@@ -9,385 +9,353 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ================= RESET ================= */
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; }
-body {
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(160deg, #C8102E 0%, #8B0000 35%, #ffffff 35.1%, #F9FAFB 100%);
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  color: #1F2937;
-  overflow-x: hidden;
-}
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(160deg, #C8102E 0%, #8B0000 35%, #ffffff 35.1%, #F9FAFB 100%);
+    background-attachment: fixed;
+    color: #1F2937;
+    overflow-x: hidden;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 24px 16px 32px;
+    min-height: 100vh;
+  }
 
-/* ================= CARD ================= */
-.card {
-  background: #ffffff;
-  width: 100%;
-  max-width: 400px;
-  border-radius: 16px;
-  padding: 32px 24px 24px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.08);
-  animation: fadeUp 0.6s ease;
-  position: relative;
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+  /* ============ CARD ============ */
+  .card {
+    width: 100%;
+    max-width: 400px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.08);
+    padding: 28px 22px 24px;
+    margin-top: 28px;
+    animation: fadeUp 0.6s ease both;
+    position: relative;
+    z-index: 2;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-/* ================= LOGO ================= */
-.logo-wrap {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.logo-svg {
-  animation: glowPulse 2s ease-in-out infinite;
-  position: relative;
-  z-index: 2;
-}
-@keyframes glowPulse {
-  0%, 100% { filter: drop-shadow(0 4px 12px rgba(200,16,46,0.3)) drop-shadow(0 0 20px rgba(251,191,36,0.3)); }
-  50%      { filter: drop-shadow(0 4px 16px rgba(200,16,46,0.5)) drop-shadow(0 0 32px rgba(251,191,36,0.6)); }
-}
-.sparkle {
-  position: absolute;
-  width: 4px; height: 4px;
-  background: #FBBF24;
-  border-radius: 50%;
-  animation: sparkleAnim 2s infinite;
-  pointer-events: none;
-  z-index: 3;
-}
-.sparkle:nth-child(1) { top: 8%;  left: 8%;  animation-delay: 0s; }
-.sparkle:nth-child(2) { top: 12%; right: 6%; animation-delay: 0.4s; }
-.sparkle:nth-child(3) { top: 50%; left: -4%; animation-delay: 0.8s; }
-.sparkle:nth-child(4) { bottom: 8%; left: 16%; animation-delay: 1.2s; }
-.sparkle:nth-child(5) { bottom: 10%; right: 12%; animation-delay: 1.6s; }
-@keyframes sparkleAnim {
-  0%, 100% { opacity: 0; transform: scale(0.5); }
-  50%      { opacity: 1; transform: scale(1); }
-}
+  /* ============ LOGO ============ */
+  .logo-wrap {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .logo-svg {
+    width: 80px; height: 80px;
+    display: block;
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+  @keyframes glowPulse {
+    0%, 100% { filter: drop-shadow(0 4px 12px rgba(200,16,46,0.3)) drop-shadow(0 0 20px rgba(251,191,36,0.3)); }
+    50%      { filter: drop-shadow(0 4px 16px rgba(200,16,46,0.5)) drop-shadow(0 0 32px rgba(251,191,36,0.6)); }
+  }
+  .sparkle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: #FBBF24;
+    border-radius: 50%;
+    animation: sparkleAnim 2s infinite;
+    pointer-events: none;
+    box-shadow: 0 0 6px #FBBF24, 0 0 10px rgba(251,191,36,0.7);
+  }
+  .sparkle.s1 { top: -2px; left: 50%; margin-left: -2px; animation-delay: 0s; }
+  .sparkle.s2 { top: 50%; right: -4px; margin-top: -2px; animation-delay: 0.4s; }
+  .sparkle.s3 { bottom: -2px; left: 50%; margin-left: -2px; animation-delay: 0.8s; }
+  .sparkle.s4 { top: 50%; left: -4px; margin-top: -2px; animation-delay: 1.2s; }
+  .sparkle.s5 { top: -6px; right: -2px; animation-delay: 1.6s; }
+  @keyframes sparkleAnim {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50%      { opacity: 1; transform: scale(1); }
+  }
 
-/* ================= TITLE ================= */
-.title {
-  text-align: center;
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  background: linear-gradient(135deg, #C8102E, #8B0000);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 4px;
-}
-.tagline {
-  text-align: center;
-  font-size: 11px;
-  font-weight: 600;
-  color: #B45309;
-  letter-spacing: 0.5px;
-  margin-bottom: 2px;
-}
-.tagline-2 {
-  text-align: center;
-  font-size: 10px;
-  font-weight: 700;
-  color: #C8102E;
-  letter-spacing: 1.5px;
-  margin-bottom: 24px;
-}
+  /* ============ JUDUL ============ */
+  .judul {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 800;
+    color: #8B0000;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .tagline {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: #6B7280;
+    line-height: 1.4;
+    margin-bottom: 22px;
+  }
+  .tagline b { color: #C8102E; font-weight: 700; }
 
-/* ================= FORM ================= */
-.field { margin-bottom: 14px; }
-.field label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 6px;
-}
-.input-wrap { position: relative; }
-.input {
-  width: 100%;
-  padding: 13px 14px;
-  font-size: 14px;
-  font-family: inherit;
-  font-weight: 500;
-  color: #1F2937;
-  background: #fff;
-  border: 1.5px solid #E5E7EB;
-  border-radius: 10px;
-  transition: all 0.2s ease;
-  outline: none;
-}
-.input:focus {
-  border-color: #C8102E;
-  box-shadow: 0 0 0 3px rgba(200,16,46,0.1);
-}
-.input::placeholder { color: #9CA3AF; font-weight: 400; }
-.input-wrap.has-toggle .input { padding-right: 44px; }
-.toggle-pass {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  padding: 4px 6px;
-  line-height: 1;
-  color: #6B7280;
-  border-radius: 6px;
-  transition: background 0.2s;
-}
-.toggle-pass:active { background: #F3F4F6; }
+  /* ============ FORM ============ */
+  .field { margin-bottom: 14px; position: relative; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+  }
+  .input-wrap { position: relative; }
+  .input-wrap input {
+    width: 100%;
+    padding: 12px 44px 12px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #1F2937;
+    background: #FFFFFF;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+  .input-wrap input:focus {
+    border-color: #C8102E;
+    box-shadow: 0 0 0 3px rgba(200,16,46,0.12);
+  }
+  .input-wrap input::placeholder { color: #9CA3AF; }
+  .toggle-pass {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 6px;
+    line-height: 1;
+    color: #6B7280;
+    border-radius: 6px;
+  }
+  .toggle-pass:active { background: #F3F4F6; }
 
-/* ================= ERROR ================= */
-.error {
-  display: none;
-  background: #FEF2F2;
-  border-left: 3px solid #C8102E;
-  color: #991B1B;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 10px 12px;
-  border-radius: 6px;
-  margin-bottom: 14px;
-  animation: shake 0.4s ease;
-}
-.error.show { display: block; }
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25%      { transform: translateX(-6px); }
-  75%      { transform: translateX(6px); }
-}
+  /* ============ ERROR ============ */
+  #errorMsg {
+    display: none;
+    background: #FEF2F2;
+    border-left: 3px solid #C8102E;
+    color: #B91C1C;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    line-height: 1.45;
+  }
+  #errorMsg.show {
+    display: block;
+    animation: shake 0.4s ease;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
 
-/* ================= BUTTON ================= */
-.btn {
-  width: 100%;
-  padding: 14px;
-  font-size: 14px;
-  font-family: inherit;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-.btn-primary {
-  background: linear-gradient(135deg, #C8102E, #A00D25);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(200,16,46,0.3);
-  margin-bottom: 10px;
-}
-.btn-primary:active:not(:disabled) { transform: scale(0.98); box-shadow: 0 2px 6px rgba(200,16,46,0.3); }
-.btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+  /* ============ TOMBOL ============ */
+  .btn {
+    width: 100%;
+    padding: 13px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled { opacity: 0.65; cursor: not-allowed; }
+  .btn-primary {
+    background: linear-gradient(135deg, #C8102E 0%, #A00D25 100%);
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(200,16,46,0.35);
+  }
+  .btn-primary:hover:not(:disabled) { box-shadow: 0 6px 20px rgba(200,16,46,0.5); }
+  .btn-outline {
+    background: #FFFFFF;
+    border: 2px solid #F59E0B;
+    color: #B45309;
+    margin-top: 10px;
+  }
+  .btn-outline:hover:not(:disabled) { background: #FFFBEB; }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.35);
+    border-top-color: #FFFFFF;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-.btn-outline {
-  background: #fff;
-  color: #B45309;
-  border: 2px solid #F59E0B;
-}
-.btn-outline:active { transform: scale(0.98); background: #FFFBEB; }
+  /* ============ FOOTER ============ */
+  .footer {
+    text-align: center;
+    font-size: 11px;
+    color: #9CA3AF;
+    margin-top: 20px;
+    font-weight: 500;
+  }
 
-.btn-spinner {
-  width: 16px; height: 16px;
-  border: 2px solid rgba(255,255,255,0.35);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  display: none;
-}
-.btn.loading .btn-spinner { display: block; }
-.btn.loading .btn-text { display: none; }
-@keyframes spin { to { transform: rotate(360deg); } }
+  /* ============ MODAL DEMO ============ */
+  #modalDemo {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(0,0,0,0.6);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.25s ease;
+  }
+  #modalDemo.show { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal-box {
+    background: #FFFFFF;
+    border-radius: 16px;
+    max-width: 380px;
+    width: 100%;
+    padding: 22px 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    animation: fadeUp 0.35s ease both;
+  }
+  .modal-box h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #8B0000;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .modal-box .sub {
+    text-align: center;
+    font-size: 12px;
+    color: #6B7280;
+    margin-bottom: 18px;
+  }
+  .role-btn {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    background: #FEF2F2;
+    border: 1.5px solid #FECACA;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #8B0000;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    transition: all 0.15s ease;
+  }
+  .role-btn:hover { background: #FEE2E2; border-color: #C8102E; }
+  .role-btn .emoji { font-size: 18px; }
+  .modal-close {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    background: #F3F4F6;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    cursor: pointer;
+  }
+  .modal-close:hover { background: #E5E7EB; }
 
-/* ================= FOOTER ================= */
-.footer {
-  text-align: center;
-  font-size: 10px;
-  color: #9CA3AF;
-  margin-top: 20px;
-  letter-spacing: 0.3px;
-}
-.footer strong { color: #C8102E; font-weight: 700; }
+  /* ============ IKLAN LOADING ============ */
+  #iklanLoading {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: linear-gradient(135deg, #C8102E, #8B0000);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: iklanFadeIn 0.3s ease;
+    padding: 28px;
+    text-align: center;
+  }
+  #iklanLoading.show { display: flex; }
+  @keyframes iklanFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .iklan-box { max-width: 380px; width: 100%; }
+  .iklan-spinner {
+    width: 60px; height: 60px;
+    border: 4px solid rgba(255,255,255,0.2);
+    border-top-color: #FBBF24;
+    border-radius: 50%;
+    animation: iklanSpin 0.8s linear infinite;
+    margin: 0 auto 18px;
+  }
+  @keyframes iklanSpin { to { transform: rotate(360deg); } }
+  .iklan-title {
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .iklan-kata {
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-style: italic;
+    line-height: 1.55;
+    margin-bottom: 14px;
+  }
+  .iklan-sub {
+    color: rgba(255,255,255,0.85);
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  .iklan-footer {
+    color: rgba(255,255,255,0.6);
+    font-size: 11px;
+    margin-top: 16px;
+  }
 
-/* ================= MODAL DEMO ================= */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 9000;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  animation: iklanFadeIn 0.25s ease;
-}
-.modal-overlay.show { display: flex; }
-@keyframes iklanFadeIn { from { opacity: 0; } to { opacity: 1; } }
-.modal {
-  background: #fff;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 360px;
-  padding: 24px 20px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  animation: fadeUp 0.3s ease;
-}
-.modal h3 {
-  font-size: 16px;
-  font-weight: 800;
-  color: #C8102E;
-  text-align: center;
-  margin-bottom: 6px;
-}
-.modal p {
-  font-size: 11px;
-  color: #6B7280;
-  text-align: center;
-  margin-bottom: 18px;
-}
-.role-list { display: flex; flex-direction: column; gap: 8px; }
-.role-btn {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  background: #F9FAFB;
-  border: 1.5px solid #E5E7EB;
-  border-radius: 10px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  color: #1F2937;
-  text-align: left;
-  transition: all 0.2s ease;
-}
-.role-btn:active { transform: scale(0.98); }
-.role-btn:hover { border-color: #C8102E; background: #FEF2F2; }
-.role-icon {
-  width: 32px; height: 32px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  flex-shrink: 0;
-}
-.role-icon.owner    { background: linear-gradient(135deg, #FBBF24, #F59E0B); }
-.role-icon.admin    { background: linear-gradient(135deg, #C8102E, #8B0000); color:#fff; }
-.role-icon.kepala   { background: linear-gradient(135deg, #3B82F6, #1D4ED8); color:#fff; }
-.role-icon.karyawan { background: linear-gradient(135deg, #10B981, #047857); color:#fff; }
-.role-info { flex: 1; }
-.role-info small { display: block; font-weight: 400; font-size: 10px; color: #6B7280; margin-top: 2px; }
-.modal-close {
-  width: 100%;
-  margin-top: 12px;
-  padding: 11px;
-  background: #fff;
-  border: 1.5px solid #E5E7EB;
-  border-radius: 10px;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  color: #6B7280;
-  cursor: pointer;
-}
-.modal-close:active { background: #F3F4F6; }
-
-/* ================= IKLAN LOADING ================= */
-#iklanLoading {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: linear-gradient(135deg, #C8102E, #8B0000);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  text-align: center;
-  animation: iklanFadeIn 0.3s ease;
-}
-#iklanLoading.show { display: flex; }
-.iklan-box { max-width: 340px; width: 100%; }
-.iklan-spinner {
-  width: 60px; height: 60px;
-  border: 4px solid rgba(255,255,255,0.2);
-  border-top-color: #FBBF24;
-  border-radius: 50%;
-  animation: iklanSpin 0.8s linear infinite;
-  margin: 0 auto 20px;
-}
-@keyframes iklanSpin { to { transform: rotate(360deg); } }
-.iklan-title {
-  color: #fff;
-  font-size: 18px;
-  font-weight: 800;
-  margin-bottom: 14px;
-  letter-spacing: 0.3px;
-}
-.iklan-kata {
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.25);
-  color: #fff;
-  font-style: italic;
-  font-size: 12.5px;
-  font-weight: 400;
-  line-height: 1.6;
-  padding: 14px 16px;
-  border-radius: 12px;
-  margin-bottom: 14px;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
-.iklan-sub {
-  color: rgba(255,255,255,0.85);
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 20px;
-}
-.iklan-footer {
-  color: rgba(255,255,255,0.6);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  border-top: 1px solid rgba(255,255,255,0.15);
-  padding-top: 14px;
-}
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 360px) {
+    .card { padding: 22px 16px 20px; }
+    .judul { font-size: 19px; }
+    .logo-svg, .logo-wrap { width: 70px; height: 70px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ================= CARD LOGIN ================= -->
+<!-- ============ CARD LOGIN ============ -->
 <div class="card" id="cardLogin">
-
-  <!-- LOGO -->
   <div class="logo-wrap">
-    <span class="sparkle"></span>
-    <span class="sparkle"></span>
-    <span class="sparkle"></span>
-    <span class="sparkle"></span>
-    <span class="sparkle"></span>
     <svg width="80" height="80" viewBox="0 0 80 80" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="gradLogo" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -400,91 +368,71 @@ body {
         </linearGradient>
       </defs>
       <circle cx="40" cy="40" r="38" fill="url(#gradLogo)" stroke="url(#gradGold)" stroke-width="3"/>
-      <!-- Motor: 2 roda, bodi, setang -->
-      <g fill="none" stroke="url(#gradGold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <!-- Roda depan -->
-        <circle cx="24" cy="52" r="8"/>
+      <!-- Ikon motor sederhana -->
+      <g fill="none" stroke="url(#gradGold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <!-- Roda belakang -->
-        <circle cx="56" cy="52" r="8"/>
+        <circle cx="26" cy="52" r="7"/>
+        <!-- Roda depan -->
+        <circle cx="56" cy="52" r="7"/>
         <!-- Bodi / rangka -->
-        <path d="M24 52 L34 42 L46 42 L56 52"/>
+        <path d="M 26 52 L 34 40 L 46 40 L 52 48"/>
         <!-- Setang -->
-        <path d="M34 42 L38 32 L46 32"/>
-        <path d="M38 32 L34 28"/>
+        <path d="M 52 40 L 58 32 L 62 32"/>
         <!-- Jok -->
-        <path d="M44 38 L52 38"/>
+        <path d="M 34 40 L 42 36 L 50 36"/>
         <!-- Knalpot -->
-        <path d="M52 48 L60 50"/>
-        <!-- Lampu -->
-        <circle cx="24" cy="44" r="1.6" fill="url(#gradGold)"/>
+        <path d="M 30 48 L 22 52"/>
       </g>
     </svg>
+    <span class="sparkle s1"></span>
+    <span class="sparkle s2"></span>
+    <span class="sparkle s3"></span>
+    <span class="sparkle s4"></span>
+    <span class="sparkle s5"></span>
   </div>
 
-  <!-- TITLE -->
-  <div class="title">STEAM MP 7000</div>
-  <div class="tagline">Jujur · Disiplin · Tanggung Jawab</div>
-  <div class="tagline-2">HARGA MATI !</div>
+  <h1 class="judul">STEAM MP 7000</h1>
+  <p class="tagline">Jujur Disiplin Tanggung Jawab<br><b>HARGA MATI !</b></p>
 
-  <!-- ERROR -->
-  <div class="error" id="errorMsg"></div>
+  <div id="errorMsg"></div>
 
-  <!-- FORM -->
   <div class="field">
     <label for="inputId">ID Pengguna</label>
     <div class="input-wrap">
-      <input type="text" id="inputId" class="input" placeholder="Masukkan ID" autocomplete="username" inputmode="numeric">
+      <input type="text" id="inputId" placeholder="Masukkan ID" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false">
     </div>
   </div>
 
   <div class="field">
     <label for="inputPass">Password</label>
-    <div class="input-wrap has-toggle">
-      <input type="password" id="inputPass" class="input" placeholder="Masukkan password" autocomplete="current-password">
-      <button type="button" class="toggle-pass" id="togglePass" aria-label="Tampilkan password">👁</button>
+    <div class="input-wrap">
+      <input type="password" id="inputPass" placeholder="Masukkan password" autocomplete="current-password">
+      <button type="button" class="toggle-pass" id="togglePass" aria-label="Toggle password">👁</button>
     </div>
   </div>
 
-  <button class="btn btn-primary" id="btnMasuk">
-    <span class="btn-text">MASUK</span>
-    <span class="btn-spinner"></span>
+  <button type="button" class="btn btn-primary" id="btnMasuk">
+    <span id="btnMasukText">MASUK</span>
   </button>
+  <button type="button" class="btn btn-outline" id="btnDemo">COBA DEMO</button>
 
-  <button class="btn btn-outline" id="btnDemo">COBA DEMO</button>
-
-  <div class="footer">
-    <strong>Steam MP</strong> Manajemen © 2026
-  </div>
+  <div class="footer">Steam MP Manajemen © 2026</div>
 </div>
 
-<!-- ================= MODAL DEMO ================= -->
-<div class="modal-overlay" id="modalDemo">
-  <div class="modal">
+<!-- ============ MODAL DEMO ============ -->
+<div id="modalDemo">
+  <div class="modal-box">
     <h3>Pilih Mode Demo</h3>
-    <p>Jelajahi aplikasi tanpa perlu login</p>
-    <div class="role-list">
-      <button class="role-btn" data-role="Owner">
-        <div class="role-icon owner">👑</div>
-        <div class="role-info">Owner<small>Akses penuh semua fitur</small></div>
-      </button>
-      <button class="role-btn" data-role="Admin">
-        <div class="role-icon admin">🛡️</div>
-        <div class="role-info">Admin<small>Kelola data & approve</small></div>
-      </button>
-      <button class="role-btn" data-role="Kepala Toko">
-        <div class="role-icon kepala">🏪</div>
-        <div class="role-info">Kepala Toko<small>Kelola cabang</small></div>
-      </button>
-      <button class="role-btn" data-role="Karyawan">
-        <div class="role-icon karyawan">👷</div>
-        <div class="role-info">Karyawan<small>Input harian</small></div>
-      </button>
-    </div>
-    <button class="modal-close" id="btnCloseModal">Batal</button>
+    <p class="sub">Coba aplikasi tanpa login</p>
+    <button type="button" class="role-btn" data-role="Owner"><span class="emoji">👑</span> Demo Owner</button>
+    <button type="button" class="role-btn" data-role="Admin"><span class="emoji">🛠️</span> Demo Admin</button>
+    <button type="button" class="role-btn" data-role="Kepala Toko"><span class="emoji">🏪</span> Demo Kepala Toko</button>
+    <button type="button" class="role-btn" data-role="Karyawan"><span class="emoji">🧑‍🔧</span> Demo Karyawan</button>
+    <button type="button" class="modal-close" id="modalClose">Tutup</button>
   </div>
 </div>
 
-<!-- ================= IKLAN LOADING ================= -->
+<!-- ============ IKLAN LOADING ============ -->
 <div id="iklanLoading">
   <div class="iklan-box">
     <div class="iklan-spinner"></div>
@@ -495,16 +443,35 @@ body {
   </div>
 </div>
 
+<!-- ============ ERROR PANEL ============ -->
+<div id="errorPanel" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);padding:16px;overflow-y:auto;">
+  <div style="background:#fff;border-radius:16px;max-width:600px;margin:20px auto;padding:20px;font-family:'Poppins',sans-serif;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <span style="font-size:28px;">⚠️</span>
+      <h2 style="font-size:17px;font-weight:800;color:#B91C1C;">TERJADI ERROR</h2>
+    </div>
+    <div id="errPesan" style="font-family:monospace;font-size:12px;background:#FEF2F2;border-left:3px solid #C8102E;color:#B91C1C;padding:10px;border-radius:8px;word-break:break-word;margin-bottom:12px;max-height:180px;overflow-y:auto;"></div>
+    <div style="display:grid;gap:8px;">
+      <button type="button" id="errCopy" style="padding:10px;border:none;border-radius:8px;background:#F3F4F6;color:#374151;font-weight:600;font-size:13px;cursor:pointer;">📋 Salin Detail Error</button>
+      <button type="button" id="errDetail" style="padding:10px;border:none;border-radius:8px;background:#F3F4F6;color:#374151;font-weight:600;font-size:13px;cursor:pointer;">🔽 Lihat Detail</button>
+      <pre id="errDetailBox" style="display:none;font-family:monospace;font-size:11px;background:#1F2937;color:#F9FAFB;padding:10px;border-radius:8px;white-space:pre-wrap;word-break:break-word;max-height:240px;overflow-y:auto;margin:0;"></pre>
+      <button type="button" id="errWA" style="padding:10px;border:none;border-radius:8px;background:#25D366;color:#fff;font-weight:700;font-size:13px;cursor:pointer;">📱 Kirim ke WA Developer</button>
+      <button type="button" id="errTutup" style="padding:10px;border:none;border-radius:8px;background:#C8102E;color:#fff;font-weight:700;font-size:13px;cursor:pointer;">Tutup</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ============================================================
    KONFIGURASI
    ============================================================ */
-var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbyJXi0u41e5WtZ5-cNuhc6y1khhQ0__FkwCkfvIr6IfOjLcjHtkx1d37p3ePGg66pOc/exec';
+var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwba9bmC8vBPeTvluc5YrYp0fxdSdCoMIuRWnhxMYWCSLF4UB5JlPq1PZWN4JPB2j9L/exec';
 var TOKEN = 'steam-mp-7000-2026';
 var SESSION_KEY = 'steam_mp_session';
 var IKLAN_DURASI = 3000;
 var IKLAN_URL_MONETAG = 'https://omg10.com/4/11785165';
 var IKLAN_URL_ADSTERRA = 'https://www.profitableratecpmnetwork.com/q9qnyhdf9c?key=56f60182ff2837aef7d8e65616a77746';
+var WA_DEVELOPER = '6281525742110';
 
 /* ============================================================
    KATA IKLAN
@@ -581,109 +548,192 @@ var KATA_IKLAN_UMUM = [
 ];
 
 /* ============================================================
-   SESSION HELPERS
+   ERROR CATCHER
    ============================================================ */
-function getSession() {
+var _errorList = [];
+
+function _formatWaktu(ts) {
   try {
-    var raw = sessionStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_KEY);
-    if (!raw) return null;
-    var s = JSON.parse(raw);
-    if (!s || !s.login_time) { hapusSession(); return null; }
-    var age = Date.now() - Number(s.login_time);
-    var maxAge = s.is_demo ? (5 * 60 * 1000) : (8 * 60 * 60 * 1000);
-    if (age > maxAge) { hapusSession(); return null; }
-    return s;
-  } catch (e) {
-    hapusSession();
-    return null;
+    var d = new Date(ts);
+    var pad = function(n){ return n < 10 ? '0' + n : '' + n; };
+    return pad(d.getDate()) + '/' + pad(d.getMonth()+1) + '/' + d.getFullYear() + ', ' +
+           pad(d.getHours()) + '.' + pad(d.getMinutes()) + '.' + pad(d.getSeconds());
+  } catch (e) { return String(ts); }
+}
+
+function _buildErrorReport() {
+  var txt = '=== STEAM MP 7000 ERROR REPORT ===\n';
+  txt += 'Waktu: ' + _formatWaktu(Date.now()) + '\n';
+  txt += 'URL: ' + (window.location ? window.location.href : '-') + '\n';
+  txt += 'User Agent: ' + (navigator.userAgent || '-') + '\n';
+  txt += '=====================================\n\n';
+  for (var i = 0; i < _errorList.length; i++) {
+    var e = _errorList[i];
+    txt += '--- ERROR #' + (i + 1) + ' ---\n';
+    txt += 'Pesan: ' + (e.pesan || '-') + '\n';
+    if (e.detail) txt += 'Detail:\n' + e.detail + '\n';
+    if (e.file) txt += 'File: ' + e.file + '\n';
+    if (e.line) txt += 'Baris: ' + e.line + '\n';
+    if (e.stack) txt += 'Stack: ' + e.stack + '\n';
+    txt += 'Waktu: ' + _formatWaktu(e.waktu) + '\n\n';
   }
+  return txt;
 }
 
-function saveSession(obj) {
-  var str = JSON.stringify(obj);
-  try { sessionStorage.setItem(SESSION_KEY, str); } catch (e) {}
-  try { localStorage.setItem(SESSION_KEY, str); } catch (e) {}
+function _showErrorPanel(pesan) {
+  try {
+    var panel = document.getElementById('errorPanel');
+    var pesanEl = document.getElementById('errPesan');
+    if (!panel || !pesanEl) return;
+    pesanEl.textContent = pesan || 'Terjadi error tidak diketahui';
+    panel.style.display = 'block';
+  } catch (e) { /* abaikan */ }
 }
 
-function hapusSession() {
-  try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
-  try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
+function _catatError(pesan, detail, file, line, stack) {
+  var entry = {
+    pesan: pesan || 'Unknown error',
+    detail: detail || '',
+    file: file || '',
+    line: line || '',
+    stack: stack || '',
+    waktu: Date.now()
+  };
+  _errorList.push(entry);
+  _showErrorPanel(pesan);
+
+  // Kirim ke Log_Error (optional, tidak blocking)
+  try {
+    var sid = 'ERR-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+    apiPost('tulis_unik', {
+      sheet: 'Log_Error',
+      data: {
+        id_error: sid,
+        timestamp: new Date().toISOString(),
+        user_id: '',
+        user_nama: '',
+        pesan: String(pesan || '').slice(0, 500),
+        detail: String(detail || stack || '').slice(0, 1000),
+        url: window.location ? window.location.href : '',
+        user_agent: navigator.userAgent || '',
+        jenis: 'frontend',
+        dihapus: false
+      }
+    }).catch(function(){});
+  } catch (e) { /* abaikan */ }
 }
+
+window.onerror = function(msg, url, line, col, err) {
+  _catatError(
+    'JS Error: ' + msg,
+    err && err.message ? err.message : '',
+    url || '',
+    line ? (line + (col ? ':' + col : '')) : '',
+    err && err.stack ? err.stack : ''
+  );
+  return false;
+};
+
+window.addEventListener('unhandledrejection', function(ev) {
+  var reason = ev.reason;
+  var msg = reason && reason.message ? reason.message : String(reason);
+  _catatError(
+    'Promise Rejection: ' + msg,
+    reason && reason.stack ? reason.stack : '',
+    '', '', reason && reason.stack ? reason.stack : ''
+  );
+});
+
+// Override fetch untuk menangkap fetch error
+(function() {
+  if (typeof window.fetch !== 'function') return;
+  var _origFetch = window.fetch;
+  window.fetch = function() {
+    var args = arguments;
+    return _origFetch.apply(this, args).catch(function(err) {
+      _catatError('Fetch Error: ' + (err && err.message ? err.message : String(err)), '', '', '', err && err.stack ? err.stack : '');
+      throw err;
+    });
+  };
+})();
+
+// Handler panel error
+document.addEventListener('DOMContentLoaded', function() {
+  var panel = document.getElementById('errorPanel');
+  var btnCopy = document.getElementById('errCopy');
+  var btnDetail = document.getElementById('errDetail');
+  var btnWA = document.getElementById('errWA');
+  var btnTutup = document.getElementById('errTutup');
+  var detailBox = document.getElementById('errDetailBox');
+
+  if (btnCopy) {
+    btnCopy.addEventListener('click', function() {
+      var teks = _buildErrorReport();
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(teks).then(function(){
+            btnCopy.textContent = '✅ Tersalin!';
+            setTimeout(function(){ btnCopy.textContent = '📋 Salin Detail Error'; }, 1500);
+          }).catch(function(){
+            _fallbackCopy(teks);
+          });
+        } else {
+          _fallbackCopy(teks);
+        }
+      } catch (e) {
+        _fallbackCopy(teks);
+      }
+    });
+  }
+
+  function _fallbackCopy(teks) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = teks;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (btnCopy) {
+        btnCopy.textContent = '✅ Tersalin!';
+        setTimeout(function(){ btnCopy.textContent = '📋 Salin Detail Error'; }, 1500);
+      }
+    } catch (e) { /* abaikan */ }
+  }
+
+  if (btnDetail) {
+    btnDetail.addEventListener('click', function() {
+      if (!detailBox) return;
+      if (detailBox.style.display === 'none' || !detailBox.style.display) {
+        detailBox.textContent = _buildErrorReport();
+        detailBox.style.display = 'block';
+        btnDetail.textContent = '🔼 Sembunyikan Detail';
+      } else {
+        detailBox.style.display = 'none';
+        btnDetail.textContent = '🔽 Lihat Detail';
+      }
+    });
+  }
+
+  if (btnWA) {
+    btnWA.addEventListener('click', function() {
+      var teks = _buildErrorReport();
+      var url = 'https://wa.me/' + WA_DEVELOPER + '?text=' + encodeURIComponent(teks);
+      try { window.open(url, '_blank'); } catch (e) { window.location.href = url; }
+    });
+  }
+
+  if (btnTutup) {
+    btnTutup.addEventListener('click', function() {
+      if (panel) panel.style.display = 'none';
+    });
+  }
+});
 
 /* ============================================================
-   UI HELPERS
-   ============================================================ */
-function showError(msg) {
-  var el = document.getElementById('errorMsg');
-  el.textContent = msg;
-  el.classList.remove('show');
-  // force reflow untuk restart animasi
-  void el.offsetWidth;
-  el.classList.add('show');
-}
-function hideError() {
-  document.getElementById('errorMsg').classList.remove('show');
-}
-
-function setLoading(loading) {
-  var btn = document.getElementById('btnMasuk');
-  if (loading) {
-    btn.classList.add('loading');
-    btn.disabled = true;
-  } else {
-    btn.classList.remove('loading');
-    btn.disabled = false;
-  }
-}
-
-/* ============================================================
-   IKLAN
-   ============================================================ */
-function getUrlIklanRandom() {
-  return Math.random() < 0.5 ? IKLAN_URL_MONETAG : IKLAN_URL_ADSTERRA;
-}
-
-function triggerIklan() {
-  try {
-    var url = getUrlIklanRandom();
-    window.open(url, '_blank');
-  } catch (e) {}
-  try {
-    if (window.AndroidAds && typeof window.AndroidAds.showInterstitial === 'function') {
-      window.AndroidAds.showInterstitial();
-    }
-  } catch (e) {}
-  try { localStorage.setItem('last_ad_klik', Date.now().toString()); } catch (e) {}
-}
-
-function getKataIklanRandom(isAdmin) {
-  var arr = isAdmin ? KATA_IKLAN_ADMIN : KATA_IKLAN_UMUM;
-  var last = -1;
-  try { last = parseInt(localStorage.getItem('last_kata_iklan') || '-1', 10); } catch (e) {}
-  var idx = Math.floor(Math.random() * arr.length);
-  if (arr.length > 1 && idx === last) {
-    idx = (idx + 1) % arr.length;
-  }
-  try { localStorage.setItem('last_kata_iklan', idx.toString()); } catch (e) {}
-  return arr[idx];
-}
-
-function tampilkanLoadingIklan(kata) {
-  var el = document.getElementById('iklanLoading');
-  document.getElementById('iklanKata').textContent = kata;
-  el.classList.add('show');
-}
-
-function tutupLoadingIklan() {
-  var el = document.getElementById('iklanLoading');
-  el.classList.remove('show');
-  setTimeout(function() {
-    // tidak dihapus, hanya disembunyikan
-  }, 300);
-}
-
-/* ============================================================
-   API
+   HELPER API
    ============================================================ */
 async function apiPost(action, data) {
   try {
@@ -695,39 +745,133 @@ async function apiPost(action, data) {
       redirect: 'follow'
     });
     var text = await res.text();
-    try {
-      return JSON.parse(text);
-    } catch (e) {
-      return { ok: false, pesan: 'Respon server tidak valid', data: [] };
-    }
+    try { return JSON.parse(text); }
+    catch (e) { return { ok: false, pesan: 'Respon server tidak valid', data: [] }; }
   } catch (e) {
     return { ok: false, pesan: 'Koneksi gagal: ' + e.message, data: [] };
   }
 }
 
 /* ============================================================
-   LOGIN
+   SESSION
+   ============================================================ */
+function getSession() {
+  var raw = null;
+  try { raw = sessionStorage.getItem(SESSION_KEY); } catch (e) { /* abaikan */ }
+  if (!raw) {
+    try { raw = localStorage.getItem(SESSION_KEY); } catch (e) { /* abaikan */ }
+  }
+  if (!raw) return null;
+  var s = null;
+  try { s = JSON.parse(raw); } catch (e) { return null; }
+  if (!s || typeof s !== 'object') return null;
+  if (!s.login_time) return null;
+  var batas = s.is_demo ? (5 * 60 * 1000) : (8 * 60 * 60 * 1000);
+  if (Date.now() - s.login_time > batas) {
+    try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+    try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
+    return null;
+  }
+  return s;
+}
+
+function saveSession(obj) {
+  var raw = JSON.stringify(obj);
+  try { sessionStorage.setItem(SESSION_KEY, raw); } catch (e) { /* abaikan */ }
+  try { localStorage.setItem(SESSION_KEY, raw); } catch (e) { /* abaikan */ }
+}
+
+/* ============================================================
+   UI HELPER
+   ============================================================ */
+function showError(msg) {
+  var el = document.getElementById('errorMsg');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  el.classList.remove('show');
+  // trigger reflow untuk re-animasi
+  void el.offsetWidth;
+  el.classList.add('show');
+}
+
+function hideError() {
+  var el = document.getElementById('errorMsg');
+  if (el) el.classList.remove('show');
+}
+
+function getUrlIklanRandom() {
+  return Math.random() < 0.5 ? IKLAN_URL_MONETAG : IKLAN_URL_ADSTERRA;
+}
+
+function triggerIklan() {
+  try { window.open(getUrlIklanRandom(), '_blank'); } catch (e) { /* abaikan */ }
+  try {
+    if (window.AndroidAds && typeof window.AndroidAds.showInterstitial === 'function') {
+      window.AndroidAds.showInterstitial();
+    }
+  } catch (e) { /* abaikan */ }
+  try { localStorage.setItem('last_ad_klik', Date.now().toString()); } catch (e) {}
+}
+
+function getKataIklanRandom(isAdmin) {
+  var arr = isAdmin ? KATA_IKLAN_ADMIN : KATA_IKLAN_UMUM;
+  var idx = Math.floor(Math.random() * arr.length);
+  try {
+    var last = parseInt(localStorage.getItem('last_kata_iklan') || '-1', 10);
+    var tries = 0;
+    while (idx === last && arr.length > 1 && tries < 5) {
+      idx = Math.floor(Math.random() * arr.length);
+      tries++;
+    }
+    localStorage.setItem('last_kata_iklan', String(idx));
+  } catch (e) { /* abaikan */ }
+  return arr[idx];
+}
+
+function tampilkanLoadingIklan(kata) {
+  var el = document.getElementById('iklanLoading');
+  var kataEl = document.getElementById('iklanKata');
+  if (kataEl) kataEl.textContent = kata || 'Memuat...';
+  if (el) el.classList.add('show');
+}
+
+function tutupLoadingIklan() {
+  var el = document.getElementById('iklanLoading');
+  if (el) el.classList.remove('show');
+}
+
+/* ============================================================
+   LOGIKA LOGIN
    ============================================================ */
 async function prosesLogin() {
   hideError();
-  var idVal = document.getElementById('inputId').value.trim();
-  var passVal = document.getElementById('inputPass').value.trim();
+  var inputId = document.getElementById('inputId');
+  var inputPass = document.getElementById('inputPass');
+  var btnMasuk = document.getElementById('btnMasuk');
+  var btnText = document.getElementById('btnMasukText');
 
-  if (!idVal) { showError('ID Pengguna wajib diisi'); return; }
-  if (!passVal) { showError('Password wajib diisi'); return; }
+  var idVal = (inputId.value || '').trim();
+  var passVal = (inputPass.value || '').trim();
 
-  setLoading(true);
+  if (!idVal) { showError('ID tidak boleh kosong'); inputId.focus(); return; }
+  if (!passVal) { showError('Password tidak boleh kosong'); inputPass.focus(); return; }
+
+  btnMasuk.disabled = true;
+  btnText.innerHTML = '<span class="spinner"></span> Memeriksa...';
 
   var res = await apiPost('baca', { sheet: 'Users' });
 
   if (!res || !res.ok) {
-    setLoading(false);
-    showError(res && res.pesan ? res.pesan : 'Gagal terhubung ke server');
+    showError((res && res.pesan) ? res.pesan : 'Gagal menghubungi server');
+    btnMasuk.disabled = false;
+    btnText.textContent = 'MASUK';
     return;
   }
   if (!Array.isArray(res.data)) {
-    setLoading(false);
     showError('Respons tidak valid');
+    btnMasuk.disabled = false;
+    btnText.textContent = 'MASUK';
     return;
   }
 
@@ -735,27 +879,27 @@ async function prosesLogin() {
   for (var i = 0; i < res.data.length; i++) {
     var u = res.data[i];
     if (!u) continue;
-    var uid = String(u.id || '').trim();
-    var upass = String(u.password || '').trim();
-    var ustatus = String(u.status || '').toLowerCase();
-    var udel = u.dihapus;
-    var isDeleted = (udel === true) || (String(udel).toLowerCase() === 'true');
-
-    if (uid === idVal && upass === passVal && ustatus === 'aktif' && !isDeleted) {
+    var uid = String(u.id === undefined || u.id === null ? '' : u.id).trim();
+    var upass = String(u.password === undefined || u.password === null ? '' : u.password).trim();
+    var ustatus = String(u.status === undefined || u.status === null ? '' : u.status).toLowerCase().trim();
+    var udel = String(u.dihapus === undefined || u.dihapus === null ? '' : u.dihapus).toLowerCase().trim();
+    if (uid === idVal && upass === passVal && ustatus === 'aktif' && udel !== 'true') {
       found = u;
       break;
     }
   }
 
   if (!found) {
-    setLoading(false);
     showError('ID atau Password salah');
+    btnMasuk.disabled = false;
+    btnText.textContent = 'MASUK';
     return;
   }
 
+  // Buat session dengan FIELD WAJIB
   var session = {
-    user_id: String(found.id),
-    user_nama: String(found.nama || found.id),
+    user_id: String(found.id || ''),
+    user_nama: String(found.nama || found.id || ''),
     user_jabatan: String(found.jabatan || 'Karyawan'),
     kode_cabang: String(found.kode_cabang || '-'),
     is_demo: false,
@@ -763,15 +907,16 @@ async function prosesLogin() {
   };
   saveSession(session);
 
-  // Owner → langsung dashboard
-  if (session.user_jabatan === 'Owner') {
+  var jabatan = session.user_jabatan.toLowerCase();
+  if (jabatan === 'owner') {
+    // Langsung redirect tanpa iklan
     window.location.href = 'dashboard.html';
     return;
   }
 
-  // Selain Owner → tampil iklan 3 detik
-  var kata = getKataIklanRandom(true);
-  tampilkanLoadingIklan(kata);
+  // Non-owner → loading iklan 3 detik
+  var isAdmin = (jabatan === 'admin');
+  tampilkanLoadingIklan(getKataIklanRandom(isAdmin));
   triggerIklan();
 
   setTimeout(function() {
@@ -781,16 +926,9 @@ async function prosesLogin() {
 }
 
 /* ============================================================
-   DEMO
+   LOGIKA DEMO
    ============================================================ */
-function bukaModalDemo() {
-  document.getElementById('modalDemo').classList.add('show');
-}
-function tutupModalDemo() {
-  document.getElementById('modalDemo').classList.remove('show');
-}
-
-function pilihRoleDemo(role) {
+function buatSessionDemo(role) {
   var session = {
     user_id: 'demo_' + role.toLowerCase().replace(/\s/g, '_'),
     user_nama: 'Demo ' + role,
@@ -800,10 +938,8 @@ function pilihRoleDemo(role) {
     login_time: Date.now()
   };
   saveSession(session);
-  tutupModalDemo();
 
-  var kata = getKataIklanRandom(false);
-  tampilkanLoadingIklan(kata);
+  tampilkanLoadingIklan(getKataIklanRandom(false));
   triggerIklan();
 
   setTimeout(function() {
@@ -813,68 +949,101 @@ function pilihRoleDemo(role) {
 }
 
 /* ============================================================
-   INIT
+   INISIALISASI
    ============================================================ */
-(function init() {
-  // Cek session — kalau ada & valid, langsung dashboard
-  var existing = getSession();
-  if (existing && existing.user_id) {
+document.addEventListener('DOMContentLoaded', function() {
+  // Cek session existing
+  var s = getSession();
+  if (s && s.user_id) {
     window.location.href = 'dashboard.html';
     return;
   }
 
-  // Toggle password
-  var toggle = document.getElementById('togglePass');
+  var inputId = document.getElementById('inputId');
   var inputPass = document.getElementById('inputPass');
-  toggle.addEventListener('click', function() {
-    if (inputPass.type === 'password') {
-      inputPass.type = 'text';
-      toggle.textContent = '🙈';
-    } else {
-      inputPass.type = 'password';
-      toggle.textContent = '👁';
-    }
-  });
+  var btnMasuk = document.getElementById('btnMasuk');
+  var btnDemo = document.getElementById('btnDemo');
+  var togglePass = document.getElementById('togglePass');
+  var modalDemo = document.getElementById('modalDemo');
+  var modalClose = document.getElementById('modalClose');
 
-  // Enter di ID → focus password
-  document.getElementById('inputId').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      inputPass.focus();
-    }
-  });
+  // Enter di ID → focus ke password
+  if (inputId) {
+    inputId.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (inputPass) inputPass.focus();
+      }
+    });
+  }
 
-  // Enter di password → klik MASUK
-  inputPass.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      prosesLogin();
-    }
-  });
+  // Enter di Password → klik MASUK
+  if (inputPass) {
+    inputPass.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        prosesLogin();
+      }
+    });
+  }
 
-  // Tombol MASUK
-  document.getElementById('btnMasuk').addEventListener('click', prosesLogin);
+  // Klik MASUK
+  if (btnMasuk) {
+    btnMasuk.addEventListener('click', prosesLogin);
+  }
 
-  // Tombol DEMO
-  document.getElementById('btnDemo').addEventListener('click', bukaModalDemo);
+  // Toggle password
+  if (togglePass && inputPass) {
+    togglePass.addEventListener('click', function() {
+      if (inputPass.type === 'password') {
+        inputPass.type = 'text';
+        togglePass.textContent = '🙈';
+      } else {
+        inputPass.type = 'password';
+        togglePass.textContent = '👁';
+      }
+    });
+  }
 
-  // Role demo
+  // Buka modal demo
+  if (btnDemo && modalDemo) {
+    btnDemo.addEventListener('click', function() {
+      modalDemo.classList.add('show');
+    });
+  }
+
+  // Tutup modal demo
+  if (modalClose && modalDemo) {
+    modalClose.addEventListener('click', function() {
+      modalDemo.classList.remove('show');
+    });
+  }
+  if (modalDemo) {
+    modalDemo.addEventListener('click', function(e) {
+      if (e.target === modalDemo) modalDemo.classList.remove('show');
+    });
+  }
+
+  // Klik role demo
   var roleBtns = document.querySelectorAll('.role-btn');
   for (var i = 0; i < roleBtns.length; i++) {
     (function(btn) {
       btn.addEventListener('click', function() {
         var role = btn.getAttribute('data-role');
-        pilihRoleDemo(role);
+        if (modalDemo) modalDemo.classList.remove('show');
+        if (role) buatSessionDemo(role);
       });
     })(roleBtns[i]);
   }
 
-  // Close modal
-  document.getElementById('btnCloseModal').addEventListener('click', tutupModalDemo);
-  document.getElementById('modalDemo').addEventListener('click', function(e) {
-    if (e.target === this) tutupModalDemo();
+  // Offline / online
+  window.addEventListener('offline', function() {
+    showError('Tidak ada koneksi internet');
   });
-})();
+  window.addEventListener('online', function() {
+    hideError();
+  });
+});
 </script>
 </body>
 </html>

@@ -16,9 +16,7 @@ body{
   background:#F9FAFB;color:#1F2937;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
-  /* RUANG UNTUK HEADER */
   padding-top:calc(60px + env(safe-area-inset-top));
-  /* RUANG UNTUK BOTTOM NAV — DIPERBESAR AGAR TIDAK MENUTUPI */
   padding-bottom:calc(110px + env(safe-area-inset-bottom));
 }
 
@@ -368,7 +366,6 @@ tr:last-child td{border-bottom:none}
   .main{padding:20px 20px 24px}
 }
 
-/* ===== SCROLL PADDING EXTRA (ANTI TERTUTUP) ===== */
 .scroll-pad-bottom{height:20px}
 </style>
 </head>
@@ -418,7 +415,8 @@ var TOKEN = 'steam-mp-7000-2026';
 var SESSION_KEY = 'steam_mp_session';
 var IKLAN_DURASI = 3000;
 var IKLAN_DURASI_REWARDED = 5000;
-var IKLAN_COOLDOWN = 5000;
+var IKLAN_COOLDOWN = 30000;      // ← DIPERBESAR dari 5 detik ke 30 detik
+var IKLAN_NAV_THRESHOLD = 6;     // ← DIPERBESAR dari 2 ke 6 navigasi
 var IKLAN_URL_MONETAG = 'https://omg10.com/4/11785165';
 var IKLAN_URL_ADSTERRA = 'https://www.profitableratecpmnetwork.com/q9qnyhdf9c?key=56f60182ff2837aef7d8e65616a77746';
 var WA_DEVELOPER = '6281525742110';
@@ -713,9 +711,9 @@ function renderBottomNav(activeId) {
 }
 
 // ============================================================
-// IKLAN
+// IKLAN — VERSI LEBIH LEMBUT (TIDAK MENGGANGGU MOBILITAS)
 // ============================================================
-var iklanState = { lastShow: 0, navigasiCount: 0, klikMenuCount: 0 };
+var iklanState = { lastShow: 0, navigasiCount: 0 };
 function bisaIklan() { return !isOwner(); }
 function bolehIklan() {
   if (!bisaIklan()) return false;
@@ -754,22 +752,16 @@ function paksaIklan(callback, jenis) {
     if (callback) callback();
   }, durasi);
 }
+// Hanya dipanggil tiap 6 navigasi (bukan 2)
 function cekIklanNavigasi() {
   if (!bisaIklan()) return;
   iklanState.navigasiCount++;
-  if (iklanState.navigasiCount >= 2) {
+  if (iklanState.navigasiCount >= IKLAN_NAV_THRESHOLD) {
     iklanState.navigasiCount = 0;
     if (bolehIklan()) paksaIklan(function(){}, 'interstitial');
   }
 }
-function cekIklanKlikMenu() {
-  if (!bisaIklan()) return;
-  iklanState.klikMenuCount++;
-  if (iklanState.klikMenuCount >= 2) {
-    iklanState.klikMenuCount = 0;
-    if (bolehIklan()) paksaIklan(function(){}, 'interstitial');
-  }
-}
+// Fungsi klik menu dihilangkan total — tidak ada iklan saat klik menu
 
 var KATA_IKLAN_ADMIN = [
   "Bentar ya, iklan dulu... Aplikasi ini buat keluarga kami yang lagi berjuang. Tonton ya, itu udah bantu banget 💛",
@@ -911,7 +903,6 @@ async function navigasi(pageId) {
       case 'profil': await renderProfil(main); break;
       default: main.innerHTML = '<div class="empty"><div class="em-ic">🚧</div><div class="em-txt">Halaman belum tersedia</div></div>';
     }
-    // Tambah spacer bawah agar tidak tertutup bottom nav
     main.insertAdjacentHTML('beforeend', '<div class="scroll-pad-bottom"></div>');
   } catch(e) {
     console.error('Render error:', e);
@@ -1012,7 +1003,7 @@ async function renderHome(el) {
   else if (isAdmin()) donTeks = 'Setiap iklan yang kamu tonton bantu keluarga kami sedikit demi sedikit. Terima kasih 🙏';
   else donTeks = 'Kalau kamu mau bantu mimin, tonton 1 iklan tambahan ya. Nanti mimin beliin bakso (becanda)';
   html += '<div class="card-donasi">';
-  html += '<div class="don-head">💛 DUKUNG APLIKASI INI</div>';
+  html += '<div class="don-head">💛 DUKUNG APLIKASI INI (OPSIONAL)</div>';
   html += '<div class="don-teks">' + esc(donTeks) + '</div>';
   html += '<button class="btn btn-gold" onclick="donasiIklan()">📺 Tonton Iklan Sebagai Donasi</button>';
   html += '</div>';
@@ -1020,16 +1011,12 @@ async function renderHome(el) {
   el.innerHTML = html;
 }
 
+// Klik menu — TIDAK ADA iklan lagi, langsung navigasi
 function klikMenu(menuId) {
-  cekIklanKlikMenu();
-  var iklanMenu = ['payroll','hr','setoran','operasional','laporan','manusia','dana_expansi','biaya_sewa','konfirmasi_setoran'];
-  if (iklanMenu.indexOf(menuId) !== -1 && bolehIklan()) {
-    paksaIklan(function() { navigasi(menuId); }, 'interstitial');
-    return;
-  }
   navigasi(menuId);
 }
 
+// Donasi iklan — manual, user yang klik sendiri
 function donasiIklan() {
   paksaIklan(function() {
     showToast('Terima kasih sudah dukung mimin! 💛', 'success');
@@ -2662,7 +2649,7 @@ async function tabHR(btn, tab) {
 async function renderProfil(el) {
   if (!el) return;
   var s = getSession();
-  var note = isOwner() ? 'Owner bebas iklan mutlak.' : 'Iklan wajib untuk role Anda.';
+  var note = isOwner() ? 'Owner bebas iklan mutlak.' : 'Iklan hanya muncul sesekali, tidak akan mengganggu.';
   var html = '<div class="card"><div class="card-title"><span class="ic">👤</span>Profil</div>';
   html += '<div class="info-row"><span class="ir-label">ID</span><span class="ir-val">' + esc(s.user_id) + '</span></div>';
   html += '<div class="info-row"><span class="ir-label">Nama</span><span class="ir-val">' + esc(s.user_nama) + '</span></div>';

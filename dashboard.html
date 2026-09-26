@@ -10,352 +10,197 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; }
+html { height: 100%; }
 body {
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #F3F4F6;
+  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+  background: #F9FAFB;
   color: #1F2937;
   padding-top: 64px;
-  padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(180px + env(safe-area-inset-bottom));
+  -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  width: 100%;
+  min-height: 100%;
   font-size: 14px;
   line-height: 1.5;
 }
 
-/* ═══════════ HEADER ═══════════ */
+/* HEADER */
 .header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 64px;
+  position: fixed; top: 0; left: 0; right: 0; height: 60px;
   background: linear-gradient(135deg, #C8102E, #8B0000);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 14px;
-  z-index: 100;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 14px; z-index: 950;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }
 .header-left { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
 .header-logo {
-  width: 38px; height: 38px;
-  border-radius: 50%;
+  width: 36px; height: 36px; border-radius: 50%;
   background: linear-gradient(135deg, #C8102E, #8B0000);
   border: 2px solid #FBBF24;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 12px;
-  color: #FBBF24;
-  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 11px; color: #FBBF24; flex-shrink: 0;
 }
 .header-info { min-width: 0; flex: 1; }
 .header-info .nama {
-  font-size: 13px;
-  font-weight: 700;
-  color: #ffffff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 13px; font-weight: 700; color: #fff;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.header-info .jabatan {
-  font-size: 10px;
-  color: #FBBF24;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-}
+.header-info .jabatan { font-size: 10px; color: #FBBF24; font-weight: 500; }
 .header-actions { display: flex; gap: 6px; }
 .header-btn {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  border: none;
-  color: #ffffff;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,.15); border: none; color: #fff;
+  font-size: 15px; cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
 }
-.header-btn:active { background: rgba(255,255,255,0.3); }
+.header-btn:active { background: rgba(255,255,255,.3); }
 
-/* ═══════════ MAIN ═══════════ */
-.main { padding: 14px; max-width: 720px; margin: 0 auto; }
+/* MAIN */
+.main { padding: 16px; max-width: 1100px; margin: 0 auto; }
 
-/* ═══════════ CARD ═══════════ */
+/* CARD */
 .card {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 14px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  margin-bottom: 12px;
+  background: #fff; border-radius: 12px; padding: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06); margin-bottom: 12px;
 }
 .card-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #1F2937;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  font-size: 14px; font-weight: 700; color: #1F2937;
+  margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
 }
 .card-title .em { font-size: 16px; }
 
-/* ═══════════ GREETING ═══════════ */
+/* GREETING */
 .greeting {
   background: linear-gradient(135deg, #C8102E, #8B0000);
-  color: #ffffff;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 12px rgba(200,16,46,0.2);
+  color: #fff; border-radius: 12px; padding: 16px;
+  margin-bottom: 12px; box-shadow: 0 4px 12px rgba(200,16,46,.2);
 }
 .greeting h2 { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
-.greeting p { font-size: 12px; opacity: 0.85; }
+.greeting p { font-size: 12px; opacity: .85; }
 .greeting .demo-badge {
-  display: inline-block;
-  background: #FBBF24;
-  color: #8B0000;
-  font-size: 9px;
-  font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 10px;
-  margin-top: 6px;
-  letter-spacing: 0.5px;
+  display: inline-block; background: #FBBF24; color: #8B0000;
+  font-size: 9px; font-weight: 800; padding: 2px 8px;
+  border-radius: 10px; margin-top: 6px; letter-spacing: .5px;
 }
 
-/* ═══════════ STAT ═══════════ */
+/* STAT */
 .stat-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 12px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; margin-bottom: 12px;
 }
 .stat-card {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  background: #fff; border-radius: 12px; padding: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
 }
-.stat-card .label {
-  font-size: 10px;
-  color: #6B7280;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  margin-bottom: 4px;
-}
-.stat-card .value {
-  font-size: 16px;
-  font-weight: 800;
-  color: #C8102E;
-}
+.stat-card .label { font-size: 10px; color: #6B7280; font-weight: 600; margin-bottom: 4px; }
+.stat-card .value { font-size: 16px; font-weight: 800; color: #C8102E; }
 .stat-card .value.gold { color: #B45309; }
 .stat-card .sub { font-size: 10px; color: #9CA3AF; margin-top: 2px; }
 
-/* ═══════════ MOTIVASI ═══════════ */
+/* MOTIVASI */
 .motivasi-card {
   background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-  border-left: 4px solid #F59E0B;
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 12px;
-  font-size: 13px;
-  font-style: italic;
-  color: #78350F;
-  font-weight: 500;
-  line-height: 1.5;
+  border-left: 4px solid #F59E0B; border-radius: 12px;
+  padding: 14px; margin-bottom: 12px; font-size: 13px;
+  font-style: italic; color: #78350F; font-weight: 500; line-height: 1.5;
 }
 
-/* ═══════════ DANA EXPANSI ═══════════ */
+/* DANA */
 .dana-card {
   background: linear-gradient(135deg, #C8102E, #8B0000);
-  color: #ffffff;
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 12px rgba(200,16,46,0.2);
+  color: #fff; border-radius: 12px; padding: 14px;
+  margin-bottom: 12px; box-shadow: 0 4px 12px rgba(200,16,46,.2);
 }
-.dana-card .label { font-size: 11px; opacity: 0.85; font-weight: 500; }
+.dana-card .label { font-size: 11px; opacity: .85; font-weight: 500; }
 .dana-card .value { font-size: 20px; font-weight: 800; margin: 4px 0 8px; color: #FBBF24; }
-.progress-bar {
-  height: 6px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #FBBF24, #F59E0B);
-  border-radius: 3px;
-  transition: width 0.3s ease;
-}
+.progress-bar { height: 6px; background: rgba(255,255,255,.2); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #FBBF24, #F59E0B); border-radius: 3px; transition: width .3s; }
 
-/* ═══════════ MENU GRID ═══════════ */
+/* MENU GRID */
 .menu-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 12px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 12px;
 }
 .menu-item {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 14px 12px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  cursor: pointer;
-  transition: transform 0.15s ease;
-  border: 1.5px solid transparent;
-  position: relative;
+  background: #fff; border-radius: 12px; padding: 14px 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06); cursor: pointer;
+  transition: transform .15s; border: 1.5px solid transparent;
 }
-.menu-item:active { transform: scale(0.97); }
+.menu-item:active { transform: scale(.97); }
 .menu-item.hl { border-color: #FBBF24; }
-.menu-item .ic {
-  font-size: 24px;
-  margin-bottom: 8px;
-  display: block;
-}
-.menu-item .nama {
-  font-size: 13px;
-  font-weight: 700;
-  color: #1F2937;
-  margin-bottom: 2px;
-}
-.menu-item .desc {
-  font-size: 10px;
-  color: #9CA3AF;
-  line-height: 1.3;
-}
+.menu-item .ic { font-size: 24px; margin-bottom: 8px; display: block; }
+.menu-item .nama { font-size: 13px; font-weight: 700; color: #1F2937; margin-bottom: 2px; }
+.menu-item .desc { font-size: 10px; color: #9CA3AF; line-height: 1.3; }
 
-/* ═══════════ TABS ═══════════ */
+/* TABS */
 .tabs {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  padding-bottom: 8px;
-  margin-bottom: 12px;
-  scrollbar-width: none;
+  display: flex; gap: 6px; overflow-x: auto;
+  padding-bottom: 8px; margin-bottom: 12px; scrollbar-width: none;
 }
 .tabs::-webkit-scrollbar { display: none; }
 .tab {
-  flex-shrink: 0;
-  padding: 8px 14px;
-  background: #ffffff;
-  border: 1.5px solid #E5E7EB;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #6B7280;
-  cursor: pointer;
-  white-space: nowrap;
+  flex-shrink: 0; padding: 8px 14px; background: #fff;
+  border: 1.5px solid #E5E7EB; border-radius: 20px;
+  font-size: 12px; font-weight: 600; color: #6B7280;
+  cursor: pointer; white-space: nowrap;
 }
 .tab.active {
   background: linear-gradient(135deg, #C8102E, #A00D25);
-  color: #ffffff;
-  border-color: #C8102E;
+  color: #fff; border-color: #C8102E;
 }
 
-/* ═══════════ FORM ═══════════ */
+/* FORM */
 .field { margin-bottom: 12px; }
 .field label {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 4px;
+  display: block; font-size: 11px; font-weight: 600;
+  color: #374151; margin-bottom: 4px;
 }
 .field input, .field select, .field textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1.5px solid #E5E7EB;
-  border-radius: 8px;
-  font-size: 13px;
-  font-family: inherit;
-  font-weight: 500;
-  color: #1F2937;
-  background: #ffffff;
-  outline: none;
-  transition: border-color 0.2s;
+  width: 100%; padding: 10px 12px;
+  border: 1.5px solid #E5E7EB; border-radius: 8px;
+  font-size: 13px; font-family: inherit; font-weight: 500;
+  color: #1F2937; background: #fff; outline: none;
+  transition: border-color .2s;
 }
-.field input:focus, .field select:focus, .field textarea:focus {
-  border-color: #C8102E;
-}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: #C8102E; }
 .field textarea { resize: vertical; min-height: 60px; }
 
-/* ═══════════ BUTTONS ═══════════ */
+/* BUTTONS */
 .btn {
-  padding: 11px 16px;
-  border: none;
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  padding: 11px 16px; border: none; border-radius: 8px;
+  font-family: inherit; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all .15s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
 }
 .btn:active:not(:disabled) { transform: translateY(1px); }
-.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn:disabled { opacity: .6; cursor: not-allowed; }
 .btn-block { width: 100%; }
-.btn-primary {
-  background: linear-gradient(135deg, #C8102E, #A00D25);
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(200,16,46,0.25);
-}
-.btn-gold {
-  background: linear-gradient(135deg, #FBBF24, #F59E0B);
-  color: #78350F;
-}
-.btn-outline {
-  background: #ffffff;
-  color: #C8102E;
-  border: 1.5px solid #C8102E;
-}
-.btn-danger {
-  background: #DC2626;
-  color: #ffffff;
-}
-.btn-gray {
-  background: #F3F4F6;
-  color: #4B5563;
-}
+.btn-primary { background: linear-gradient(135deg, #C8102E, #A00D25); color: #fff; box-shadow: 0 2px 8px rgba(200,16,46,.25); }
+.btn-gold { background: linear-gradient(135deg, #FBBF24, #F59E0B); color: #78350F; }
+.btn-outline { background: #fff; color: #C8102E; border: 1.5px solid #C8102E; }
+.btn-danger { background: #DC2626; color: #fff; }
+.btn-gray { background: #F3F4F6; color: #4B5563; }
 .btn-sm { padding: 7px 12px; font-size: 11px; }
 
-/* ═══════════ TABLE ═══════════ */
+/* TABLE */
 .table-wrap { overflow-x: auto; margin-bottom: 12px; }
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-}
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
 table th {
-  background: #F9FAFB;
-  padding: 8px 10px;
-  text-align: left;
-  font-weight: 700;
-  color: #374151;
-  font-size: 11px;
-  border-bottom: 2px solid #E5E7EB;
-  white-space: nowrap;
+  background: #F9FAFB; padding: 8px 10px; text-align: left;
+  font-weight: 700; color: #374151; font-size: 11px;
+  border-bottom: 2px solid #E5E7EB; white-space: nowrap;
 }
 table td {
-  padding: 8px 10px;
-  border-bottom: 1px solid #F3F4F6;
-  color: #4B5563;
-  vertical-align: top;
+  padding: 8px 10px; border-bottom: 1px solid #F3F4F6;
+  color: #4B5563; vertical-align: top;
 }
 table tr:last-child td { border-bottom: none; }
 
-/* ═══════════ BADGE ═══════════ */
+/* BADGE */
 .badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 10px;
-  font-weight: 700;
-  white-space: nowrap;
+  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  font-size: 10px; font-weight: 700; white-space: nowrap;
 }
 .badge-green { background: #D1FAE5; color: #065F46; }
 .badge-yellow { background: #FEF3C7; color: #92400E; }
@@ -363,61 +208,37 @@ table tr:last-child td { border-bottom: none; }
 .badge-blue { background: #DBEAFE; color: #1E40AF; }
 .badge-gray { background: #F3F4F6; color: #4B5563; }
 
-/* ═══════════ BOTTOM NAV ═══════════ */
+/* BOTTOM NAV */
 .bottom-nav {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  background: #ffffff;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 900;
+  background: #fff; border-top: 1px solid #F3F4F6;
+  box-shadow: 0 -2px 12px rgba(0,0,0,.06);
   display: flex;
-  justify-content: space-around;
-  padding: 8px 0 calc(8px + env(safe-area-inset-bottom, 0px));
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
-  z-index: 100;
+  padding: 6px 4px calc(8px + env(safe-area-inset-bottom));
 }
 .nav-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  font-family: inherit;
-  color: #9CA3AF;
-  transition: color 0.2s;
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 2px; background: transparent;
+  border: none; cursor: pointer; padding: 4px;
+  font-family: inherit; color: #9CA3AF; transition: color .2s;
 }
 .nav-item .ic { font-size: 20px; }
 .nav-item .label { font-size: 9px; font-weight: 600; }
 .nav-item.active { color: #C8102E; }
 
-/* ═══════════ TOAST ═══════════ */
+/* TOAST */
 .toast-box {
-  position: fixed;
-  bottom: calc(100px + env(safe-area-inset-bottom, 0px));
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 500;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: center;
-  pointer-events: none;
-  width: 90%;
-  max-width: 360px;
+  position: fixed; bottom: calc(180px + env(safe-area-inset-bottom));
+  left: 50%; transform: translateX(-50%);
+  z-index: 800; display: flex; flex-direction: column;
+  gap: 8px; align-items: center; pointer-events: none;
+  width: 90%; max-width: 360px;
 }
 .toast {
-  background: #1F2937;
-  color: #ffffff;
-  padding: 10px 16px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 600;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-  animation: toastIn 0.25s ease;
-  text-align: center;
-  width: 100%;
+  background: #1F2937; color: #fff; padding: 10px 16px;
+  border-radius: 10px; font-size: 12px; font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  animation: toastIn .25s ease; text-align: center; width: 100%;
 }
 .toast.success { background: #059669; }
 .toast.error { background: #DC2626; }
@@ -427,213 +248,116 @@ table tr:last-child td { border-bottom: none; }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ═══════════ MODAL ═══════════ */
+/* MODAL */
 .modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  z-index: 200;
-  align-items: flex-end;
-  justify-content: center;
-  animation: fadeIn 0.2s ease;
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.55); z-index: 920;
+  align-items: flex-end; justify-content: center;
+  animation: fadeIn .2s ease;
 }
 .modal-overlay.show { display: flex; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .modal {
-  background: #ffffff;
-  border-radius: 20px 20px 0 0;
-  width: 100%;
-  max-width: 560px;
-  padding: 20px 16px calc(20px + env(safe-area-inset-bottom, 0px));
-  max-height: 88vh;
-  overflow-y: auto;
-  animation: slideUp 0.3s ease;
+  background: #fff; border-radius: 20px 20px 0 0;
+  width: 100%; max-width: 560px;
+  padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+  max-height: 88vh; overflow-y: auto;
+  animation: slideUp .3s ease;
 }
 @keyframes slideUp {
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
 }
 .modal-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 14px;
 }
-.modal-head h3 {
-  font-size: 16px;
-  font-weight: 700;
-  color: #1F2937;
-}
+.modal-head h3 { font-size: 16px; font-weight: 700; color: #1F2937; }
 .modal-close-btn {
-  background: #F3F4F6;
-  border: none;
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 14px;
-  color: #4B5563;
+  background: #F3F4F6; border: none; width: 30px; height: 30px;
+  border-radius: 50%; cursor: pointer; font-size: 14px; color: #4B5563;
 }
 
-/* ═══════════ LOADING IKLAN ═══════════ */
+/* LOADING IKLAN */
 #iklanLoading {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
+  position: fixed; inset: 0; z-index: 9999;
   background: linear-gradient(135deg, #C8102E, #8B0000);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 28px;
-  text-align: center;
+  display: none; align-items: center; justify-content: center;
+  padding: 28px; text-align: center;
 }
 #iklanLoading.show { display: flex; }
 .iklan-content { max-width: 380px; width: 100%; }
 .iklan-spinner {
   width: 56px; height: 56px;
-  border: 4px solid rgba(255,255,255,0.2);
-  border-top-color: #FBBF24;
-  border-radius: 50%;
-  animation: iklanSpin 0.8s linear infinite;
+  border: 4px solid rgba(255,255,255,.2);
+  border-top-color: #FBBF24; border-radius: 50%;
+  animation: iklanSpin .8s linear infinite;
   margin: 0 auto 18px;
 }
 @keyframes iklanSpin { to { transform: rotate(360deg); } }
-.iklan-title {
-  color: #ffffff;
-  font-size: 17px;
-  font-weight: 700;
-  margin-bottom: 14px;
-}
+.iklan-title { color: #fff; font-size: 17px; font-weight: 700; margin-bottom: 14px; }
 .iklan-kata {
-  background: rgba(255,255,255,0.15);
-  color: #ffffff;
-  font-size: 13px;
-  font-style: italic;
-  padding: 14px 16px;
-  border-radius: 12px;
-  line-height: 1.6;
-  margin-bottom: 14px;
-  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,.15); color: #fff;
+  font-size: 13px; font-style: italic; padding: 14px 16px;
+  border-radius: 12px; line-height: 1.6; margin-bottom: 14px;
+  border: 1px solid rgba(255,255,255,.2);
 }
 .iklan-progress {
-  height: 4px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-bottom: 20px;
+  height: 4px; background: rgba(255,255,255,.2);
+  border-radius: 2px; overflow: hidden; margin-bottom: 20px;
 }
 .iklan-progress-fill {
-  height: 100%;
-  background: #FBBF24;
-  width: 0%;
+  height: 100%; background: #FBBF24; width: 0%;
   animation: iklanProgress 3s linear forwards;
 }
 @keyframes iklanProgress { to { width: 100%; } }
-.iklan-footer {
-  color: rgba(255,255,255,0.6);
-  font-size: 11px;
-}
+.iklan-footer { color: rgba(255,255,255,.6); font-size: 11px; }
 
-/* ═══════════ ERROR PANEL ═══════════ */
+/* ERROR PANEL */
 #errorPanel {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  background: rgba(0,0,0,0.75);
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  overflow-y: auto;
+  display: none; position: fixed; inset: 0; z-index: 99999;
+  background: rgba(0,0,0,.75); align-items: center;
+  justify-content: center; padding: 16px; overflow-y: auto;
 }
 #errorPanel.show { display: flex; }
 .error-box {
-  background: #ffffff;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 420px;
-  padding: 20px;
-  max-height: 90vh;
-  overflow-y: auto;
+  background: #fff; border-radius: 16px; width: 100%;
+  max-width: 420px; padding: 20px;
+  max-height: 90vh; overflow-y: auto;
 }
-.error-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-}
+.error-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .error-head .icon { font-size: 26px; }
-.error-head h3 {
-  font-size: 16px;
-  font-weight: 800;
-  color: #C8102E;
-}
+.error-head h3 { font-size: 16px; font-weight: 800; color: #C8102E; }
 .error-text {
-  background: #FEF2F2;
-  border-left: 3px solid #C8102E;
-  color: #B91C1C;
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  line-height: 1.5;
-  word-break: break-word;
-  max-height: 160px;
-  overflow-y: auto;
-  margin-bottom: 12px;
-  white-space: pre-wrap;
+  background: #FEF2F2; border-left: 3px solid #C8102E;
+  color: #B91C1C; padding: 10px 12px; border-radius: 8px;
+  font-family: 'Courier New', monospace; font-size: 12px;
+  line-height: 1.5; word-break: break-word; max-height: 160px;
+  overflow-y: auto; margin-bottom: 12px; white-space: pre-wrap;
 }
-.error-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+.error-actions { display: flex; flex-direction: column; gap: 8px; }
 .error-actions button {
-  width: 100%;
-  padding: 11px;
-  border: none;
-  border-radius: 10px;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
+  width: 100%; padding: 11px; border: none; border-radius: 10px;
+  font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
 }
-.btn-error-wa { background: linear-gradient(135deg, #25D366, #128C7E); color: #ffffff; }
+.btn-error-wa { background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; }
 .btn-error-copy { background: #F3F4F6; color: #374151; }
 .btn-error-detail { background: #FEF3C7; color: #92400E; }
-.btn-error-close { background: #C8102E; color: #ffffff; }
+.btn-error-close { background: #C8102E; color: #fff; }
 .error-detail {
-  display: none;
-  background: #F9FAFB;
-  border: 1px solid #E5E7EB;
-  border-radius: 8px;
-  padding: 10px;
-  font-family: 'Courier New', monospace;
-  font-size: 11px;
-  color: #4B5563;
-  max-height: 200px;
-  overflow-y: auto;
-  white-space: pre-wrap;
-  word-break: break-word;
-  margin-top: 10px;
-  line-height: 1.5;
+  display: none; background: #F9FAFB; border: 1px solid #E5E7EB;
+  border-radius: 8px; padding: 10px;
+  font-family: 'Courier New', monospace; font-size: 11px;
+  color: #4B5563; max-height: 200px; overflow-y: auto;
+  white-space: pre-wrap; word-break: break-word;
+  margin-top: 10px; line-height: 1.5;
 }
 .error-detail.show { display: block; }
 
-/* ═══════════ UTIL ═══════════ */
-.empty {
-  text-align: center;
-  padding: 28px 16px;
-  color: #9CA3AF;
-  font-size: 13px;
-  font-weight: 500;
-}
+/* UTIL */
+.empty { text-align: center; padding: 28px 16px; color: #9CA3AF; font-size: 13px; font-weight: 500; }
 .empty .ic { font-size: 32px; margin-bottom: 6px; display: block; }
-.row-flex {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
+.row-flex { display: flex; gap: 8px; align-items: center; }
 .row-flex > * { flex: 1; }
 .mt-8 { margin-top: 8px; }
 .mb-8 { margin-bottom: 8px; }
@@ -647,7 +371,6 @@ table tr:last-child td { border-bottom: none; }
 .c-gold { color: #B45309; }
 .c-green { color: #059669; }
 
-/* ═══════════ RESPONSIVE ═══════════ */
 @media (min-width: 640px) {
   .menu-grid { grid-template-columns: repeat(3, 1fr); }
   .stat-grid { grid-template-columns: repeat(4, 1fr); }
@@ -659,7 +382,6 @@ table tr:last-child td { border-bottom: none; }
 </head>
 <body>
 
-<!-- ═══════════ HEADER ═══════════ -->
 <header class="header">
   <div class="header-left">
     <div class="header-logo">MP</div>
@@ -674,21 +396,16 @@ table tr:last-child td { border-bottom: none; }
   </div>
 </header>
 
-<!-- ═══════════ MAIN ═══════════ -->
 <main id="mainContent" class="main"></main>
 
-<!-- ═══════════ BOTTOM NAV ═══════════ -->
 <nav id="bottomNav" class="bottom-nav"></nav>
 
-<!-- ═══════════ TOAST ═══════════ -->
 <div id="toastBox" class="toast-box"></div>
 
-<!-- ═══════════ MODAL ═══════════ -->
 <div id="modalOverlay" class="modal-overlay">
   <div id="modalContent" class="modal"></div>
 </div>
 
-<!-- ═══════════ LOADING IKLAN ═══════════ -->
 <div id="iklanLoading">
   <div class="iklan-content">
     <div class="iklan-spinner"></div>
@@ -699,7 +416,6 @@ table tr:last-child td { border-bottom: none; }
   </div>
 </div>
 
-<!-- ═══════════ ERROR PANEL ═══════════ -->
 <div id="errorPanel">
   <div class="error-box">
     <div class="error-head">
@@ -718,9 +434,9 @@ table tr:last-child td { border-bottom: none; }
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-// KONFIGURASI
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   KONFIGURASI
+   ============================================================ */
 var BACKEND_URL = 'https://script.google.com/macros/s/AKfycby3d_KV34jCrxDlQAktR1AhTUYxiPlNfNk1qXekaehUF1WzSKF3vQE5LtkF5el-tHEOcA/exec';
 var TOKEN = 'steam-mp-7000-2026';
 var SESSION_KEY = 'steam_mp_session';
@@ -732,11 +448,10 @@ var WA_DEVELOPER = '6281525742110';
 var CACHE = {};
 var CACHE_TTL = 5 * 60 * 1000;
 var HALAMAN_AKTIF = 'home';
-var DATA_SEMENTARA = {};
 
-// ═══════════════════════════════════════════════════════════════
-// KATA IKLAN
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   KATA IKLAN
+   ============================================================ */
 var KATA_IKLAN_ADMIN = [
   "Bentar ya, iklan dulu... Aplikasi ini buat keluarga kami yang lagi berjuang. Tonton ya, itu udah bantu banget 💛",
   "Iklan 3 detik, doa 1 menit... Terima kasih sudah bantu keluarga kami bangkit. Jangan di-skip ya 🙏",
@@ -808,9 +523,9 @@ var KATA_IKLAN_UMUM = [
   "Loading... Iklan dulu. Tonton ya, mimin doain kamu sehat terus 🤲"
 ];
 
-// ═══════════════════════════════════════════════════════════════
-// DUMMY DATA
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   DUMMY DATA
+   ============================================================ */
 var DUMMY_DATA = {
   Users: [
     {id:'DMO1',password:'demo',nama:'Demo Owner',jabatan:'Owner',kode_cabang:'-',status:'aktif',dihapus:false},
@@ -826,46 +541,21 @@ var DUMMY_DATA = {
     {tanggal:'2026-01-15',kode_cabang:'GROBOGAN',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan:'Karyawan',status_masuk:'ya',unit:15,tips:5000,kasbon:0,wifi:1000,bonus:0,tembus_target:'tidak',total_unit_cabang:30,total_tips_cabang:10000},
     {tanggal:'2026-01-15',kode_cabang:'GROBOGAN',id_karyawan:'DMO3',nama_karyawan:'Demo KT',jabatan:'Kepala Toko',status_masuk:'ya',unit:15,tips:5000,kasbon:0,wifi:1000,bonus:0,tembus_target:'tidak',total_unit_cabang:30,total_tips_cabang:10000}
   ],
-  Pengeluaran: [
-    {tanggal:'2026-01-15',kode_cabang:'GROBOGAN',kategori:'Operasional',jumlah:50000,keterangan:'Beli sabun'}
-  ],
-  Pengajuan_Kasbon: [
-    {id_pengajuan:'KS001',submission_id:'SUB-KS-001',tanggal_pengajuan:'2026-01-14',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan_pengaju:'Karyawan',kode_cabang:'GROBOGAN',jumlah_kasbon:15000,keterangan:'Buat makan',status:'menunggu'}
-  ],
-  Izin_Istirahat: [
-    {id_izin:'IZ001',submission_id:'SUB-IZ-001',tanggal_pengajuan:'2026-01-13',tanggal_izin:'2026-01-16',jenis_izin:'istirahat',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan_pengaju:'Karyawan',kode_cabang:'GROBOGAN',keterangan:'Acara keluarga',status:'menunggu'}
-  ],
-  Kerusakan_Kendala: [
-    {id_laporan:'KR001',submission_id:'SUB-KR-001',tanggal:'2026-01-14',pelapor:'DMO4',nama_pelapor:'Demo Karyawan',jabatan_pelapor:'Karyawan',kode_cabang:'GROBOGAN',jenis:'alat',judul:'Mesin bocor',deskripsi:'Bocor di selang',status:'menunggu'}
-  ],
-  Permintaan_Payroll: [
-    {id_permintaan:'PR001',submission_id:'SUB-PR-001',tanggal:'2026-01-14',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan_pengaju:'Karyawan',alasan:'Butuh uang',status:'menunggu'}
-  ],
-  Payroll: [
-    {periode:'2026-01-P1',kode_cabang:'GROBOGAN',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan:'Karyawan',total_unit:30,total_tips:10000,total_bonus:0,total_kasbon:0,total_wifi:3000,total_payroll:97000,status:'belum_dibayar'}
-  ],
-  Pengaturan: [
-    {key:'harga_per_unit_karyawan',value:'3000'},
-    {key:'harga_per_unit_owner',value:'4000'},
-    {key:'target_cabang_baru',value:'50000000'}
-  ],
-  Dana_Expansi: [
-    {id_transaksi:'DE001',tanggal:'2026-01-10',jenis:'masuk',jumlah:5000000,keterangan:'Tabungan awal'},
-    {id_transaksi:'DE002',tanggal:'2026-01-12',jenis:'masuk',jumlah:2500000,keterangan:'Sisa kas'}
-  ],
-  Motivasi: [
-    {id:'M1',kalimat:'Semangat, ini untuk keluarga 💪'},
-    {id:'M2',kalimat:'Sedikit lagi, hutang pasti lunas'},
-    {id:'M3',kalimat:'Kerja keras hari ini, hasil manis nanti'}
-  ],
-  Laporan: [], Laporan_Barang: [], Laporan_Token: [], Setoran: [],
-  Resign_PHK: [], SP_Karyawan: [], Biaya_Sewa: [],
-  Persiapan_Cabang: [], Log_Submisi: [], Log_Error: []
+  Pengeluaran: [{tanggal:'2026-01-15',kode_cabang:'GROBOGAN',kategori:'Operasional',jumlah:50000,keterangan:'Beli sabun'}],
+  Pengajuan_Kasbon: [{id_pengajuan:'KS001',submission_id:'SUB-KS-001',tanggal_pengajuan:'2026-01-14',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan_pengaju:'Karyawan',kode_cabang:'GROBOGAN',jumlah_kasbon:15000,keterangan:'Buat makan',status:'menunggu'}],
+  Izin_Istirahat: [{id_izin:'IZ001',submission_id:'SUB-IZ-001',tanggal_pengajuan:'2026-01-13',tanggal_izin:'2026-01-16',jenis_izin:'istirahat',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan_pengaju:'Karyawan',kode_cabang:'GROBOGAN',keterangan:'Acara keluarga',status:'menunggu'}],
+  Kerusakan_Kendala: [{id_laporan:'KR001',submission_id:'SUB-KR-001',tanggal:'2026-01-14',pelapor:'DMO4',nama_pelapor:'Demo Karyawan',jabatan_pelapor:'Karyawan',kode_cabang:'GROBOGAN',jenis:'alat',judul:'Mesin bocor',deskripsi:'Bocor di selang',status:'menunggu'}],
+  Permintaan_Payroll: [{id_permintaan:'PR001',submission_id:'SUB-PR-001',tanggal:'2026-01-14',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan_pengaju:'Karyawan',alasan:'Butuh uang',status:'menunggu'}],
+  Payroll: [{periode:'2026-01-P1',kode_cabang:'GROBOGAN',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan:'Karyawan',total_unit:30,total_tips:10000,total_bonus:0,total_kasbon:0,total_wifi:3000,total_payroll:97000,status:'belum_dibayar'}],
+  Pengaturan: [{key:'harga_per_unit_karyawan',value:'3000'},{key:'harga_per_unit_owner',value:'4000'},{key:'target_cabang_baru',value:'50000000'}],
+  Dana_Expansi: [{id_transaksi:'DE001',tanggal:'2026-01-10',jenis:'masuk',jumlah:5000000,keterangan:'Tabungan awal'},{id_transaksi:'DE002',tanggal:'2026-01-12',jenis:'masuk',jumlah:2500000,keterangan:'Sisa kas'}],
+  Motivasi: [{id:'M1',kalimat:'Semangat, ini untuk keluarga 💪'},{id:'M2',kalimat:'Sedikit lagi, hutang pasti lunas'},{id:'M3',kalimat:'Kerja keras hari ini, hasil manis nanti'}],
+  Laporan: [], Laporan_Barang: [], Laporan_Token: [], Setoran: [], Resign_PHK: [], SP_Karyawan: [], Biaya_Sewa: [], Persiapan_Cabang: [], Log_Submisi: [], Log_Error: []
 };
 
-// ═══════════════════════════════════════════════════════════════
-// ERROR CATCHER
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   ERROR CATCHER
+   ============================================================ */
 var errorHistory = [];
 
 function catatError(pesan, detail, jenis) {
@@ -879,15 +569,16 @@ function catatError(pesan, detail, jenis) {
   };
   errorHistory.push(err);
   tampilkanErrorPanel();
-  // Kirim ke Log_Error (gagal tidak masalah)
   try {
     var sid = 'ERR-' + Date.now();
+    var s = getSession();
     apiPost('tulis_unik', {
       sheet: 'Log_Error',
       data: {
         id_error: sid,
         timestamp: new Date().toISOString(),
-        user_id: '', user_nama: '',
+        user_id: s ? s.user_id : '',
+        user_nama: s ? s.user_nama : '',
         pesan: err.pesan, detail: err.detail,
         url: err.url, user_agent: err.ua,
         jenis: err.jenis, dihapus: false
@@ -942,8 +633,6 @@ window.addEventListener('unhandledrejection', function(ev) {
   var r = ev.reason;
   catatError((r && r.message) ? r.message : String(r), (r && r.stack) ? r.stack : '', 'unhandledrejection');
 });
-
-// Override fetch untuk deteksi error
 var _origFetch = window.fetch;
 window.fetch = function() {
   var args = arguments;
@@ -953,9 +642,9 @@ window.fetch = function() {
   });
 };
 
-// ═══════════════════════════════════════════════════════════════
-// HELPER: SESSION & ROLE
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   SESSION & ROLE
+   ============================================================ */
 function getSession() {
   var raw = null;
   try { raw = sessionStorage.getItem(SESSION_KEY); } catch (e) {}
@@ -972,22 +661,20 @@ function getSession() {
   }
   return s;
 }
-
-function isDemo() { var s = getSession(); return s ? s.is_demo === true : false; }
-function isOwner() { var s = getSession(); return s ? s.user_jabatan === 'Owner' : false; }
-function isAdmin() { var s = getSession(); return s ? s.user_jabatan === 'Admin' : false; }
-function isKepalaToko() { var s = getSession(); return s ? s.user_jabatan === 'Kepala Toko' : false; }
-function isKaryawan() { var s = getSession(); return s ? s.user_jabatan === 'Karyawan' : false; }
-function bisaIklan() { return !isOwner(); }
+function isDemo()       { var s = getSession(); return s && s.is_demo === true; }
+function isOwner()      { var s = getSession(); return s && s.user_jabatan === 'Owner'; }
+function isAdmin()      { var s = getSession(); return s && s.user_jabatan === 'Admin'; }
+function isKepalaToko() { var s = getSession(); return s && s.user_jabatan === 'Kepala Toko'; }
+function isKaryawan()   { var s = getSession(); return s && s.user_jabatan === 'Karyawan'; }
+function bisaIklan()    { return !isOwner(); }
 function canLihatPendapatanOwner() {
   var s = getSession();
-  if (!s) return false;
-  return s.user_jabatan === 'Owner' || s.user_jabatan === 'Admin';
+  return s && (s.user_jabatan === 'Owner' || s.user_jabatan === 'Admin');
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HELPER: API
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   API HELPER
+   ============================================================ */
 async function apiPost(action, data) {
   try {
     var body = Object.assign({ action: action, token: TOKEN }, data || {});
@@ -1015,36 +702,26 @@ async function ambilData(sheet, forceRefresh) {
   CACHE[sheet] = { result: r, time: now };
   return r;
 }
-
-function clearCache(sheet) {
-  if (sheet) delete CACHE[sheet];
-  else CACHE = {};
-}
-
+function clearCache(sheet) { if (sheet) delete CACHE[sheet]; else CACHE = {}; }
 async function simpanData(sheet, data) {
   if (isDemo()) return { ok: true, pesan: 'Demo mode', data: null };
   var r = await apiPost('tulis_unik', { sheet: sheet, data: data });
-  clearCache(sheet);
-  return r;
+  clearCache(sheet); return r;
 }
-
 async function updateData(sheet, row, data) {
   if (isDemo()) return { ok: true, pesan: 'Demo mode', data: null };
   var r = await apiPost('update', { sheet: sheet, row: row, data: data });
-  clearCache(sheet);
-  return r;
+  clearCache(sheet); return r;
 }
-
 async function hapusData(sheet, row) {
   if (isDemo()) return { ok: true, pesan: 'Demo mode', data: null };
   var r = await apiPost('hapus', { sheet: sheet, row: row });
-  clearCache(sheet);
-  return r;
+  clearCache(sheet); return r;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HELPER: UMUM
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   UTIL
+   ============================================================ */
 function esc(s) {
   return String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -1057,18 +734,11 @@ function todayStr() {
   return d.getFullYear() + '-' + m + '-' + day;
 }
 function nowISO() { return new Date().toISOString(); }
-function fmtRupiah(n) {
-  n = Number(n) || 0;
-  return 'Rp ' + n.toLocaleString('id-ID');
-}
-function fmtAngka(n) {
-  n = Number(n) || 0;
-  return n.toLocaleString('id-ID');
-}
+function fmtRupiah(n) { n = Number(n) || 0; return 'Rp ' + n.toLocaleString('id-ID'); }
+function fmtAngka(n) { n = Number(n) || 0; return n.toLocaleString('id-ID'); }
 function generateSubmissionId(prefix) {
   return (prefix || 'SUB') + '-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
 }
-
 function showToast(msg, type) {
   var box = document.getElementById('toastBox');
   if (!box) return;
@@ -1078,14 +748,23 @@ function showToast(msg, type) {
   box.appendChild(el);
   setTimeout(function() {
     el.style.opacity = '0';
-    el.style.transition = 'opacity 0.3s';
+    el.style.transition = 'opacity .3s';
     setTimeout(function() { try { el.remove(); } catch (e) {} }, 300);
   }, 2500);
 }
+function badgeStatus(st) {
+  st = String(st || '').toLowerCase();
+  if (st === 'disetujui' || st === 'disetujui_admin' || st === 'disetujui_kt') return '<span class="badge badge-green">' + esc(st) + '</span>';
+  if (st === 'menunggu') return '<span class="badge badge-yellow">menunggu</span>';
+  if (st === 'ditolak') return '<span class="badge badge-red">ditolak</span>';
+  if (st === 'belum_dibayar') return '<span class="badge badge-yellow">belum dibayar</span>';
+  if (st === 'sudah_dibayar') return '<span class="badge badge-green">sudah dibayar</span>';
+  if (st === 'aktif') return '<span class="badge badge-green">aktif</span>';
+  if (st === 'nonaktif') return '<span class="badge badge-gray">nonaktif</span>';
+  return '<span class="badge badge-gray">' + esc(st || '-') + '</span>';
+}
 
-// ═══════════════════════════════════════════════════════════════
-// HELPER: ACC BERTINGKAT
-// ═══════════════════════════════════════════════════════════════
+/* ACC HELPER */
 function getAccRoleSekarang(jabatanPengaju, status) {
   if (jabatanPengaju === 'Karyawan') {
     if (status === 'menunggu') return 'Kepala Toko';
@@ -1111,9 +790,7 @@ function getStatusSetelahAcc(status, jabatanYangAcc) {
   return status;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HELPER: IKLAN
-// ═══════════════════════════════════════════════════════════════
+/* IKLAN */
 function getUrlIklanRandom() {
   return Math.random() < 0.5 ? IKLAN_URL_MONETAG : IKLAN_URL_ADSTERRA;
 }
@@ -1132,14 +809,10 @@ function tutupLoadingIklan() {
   if (el) el.classList.remove('show');
 }
 function paksaIklan(callback) {
-  if (!bisaIklan()) {
-    if (typeof callback === 'function') callback();
-    return;
-  }
+  if (!bisaIklan()) { if (typeof callback === 'function') callback(); return; }
   var isAdminRole = isAdmin();
   var kata = getKataIklanRandom(isAdminRole);
   tampilkanLoadingIklan(kata);
-  // Buka iklan di tab baru (Android WebView Ads kalau ada)
   try {
     var url = getUrlIklanRandom();
     if (window.AndroidAds && typeof window.AndroidAds.showAd === 'function') {
@@ -1155,9 +828,22 @@ function paksaIklan(callback) {
   }, IKLAN_DURASI);
 }
 
-// ═══════════════════════════════════════════════════════════════
-// MENU PER ROLE
-// ═══════════════════════════════════════════════════════════════
+/* MODAL */
+function bukaModal(html) {
+  var overlay = document.getElementById('modalOverlay');
+  var content = document.getElementById('modalContent');
+  if (!overlay || !content) return;
+  content.innerHTML = '<div class="modal-head"><h3>Detail</h3><button class="modal-close-btn" onclick="tutupModal()">✕</button></div>' + html;
+  overlay.classList.add('show');
+}
+function tutupModal() {
+  var overlay = document.getElementById('modalOverlay');
+  if (overlay) overlay.classList.remove('show');
+}
+
+/* ============================================================
+   MENU PER ROLE
+   ============================================================ */
 function getMenuByRole(jabatan) {
   if (jabatan === 'Owner') return [
     {id:'pendapatan_owner', ic:'📊', nama:'Pendapatan Owner', desc:'Rekap semua cabang', hl:true},
@@ -1240,19 +926,18 @@ function getBottomNavByRole(jabatan) {
   return [{id:'home', ic:'🏠', label:'Home'}];
 }
 
-// ═══════════════════════════════════════════════════════════════
-// ROUTING HALAMAN
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   ROUTING
+   ============================================================ */
 function navigasi(pageId) {
   if (pageId === 'pendapatan_owner' && !canLihatPendapatanOwner()) {
-    showToast('Akses ditolak', 'error');
-    navigasi('home');
-    return;
+    showToast('Akses ditolak', 'error'); navigasi('home'); return;
   }
   if (pageId === 'manusia' && !isOwner()) {
-    showToast('Hanya Owner yang bisa akses HR', 'error');
-    navigasi('home');
-    return;
+    showToast('Hanya Owner yang bisa akses HR', 'error'); navigasi('home'); return;
+  }
+  if (pageId === 'pengaturan' && !isOwner()) {
+    showToast('Hanya Owner', 'error'); navigasi('home'); return;
   }
   HALAMAN_AKTIF = pageId;
   renderHalaman(pageId);
@@ -1304,8 +989,7 @@ function renderBottomNav() {
     var active = (HALAMAN_AKTIF === it.id) ? ' active' : '';
     html += '<button class="nav-item' + active + '" data-nav="' + it.id + '">';
     html += '<span class="ic">' + it.ic + '</span>';
-    html += '<span class="label">' + esc(it.label) + '</span>';
-    html += '</button>';
+    html += '<span class="label">' + esc(it.label) + '</span></button>';
   }
   nav.innerHTML = html;
   var btns = nav.querySelectorAll('.nav-item');
@@ -1314,32 +998,26 @@ function renderBottomNav() {
       var id = this.getAttribute('data-nav');
       if (id === 'payroll' && bisaIklan()) {
         paksaIklan(function() { navigasi(id); });
-      } else {
-        navigasi(id);
-      }
+      } else navigasi(id);
     });
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: HOME
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   HOME
+   ============================================================ */
 function renderHome() {
   var s = getSession();
   if (!s) return '<div class="empty">Session tidak ditemukan</div>';
   var menu = getMenuByRole(s.user_jabatan);
   var html = '';
-
-  // Greeting
-  html += '<div class="greeting">';
-  html += '<h2>Halo, ' + esc(s.user_nama) + ' 👋</h2>';
+  html += '<div class="greeting"><h2>Halo, ' + esc(s.user_nama) + ' 👋</h2>';
   html += '<p>' + esc(s.user_jabatan) + ' · Cabang: ' + esc(s.kode_cabang) + '</p>';
   if (s.is_demo) html += '<span class="demo-badge">MODE DEMO</span>';
   html += '</div>';
 
-  // Statistik (4 card max)
   html += '<div class="stat-grid" id="statGrid">';
-  html += '<div class="stat-card"><div class="label">Total Unit Hari Ini</div><div class="value" id="statUnit">-</div></div>';
+  html += '<div class="stat-card"><div class="label">Unit Hari Ini</div><div class="value" id="statUnit">-</div></div>';
   if (canLihatPendapatanOwner()) {
     html += '<div class="stat-card"><div class="label">Pendapatan Owner</div><div class="value gold" id="statPendapatan">-</div></div>';
   } else {
@@ -1349,17 +1027,9 @@ function renderHome() {
   html += '<div class="stat-card"><div class="label">Cabang Aktif</div><div class="value" id="statCabang">-</div></div>';
   html += '</div>';
 
-  // Motivasi (Owner/Admin)
-  if (isOwner() || isAdmin()) {
-    html += '<div id="motivasiCard"></div>';
-  }
+  if (isOwner() || isAdmin()) html += '<div id="motivasiCard"></div>';
+  if (isOwner() || isAdmin()) html += '<div id="danaCard"></div>';
 
-  // Dana Expansi (Owner/Admin)
-  if (isOwner() || isAdmin()) {
-    html += '<div id="danaCard"></div>';
-  }
-
-  // Menu grid
   html += '<div class="card-title"><span class="em">📱</span> Menu Utama</div>';
   html += '<div class="menu-grid">';
   for (var i = 0; i < menu.length; i++) {
@@ -1368,63 +1038,47 @@ function renderHome() {
     html += '<div class="menu-item' + hl + '" data-menu="' + m.id + '">';
     html += '<span class="ic">' + m.ic + '</span>';
     html += '<div class="nama">' + esc(m.nama) + '</div>';
-    html += '<div class="desc">' + esc(m.desc) + '</div>';
-    html += '</div>';
+    html += '<div class="desc">' + esc(m.desc) + '</div></div>';
   }
   html += '</div>';
 
-  // Card donasi iklan (non-Owner)
   if (bisaIklan()) {
-    html += '<div class="card">';
-    html += '<div class="card-title"><span class="em">💛</span> Dukung Kami</div>';
+    html += '<div class="card"><div class="card-title"><span class="em">💛</span> Dukung Kami</div>';
     html += '<div class="fs-12 c-gray" style="margin-bottom:8px">Setiap iklan yang Anda tonton membantu keberlangsungan aplikasi ini.</div>';
-    html += '<button class="btn btn-gold btn-block" id="btnDonasiIklan">🎬 Tonton Iklan Dukungan</button>';
-    html += '</div>';
+    html += '<button class="btn btn-gold btn-block" id="btnDonasiIklan">🎬 Tonton Iklan Dukungan</button></div>';
   }
-
   return html;
 }
 
 async function afterRenderHome() {
   var s = getSession();
   if (!s) return;
-
-  // Event menu
   var items = document.querySelectorAll('.menu-item[data-menu]');
   for (var i = 0; i < items.length; i++) {
     items[i].addEventListener('click', function() {
       var id = this.getAttribute('data-menu');
       if (id === 'payroll' && bisaIklan()) {
         paksaIklan(function() { navigasi(id); });
-      } else {
-        navigasi(id);
-      }
+      } else navigasi(id);
     });
   }
-
-  // Event donasi iklan
   var btnDonasi = document.getElementById('btnDonasiIklan');
-  if (btnDonasi) {
-    btnDonasi.addEventListener('click', function() {
-      paksaIklan(function() { showToast('Terima kasih sudah mendukung!', 'success'); });
-    });
-  }
+  if (btnDonasi) btnDonasi.addEventListener('click', function() {
+    paksaIklan(function() { showToast('Terima kasih sudah mendukung!', 'success'); });
+  });
 
-  // Load statistik (lazy: 3 sheet max)
   try {
     var tgl = todayStr();
     var rPendapatan = await ambilData('Pendapatan_Harian');
     var rPengeluaran = await ambilData('Pengeluaran');
     var rCabang = await ambilData('Target_Cabang');
-
     var pendapatan = (rPendapatan.ok && Array.isArray(rPendapatan.data)) ? rPendapatan.data : [];
     var pengeluaran = (rPengeluaran.ok && Array.isArray(rPengeluaran.data)) ? rPengeluaran.data : [];
     var cabang = (rCabang.ok && Array.isArray(rCabang.data)) ? rCabang.data : [];
 
-    // Filter by tanggal & cabang
     var filterCab = (s.user_jabatan === 'Kepala Toko' || s.user_jabatan === 'Karyawan') ? s.kode_cabang : null;
-    var totalUnit = 0;
-    var totalUnitCabang = 0;
+    var totalUnit = 0, totalUnitCabang = 0;
+    var mapCabang = {};
     for (var a = 0; a < pendapatan.length; a++) {
       var p = pendapatan[a];
       if (!p) continue;
@@ -1432,19 +1086,10 @@ async function afterRenderHome() {
       if (filterCab && String(p.kode_cabang) !== String(filterCab)) continue;
       if (String(p.tanggal) !== tgl) continue;
       totalUnit += Number(p.unit) || 0;
+      var key = String(p.kode_cabang);
+      if (p.total_unit_cabang) mapCabang[key] = Number(p.total_unit_cabang);
     }
-    // hitung total unit cabang (unik per cabang+tanggal)
-    var mapCabang = {};
-    for (var b = 0; b < pendapatan.length; b++) {
-      var q = pendapatan[b];
-      if (!q) continue;
-      if (String(q.dihapus).toLowerCase() === 'true') continue;
-      if (filterCab && String(q.kode_cabang) !== String(filterCab)) continue;
-      if (String(q.tanggal) !== tgl) continue;
-      var key = String(q.kode_cabang);
-      if (q.total_unit_cabang) mapCabang[key] = Number(q.total_unit_cabang);
-    }
-    for (var k in mapCabang) { if (mapCabang.hasOwnProperty(k)) totalUnitCabang += mapCabang[k]; }
+    for (var k in mapCabang) if (mapCabang.hasOwnProperty(k)) totalUnitCabang += mapCabang[k];
 
     var totalPengeluaran = 0;
     for (var c = 0; c < pengeluaran.length; c++) {
@@ -1458,12 +1103,10 @@ async function afterRenderHome() {
 
     var elUnit = document.getElementById('statUnit');
     if (elUnit) elUnit.textContent = fmtAngka(totalUnitCabang || totalUnit);
-
     var elPend = document.getElementById('statPendapatan');
     if (elPend) {
       if (canLihatPendapatanOwner()) {
-        var pendapatanOwner = (totalUnitCabang * 4000) - totalPengeluaran;
-        elPend.textContent = fmtRupiah(pendapatanOwner);
+        elPend.textContent = fmtRupiah((totalUnitCabang * 4000) - totalPengeluaran);
       } else {
         elPend.textContent = fmtAngka(totalUnitCabang || totalUnit);
       }
@@ -1473,7 +1116,6 @@ async function afterRenderHome() {
     var elCab = document.getElementById('statCabang');
     if (elCab) elCab.textContent = fmtAngka(cabang.length);
 
-    // Motivasi
     if (isOwner() || isAdmin()) {
       var rMot = await ambilData('Motivasi');
       var motList = (rMot.ok && Array.isArray(rMot.data)) ? rMot.data : [];
@@ -1482,10 +1124,6 @@ async function afterRenderHome() {
         var el = document.getElementById('motivasiCard');
         if (el) el.innerHTML = '<div class="motivasi-card">💡 ' + esc(mot.kalimat) + '</div>';
       }
-    }
-
-    // Dana Expansi
-    if (isOwner() || isAdmin()) {
       var rDana = await ambilData('Dana_Expansi');
       var danaList = (rDana.ok && Array.isArray(rDana.data)) ? rDana.data : [];
       var saldo = 0;
@@ -1508,39 +1146,31 @@ async function afterRenderHome() {
       var persen = target > 0 ? Math.min(100, Math.round((saldo / target) * 100)) : 0;
       var elDana = document.getElementById('danaCard');
       if (elDana) {
-        elDana.innerHTML = '<div class="dana-card">' +
-          '<div class="label">💎 Dana Expansi</div>' +
+        elDana.innerHTML = '<div class="dana-card"><div class="label">💎 Dana Expansi</div>' +
           '<div class="value">' + fmtRupiah(saldo) + '</div>' +
           '<div class="progress-bar"><div class="progress-fill" style="width:' + persen + '%"></div></div>' +
-          '<div class="fs-11" style="margin-top:6px;opacity:0.85">Target: ' + fmtRupiah(target) + ' · ' + persen + '%</div>' +
-          '</div>';
+          '<div class="fs-11" style="margin-top:6px;opacity:.85">Target: ' + fmtRupiah(target) + ' · ' + persen + '%</div></div>';
       }
     }
-  } catch (e) {
-    // silent
-  }
+  } catch (e) {}
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: PENDAPATAN OWNER
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   PENDAPATAN OWNER
+   ============================================================ */
 function renderPendapatanOwner() {
-  var html = '';
-  html += '<div class="card">';
-  html += '<div class="card-title"><span class="em">📊</span> Pendapatan Owner</div>';
-  html += '<div class="row-flex mb-8">';
-  html += '<div class="field" style="margin:0"><label>Dari Tanggal</label><input type="date" id="poDari" value="' + todayStr() + '"></div>';
-  html += '<div class="field" style="margin:0"><label>Sampai Tanggal</label><input type="date" id="poSampai" value="' + todayStr() + '"></div>';
-  html += '</div>';
-  html += '<div class="row-flex mb-8">';
-  html += '<button class="btn btn-primary btn-sm" id="poFilterHari">Hari Ini</button>';
-  html += '<button class="btn btn-outline btn-sm" id="poFilterMinggu">7 Hari</button>';
-  html += '<button class="btn btn-outline btn-sm" id="poFilterBulan">Bulan Ini</button>';
-  html += '</div>';
-  html += '<button class="btn btn-primary btn-block" id="poTampilkan">Tampilkan</button>';
-  html += '</div>';
-  html += '<div id="poHasil"></div>';
-  return html;
+  return '<div class="card"><div class="card-title"><span class="em">📊</span> Pendapatan Owner</div>' +
+    '<div class="row-flex mb-8">' +
+    '<div class="field" style="margin:0"><label>Dari</label><input type="date" id="poDari" value="' + todayStr() + '"></div>' +
+    '<div class="field" style="margin:0"><label>Sampai</label><input type="date" id="poSampai" value="' + todayStr() + '"></div>' +
+    '</div>' +
+    '<div class="row-flex mb-8">' +
+    '<button class="btn btn-primary btn-sm" id="poFilterHari">Hari Ini</button>' +
+    '<button class="btn btn-outline btn-sm" id="poFilterMinggu">7 Hari</button>' +
+    '<button class="btn btn-outline btn-sm" id="poFilterBulan">Bulan Ini</button>' +
+    '</div>' +
+    '<button class="btn btn-primary btn-block" id="poTampilkan">Tampilkan</button></div>' +
+    '<div id="poHasil"></div>';
 }
 
 function afterRenderPendapatanOwner() {
@@ -1593,7 +1223,6 @@ async function loadPendapatanOwner() {
       mapCabang[String(c.kode_cabang)] = String(c.nama_cabang || c.kode_cabang);
     }
 
-    // Rekap per cabang: total unit & tips (unik per tanggal+cabang)
     var rekap = {};
     var mapUnik = {};
     for (var a = 0; a < pendapatan.length; a++) {
@@ -1605,7 +1234,7 @@ async function loadPendapatanOwner() {
       var key = String(p.kode_cabang) + '|' + tgl;
       if (!mapUnik[key]) {
         mapUnik[key] = true;
-        if (!rekap[p.kode_cabang]) rekap[p.kode_cabang] = { unit:0, tips:0 };
+        if (!rekap[p.kode_cabang]) rekap[p.kode_cabang] = { unit: 0, tips: 0 };
         rekap[p.kode_cabang].unit += Number(p.total_unit_cabang) || 0;
         rekap[p.kode_cabang].tips += Number(p.total_tips_cabang) || 0;
       }
@@ -1626,11 +1255,8 @@ async function loadPendapatanOwner() {
     }
 
     var totalUnit = 0, totalOwner = 0;
-    var html = '<div class="card">';
-    html += '<div class="card-title">Rekap ' + esc(dari) + ' s/d ' + esc(sampai) + '</div>';
-    html += '<div class="table-wrap"><table>';
-    html += '<thead><tr><th>Cabang</th><th class="text-r">Unit</th><th class="text-r">Owner (×4000)</th><th class="text-r">Pengeluaran</th></tr></thead>';
-    html += '<tbody>';
+    var html = '<div class="card"><div class="card-title">Rekap ' + esc(dari) + ' s/d ' + esc(sampai) + '</div>';
+    html += '<div class="table-wrap"><table><thead><tr><th>Cabang</th><th class="text-r">Unit</th><th class="text-r">Owner</th><th class="text-r">Pengeluaran</th></tr></thead><tbody>';
     var ada = false;
     for (var k in rekap) {
       if (!rekap.hasOwnProperty(k)) continue;
@@ -1640,16 +1266,10 @@ async function loadPendapatanOwner() {
       var peng = pengByCab[k] || 0;
       totalUnit += unit;
       totalOwner += owner;
-      html += '<tr>';
-      html += '<td>' + esc(mapCabang[k] || k) + '</td>';
-      html += '<td class="text-r">' + fmtAngka(unit) + '</td>';
-      html += '<td class="text-r">' + fmtRupiah(owner) + '</td>';
-      html += '<td class="text-r c-red">' + fmtRupiah(peng) + '</td>';
-      html += '</tr>';
+      html += '<tr><td>' + esc(mapCabang[k] || k) + '</td><td class="text-r">' + fmtAngka(unit) + '</td><td class="text-r">' + fmtRupiah(owner) + '</td><td class="text-r c-red">' + fmtRupiah(peng) + '</td></tr>';
     }
     if (!ada) html += '<tr><td colspan="4" class="text-c c-gray">Tidak ada data</td></tr>';
-    html += '</tbody></table></div>';
-    html += '</div>';
+    html += '</tbody></table></div></div>';
 
     var bersih = totalOwner - totalPengeluaran;
     html += '<div class="stat-grid">';
@@ -1658,27 +1278,22 @@ async function loadPendapatanOwner() {
     html += '<div class="stat-card"><div class="label">Pengeluaran</div><div class="value c-red">' + fmtRupiah(totalPengeluaran) + '</div></div>';
     html += '<div class="stat-card"><div class="label">Pendapatan Bersih</div><div class="value">' + fmtRupiah(bersih) + '</div></div>';
     html += '</div>';
-
     hasil.innerHTML = html;
   } catch (e) {
     hasil.innerHTML = '<div class="empty">Gagal memuat data</div>';
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: OPERASIONAL (Owner/Admin)
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   OPERASIONAL
+   ============================================================ */
 function renderOperasional() {
-  var html = '';
-  html += '<div class="tabs">';
-  html += '<div class="tab active" data-optab="input">Input Pendapatan</div>';
-  html += '<div class="tab" data-optab="pengeluaran">Pengeluaran</div>';
-  html += '<div class="tab" data-optab="unit">Unit Cabang</div>';
-  html += '</div>';
-  html += '<div id="opContent"></div>';
-  return html;
+  return '<div class="tabs">' +
+    '<div class="tab active" data-optab="input">Input Pendapatan</div>' +
+    '<div class="tab" data-optab="pengeluaran">Pengeluaran</div>' +
+    '<div class="tab" data-optab="unit">Unit Cabang</div>' +
+    '</div><div id="opContent"></div>';
 }
-
 function afterRenderOperasional() {
   var tabs = document.querySelectorAll('.tab[data-optab]');
   for (var i = 0; i < tabs.length; i++) {
@@ -1691,7 +1306,6 @@ function afterRenderOperasional() {
   }
   renderOpTab('input');
 }
-
 function renderOpTab(tab) {
   var el = document.getElementById('opContent');
   if (!el) return;
@@ -1701,12 +1315,11 @@ function renderOpTab(tab) {
       '<div class="field"><label>Cabang</label><select id="opCab"></select></div>' +
       '<button class="btn btn-primary btn-block" id="opLanjut">Lanjut Input</button></div>';
     loadCabangSelect('opCab');
-    var btn = document.getElementById('opLanjut');
-    if (btn) btn.addEventListener('click', function() {
+    document.getElementById('opLanjut').addEventListener('click', function() {
       var tgl = document.getElementById('opTgl').value;
       var cab = document.getElementById('opCab').value;
       if (!tgl || !cab) { showToast('Lengkapi data', 'error'); return; }
-      renderFormInputPendapatan(tgl, cab);
+      renderFormInputPendapatan('opContent', tgl, cab);
     });
   } else if (tab === 'pengeluaran') {
     el.innerHTML = '<div class="card"><div class="card-title">Tambah Pengeluaran</div>' +
@@ -1718,14 +1331,12 @@ function renderOpTab(tab) {
       '<button class="btn btn-primary btn-block" id="peSimpan">Simpan Pengeluaran</button></div>' +
       '<div id="peList"></div>';
     loadCabangSelect('peCab');
-    var btn = document.getElementById('peSimpan');
-    if (btn) btn.addEventListener('click', simpanPengeluaran);
+    document.getElementById('peSimpan').addEventListener('click', simpanPengeluaran);
     tampilkanDaftarPengeluaran();
   } else if (tab === 'unit') {
-    tampilkanUnitCabangSemua();
+    tampilkanUnitCabangSemua('opContent');
   }
 }
-
 async function loadCabangSelect(idSelect) {
   var sel = document.getElementById(idSelect);
   if (!sel) return;
@@ -1735,14 +1346,14 @@ async function loadCabangSelect(idSelect) {
   for (var i = 0; i < list.length; i++) {
     var c = list[i];
     if (!c) continue;
-    if (String(c.status || '').toLowerCase() !== 'aktif') continue;
+    if (c.status && String(c.status).toLowerCase() !== 'aktif') continue;
     html += '<option value="' + esc(c.kode_cabang) + '">' + esc(c.nama_cabang || c.kode_cabang) + '</option>';
   }
   sel.innerHTML = html || '<option value="">-- Kosong --</option>';
 }
 
-async function renderFormInputPendapatan(tgl, cab) {
-  var el = document.getElementById('opContent');
+async function renderFormInputPendapatan(containerId, tgl, cab) {
+  var el = document.getElementById(containerId);
   if (!el) return;
   el.innerHTML = '<div class="empty">Memuat karyawan...</div>';
   var rUser = await ambilData('Users');
@@ -1760,44 +1371,38 @@ async function renderFormInputPendapatan(tgl, cab) {
   var html = '<div class="card">';
   html += '<div class="card-title">Input ' + esc(cab) + ' · ' + esc(tgl) + '</div>';
   if (karyawan.length === 0) {
-    html += '<div class="empty">Tidak ada karyawan di cabang ini</div>';
-    html += '<button class="btn btn-gray btn-block mt-8" onclick="navigasi(\'operasional\')">Kembali</button>';
-    html += '</div>';
+    html += '<div class="empty">Tidak ada karyawan di cabang ini</div></div>';
     el.innerHTML = html;
     return;
   }
   html += '<div class="field"><label>Total Unit Cabang</label><input type="number" id="opTotalUnit" placeholder="0"></div>';
   html += '<div class="field"><label>Total Tips Cabang</label><input type="number" id="opTotalTips" placeholder="0"></div>';
   html += '<div class="field"><label>Tembus Target?</label><select id="opTembus"><option value="tidak">Tidak</option><option value="ya">Ya</option></select></div>';
-  html += '<div style="margin-top:12px"><div class="card-title">Karyawan</div></div>';
+  html += '<div class="card-title mt-8">Karyawan</div>';
   for (var j = 0; j < karyawan.length; j++) {
     var k = karyawan[j];
     html += '<div class="card" style="background:#F9FAFB;padding:10px;margin-bottom:8px">';
     html += '<div class="fw-700">' + esc(k.nama) + ' <span class="fs-11 c-gray">(' + esc(k.jabatan) + ')</span></div>';
     html += '<div class="row-flex mt-8">';
-    html += '<div class="field" style="margin:0"><label>Status Masuk</label><select class="op-status" data-id="' + esc(k.id) + '"><option value="ya">Ya</option><option value="tidak">Tidak</option></select></div>';
+    html += '<div class="field" style="margin:0"><label>Status</label><select class="op-status" data-id="' + esc(k.id) + '"><option value="ya">Masuk</option><option value="tidak">Tidak</option></select></div>';
     html += '<div class="field" style="margin:0"><label>Kasbon</label><input type="number" class="op-kasbon" data-id="' + esc(k.id) + '" placeholder="0"></div>';
     html += '</div>';
     html += '<div class="field mt-8" style="margin:0"><label>Alasan (kalau tidak masuk)</label><input type="text" class="op-alasan" data-id="' + esc(k.id) + '" placeholder="-"></div>';
     html += '</div>';
   }
-  html += '<button class="btn btn-primary btn-block mt-8" id="opSimpan">Simpan Pendapatan</button>';
-  html += '<button class="btn btn-gray btn-block mt-8" onclick="navigasi(\'operasional\')">Kembali</button>';
-  html += '</div>';
+  html += '<button class="btn btn-primary btn-block mt-8" id="opSimpan">Simpan Pendapatan</button></div>';
   el.innerHTML = html;
-
-  var btn = document.getElementById('opSimpan');
-  if (btn) btn.addEventListener('click', function() { simpanPendapatanBatch(tgl, cab, karyawan); });
+  document.getElementById('opSimpan').addEventListener('click', function() {
+    simpanPendapatanBatch(tgl, cab, karyawan);
+  });
 }
 
 async function simpanPendapatanBatch(tgl, cab, karyawan) {
   var totalUnit = Number(document.getElementById('opTotalUnit').value) || 0;
   var totalTips = Number(document.getElementById('opTotalTips').value) || 0;
   var tembus = document.getElementById('opTembus').value;
-
   if (totalUnit <= 0) { showToast('Total unit harus > 0', 'error'); return; }
 
-  // Hitung jumlah masuk & pembagian
   var masukList = [];
   for (var i = 0; i < karyawan.length; i++) {
     var k = karyawan[i];
@@ -1812,7 +1417,6 @@ async function simpanPendapatanBatch(tgl, cab, karyawan) {
   var sisaUnit = totalUnit - (unitPerOrang * jumlahMasuk);
   var sisaTips = totalTips - (tipsPerOrang * jumlahMasuk);
 
-  // Cari KT untuk sisa
   var ktId = null;
   for (var a = 0; a < masukList.length; a++) {
     if (masukList[a].jabatan === 'Kepala Toko') { ktId = masukList[a].id; break; }
@@ -1822,7 +1426,6 @@ async function simpanPendapatanBatch(tgl, cab, karyawan) {
     var s = getSession();
     var batchId = generateSubmissionId('PEND');
     var sukses = 0, gagal = 0;
-
     for (var b = 0; b < karyawan.length; b++) {
       var k = karyawan[b];
       var sel = document.querySelector('.op-status[data-id="' + k.id + '"]');
@@ -1845,37 +1448,23 @@ async function simpanPendapatanBatch(tgl, cab, karyawan) {
       } else {
         unit = 0; tips = 0; bonus = 0;
       }
-      var wifi = 1000;
-
       var data = {
-        tanggal: tgl,
-        kode_cabang: cab,
-        id_karyawan: k.id,
-        nama_karyawan: k.nama,
-        jabatan: k.jabatan,
-        status_masuk: statusMasuk,
-        alasan: alasan,
-        unit: unit,
-        tips: tips,
-        bonus: bonus,
-        kasbon: kasbon,
-        wifi: wifi,
-        tembus_target: tembus,
-        total_unit_cabang: totalUnit,
-        total_tips_cabang: totalTips,
+        tanggal: tgl, kode_cabang: cab,
+        id_karyawan: k.id, nama_karyawan: k.nama, jabatan: k.jabatan,
+        status_masuk: statusMasuk, alasan: alasan,
+        unit: unit, tips: tips, bonus: bonus, kasbon: kasbon,
+        wifi: 1000, tembus_target: tembus,
+        total_unit_cabang: totalUnit, total_tips_cabang: totalTips,
         input_by: s ? s.user_id : '',
-        submission_id: batchId + '-' + k.id,
-        dihapus: false
+        submission_id: batchId + '-' + k.id, dihapus: false
       };
       var r = await simpanData('Pendapatan_Harian', data);
       if (r.ok) sukses++; else gagal++;
     }
     if (gagal === 0) {
-      showToast('Pendapatan tersimpan (' + sukses + ' baris)', 'success');
+      showToast('Tersimpan (' + sukses + ' baris)', 'success');
       navigasi('operasional');
-    } else {
-      showToast('Sebagian gagal: ' + gagal, 'error');
-    }
+    } else showToast('Sebagian gagal: ' + gagal, 'error');
   });
 }
 
@@ -1895,14 +1484,12 @@ async function simpanPengeluaran() {
   };
   var r = await simpanData('Pengeluaran', data);
   if (r.ok) {
-    showToast('Pengeluaran tersimpan', 'success');
+    showToast('Tersimpan', 'success');
     document.getElementById('peKat').value = '';
     document.getElementById('peJml').value = '';
     document.getElementById('peKet').value = '';
     tampilkanDaftarPengeluaran();
-  } else {
-    showToast(r.pesan || 'Gagal simpan', 'error');
-  }
+  } else showToast(r.pesan || 'Gagal', 'error');
 }
 
 async function tampilkanDaftarPengeluaran() {
@@ -1911,21 +1498,15 @@ async function tampilkanDaftarPengeluaran() {
   var r = await ambilData('Pengeluaran');
   var list = (r.ok && Array.isArray(r.data)) ? r.data : [];
   var html = '<div class="card"><div class="card-title">Pengeluaran Terbaru</div>';
-  if (list.length === 0) {
-    html += '<div class="empty">Belum ada pengeluaran</div>';
-  } else {
+  if (list.length === 0) html += '<div class="empty">Belum ada pengeluaran</div>';
+  else {
     html += '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Cabang</th><th>Kategori</th><th class="text-r">Jumlah</th></tr></thead><tbody>';
     var max = Math.min(list.length, 10);
     for (var i = list.length - 1; i >= list.length - max && i >= 0; i--) {
       var e = list[i];
       if (!e) continue;
       if (String(e.dihapus).toLowerCase() === 'true') continue;
-      html += '<tr>';
-      html += '<td>' + esc(e.tanggal) + '</td>';
-      html += '<td>' + esc(e.kode_cabang) + '</td>';
-      html += '<td>' + esc(e.kategori) + '</td>';
-      html += '<td class="text-r">' + fmtRupiah(e.jumlah) + '</td>';
-      html += '</tr>';
+      html += '<tr><td>' + esc(e.tanggal) + '</td><td>' + esc(e.kode_cabang) + '</td><td>' + esc(e.kategori) + '</td><td class="text-r">' + fmtRupiah(e.jumlah) + '</td></tr>';
     }
     html += '</tbody></table></div>';
   }
@@ -1933,8 +1514,8 @@ async function tampilkanDaftarPengeluaran() {
   el.innerHTML = html;
 }
 
-async function tampilkanUnitCabangSemua() {
-  var el = document.getElementById('opContent');
+async function tampilkanUnitCabangSemua(containerId) {
+  var el = document.getElementById(containerId);
   if (!el) return;
   el.innerHTML = '<div class="empty">Memuat...</div>';
   var r = await ambilData('Pendapatan_Harian');
@@ -1951,9 +1532,8 @@ async function tampilkanUnitCabangSemua() {
   for (var k in map) if (map.hasOwnProperty(k)) arr.push(map[k]);
   arr.sort(function(a, b) { return String(b.tanggal).localeCompare(String(a.tanggal)); });
   var html = '<div class="card"><div class="card-title">Unit Cabang per Hari</div>';
-  if (arr.length === 0) {
-    html += '<div class="empty">Belum ada data</div>';
-  } else {
+  if (arr.length === 0) html += '<div class="empty">Belum ada data</div>';
+  else {
     html += '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Cabang</th><th class="text-r">Unit</th></tr></thead><tbody>';
     var max = Math.min(arr.length, 30);
     for (var j = 0; j < max; j++) {
@@ -1965,78 +1545,28 @@ async function tampilkanUnitCabangSemua() {
   el.innerHTML = html;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: PENDAPATAN (KT)
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   PENDAPATAN (KT)
+   ============================================================ */
 function renderPendapatanKT() {
-  var s = getSession();
-  var html = '';
-  html += '<div class="card">';
-  html += '<div class="card-title"><span class="em">💵</span> Input Pendapatan Harian</div>';
-  html += '<div class="field"><label>Tanggal</label><input type="date" id="ktTgl" value="' + todayStr() + '"></div>';
-  html += '<button class="btn btn-primary btn-block" id="ktMulai">Mulai Input</button>';
-  html += '</div>';
-  html += '<div id="ktForm"></div>';
-  return html;
+  return '<div class="card"><div class="card-title"><span class="em">💵</span> Input Pendapatan</div>' +
+    '<div class="field"><label>Tanggal</label><input type="date" id="ktTgl" value="' + todayStr() + '"></div>' +
+    '<button class="btn btn-primary btn-block" id="ktMulai">Mulai Input</button></div>' +
+    '<div id="ktForm"></div>';
 }
-
 function afterRenderPendapatanKT() {
   var btn = document.getElementById('ktMulai');
   if (btn) btn.addEventListener('click', function() {
     var tgl = document.getElementById('ktTgl').value;
     if (!tgl) { showToast('Pilih tanggal', 'error'); return; }
     var s = getSession();
-    tampilkanFormKT(tgl, s.kode_cabang);
+    renderFormInputPendapatan('ktForm', tgl, s.kode_cabang);
   });
 }
 
-async function tampilkanFormKT(tgl, cab) {
-  var el = document.getElementById('ktForm');
-  if (!el) return;
-  el.innerHTML = '<div class="empty">Memuat karyawan...</div>';
-  var rUser = await ambilData('Users');
-  var list = (rUser.ok && Array.isArray(rUser.data)) ? rUser.data : [];
-  var karyawan = [];
-  for (var i = 0; i < list.length; i++) {
-    var u = list[i];
-    if (!u) continue;
-    if (String(u.dihapus).toLowerCase() === 'true') continue;
-    if (String(u.status).toLowerCase() !== 'aktif') continue;
-    if (String(u.kode_cabang) !== String(cab)) continue;
-    if (u.jabatan === 'Owner' || u.jabatan === 'Admin') continue;
-    karyawan.push(u);
-  }
-  if (karyawan.length === 0) {
-    el.innerHTML = '<div class="empty">Tidak ada karyawan</div>';
-    return;
-  }
-  var html = '<div class="card">';
-  html += '<div class="card-title">Input ' + esc(cab) + ' · ' + esc(tgl) + '</div>';
-  html += '<div class="field"><label>Total Unit Cabang</label><input type="number" id="ktTotalUnit" placeholder="0"></div>';
-  html += '<div class="field"><label>Total Tips Cabang</label><input type="number" id="ktTotalTips" placeholder="0"></div>';
-  html += '<div class="field"><label>Tembus Target?</label><select id="ktTembus"><option value="tidak">Tidak</option><option value="ya">Ya</option></select></div>';
-  for (var j = 0; j < karyawan.length; j++) {
-    var k = karyawan[j];
-    html += '<div class="card" style="background:#F9FAFB;padding:10px;margin-bottom:8px">';
-    html += '<div class="fw-700">' + esc(k.nama) + ' <span class="fs-11 c-gray">(' + esc(k.jabatan) + ')</span></div>';
-    html += '<div class="row-flex mt-8">';
-    html += '<div class="field" style="margin:0"><label>Status Masuk</label><select class="kt-status" data-id="' + esc(k.id) + '"><option value="ya">Ya</option><option value="tidak">Tidak</option></select></div>';
-    html += '<div class="field" style="margin:0"><label>Kasbon</label><input type="number" class="kt-kasbon" data-id="' + esc(k.id) + '" placeholder="0"></div>';
-    html += '</div>';
-    html += '<div class="field mt-8" style="margin:0"><label>Alasan (kalau tidak masuk)</label><input type="text" class="kt-alasan" data-id="' + esc(k.id) + '" placeholder="-"></div>';
-    html += '</div>';
-  }
-  html += '<button class="btn btn-primary btn-block mt-8" id="ktSimpan">Simpan Pendapatan</button>';
-  html += '</div>';
-  el.innerHTML = html;
-
-  var btn = document.getElementById('ktSimpan');
-  if (btn) btn.addEventListener('click', function() { simpanPendapatanBatch(tgl, cab, karyawan); });
-}
-
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: UNIT CABANG (KT)
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   UNIT CABANG (KT)
+   ============================================================ */
 function renderUnitCabang() {
   return '<div class="card"><div class="card-title">📊 Unit Cabang per Hari</div><div id="ucList" class="empty">Memuat...</div></div>';
 }
@@ -2067,21 +1597,17 @@ async function afterRenderUnitCabang() {
   el.innerHTML = html;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: PENGAJUAN (KT/Karyawan)
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   PENGAJUAN
+   ============================================================ */
 function renderPengajuan() {
-  var html = '';
-  html += '<div class="tabs">';
-  html += '<div class="tab active" data-pjtab="kasbon">Kasbon</div>';
-  html += '<div class="tab" data-pjtab="izin">Izin</div>';
-  html += '<div class="tab" data-pjtab="kerusakan">Kerusakan</div>';
-  html += '<div class="tab" data-pjtab="payroll">Permintaan Payroll</div>';
-  html += '</div>';
-  html += '<div id="pjContent"></div>';
-  return html;
+  return '<div class="tabs">' +
+    '<div class="tab active" data-pjtab="kasbon">Kasbon</div>' +
+    '<div class="tab" data-pjtab="izin">Izin</div>' +
+    '<div class="tab" data-pjtab="kerusakan">Kerusakan</div>' +
+    '<div class="tab" data-pjtab="payroll">Permintaan Payroll</div>' +
+    '</div><div id="pjContent"></div>';
 }
-
 function afterRenderPengajuan() {
   var tabs = document.querySelectorAll('.tab[data-pjtab]');
   for (var i = 0; i < tabs.length; i++) {
@@ -2094,19 +1620,17 @@ function afterRenderPengajuan() {
   }
   renderPjTab('kasbon');
 }
-
 function renderPjTab(tab) {
   var el = document.getElementById('pjContent');
   if (!el) return;
   if (tab === 'kasbon') {
     el.innerHTML = '<div class="card"><div class="card-title">Ajukan Kasbon</div>' +
-      '<div class="field"><label>Tanggal Pengajuan</label><input type="date" id="ksTgl" value="' + todayStr() + '"></div>' +
+      '<div class="field"><label>Tanggal</label><input type="date" id="ksTgl" value="' + todayStr() + '"></div>' +
       '<div class="field"><label>Jumlah Kasbon</label><input type="number" id="ksJml" placeholder="0"></div>' +
       '<div class="field"><label>Keterangan</label><textarea id="ksKet"></textarea></div>' +
       '<button class="btn btn-primary btn-block" id="ksSimpan">Ajukan</button></div>' +
       '<div id="ksList"></div>';
-    var btn = document.getElementById('ksSimpan');
-    if (btn) btn.addEventListener('click', simpanKasbon);
+    document.getElementById('ksSimpan').addEventListener('click', simpanKasbon);
     tampilkanKasbonSaya();
   } else if (tab === 'izin') {
     el.innerHTML = '<div class="card"><div class="card-title">Ajukan Izin</div>' +
@@ -2116,8 +1640,7 @@ function renderPjTab(tab) {
       '<div class="field"><label>Keterangan</label><textarea id="izKet"></textarea></div>' +
       '<button class="btn btn-primary btn-block" id="izSimpan">Ajukan</button></div>' +
       '<div id="izList"></div>';
-    var btn2 = document.getElementById('izSimpan');
-    if (btn2) btn2.addEventListener('click', simpanIzin);
+    document.getElementById('izSimpan').addEventListener('click', simpanIzin);
     tampilkanIzinSaya();
   } else if (tab === 'kerusakan') {
     el.innerHTML = '<div class="card"><div class="card-title">Lapor Kerusakan</div>' +
@@ -2127,8 +1650,7 @@ function renderPjTab(tab) {
       '<div class="field"><label>Deskripsi</label><textarea id="krDesk"></textarea></div>' +
       '<button class="btn btn-primary btn-block" id="krSimpan">Laporkan</button></div>' +
       '<div id="krList"></div>';
-    var btn3 = document.getElementById('krSimpan');
-    if (btn3) btn3.addEventListener('click', simpanKerusakan);
+    document.getElementById('krSimpan').addEventListener('click', simpanKerusakan);
     tampilkanKerusakanSaya();
   } else if (tab === 'payroll') {
     el.innerHTML = '<div class="card"><div class="card-title">Permintaan Payroll</div>' +
@@ -2136,12 +1658,10 @@ function renderPjTab(tab) {
       '<div class="field"><label>Alasan</label><textarea id="prAlasan"></textarea></div>' +
       '<button class="btn btn-primary btn-block" id="prSimpan">Ajukan</button></div>' +
       '<div id="prList"></div>';
-    var btn4 = document.getElementById('prSimpan');
-    if (btn4) btn4.addEventListener('click', simpanPermintaanPayroll);
+    document.getElementById('prSimpan').addEventListener('click', simpanPermintaanPayroll);
     tampilkanPermintaanPayrollSaya();
   }
 }
-
 async function simpanKasbon() {
   var s = getSession();
   var tgl = document.getElementById('ksTgl').value;
@@ -2162,7 +1682,6 @@ async function simpanKasbon() {
     else showToast(r.pesan || 'Gagal', 'error');
   });
 }
-
 async function tampilkanKasbonSaya() {
   var el = document.getElementById('ksList');
   if (!el) return;
@@ -2180,12 +1699,9 @@ async function tampilkanKasbonSaya() {
     ada = true;
     html += '<tr><td>' + esc(k.tanggal_pengajuan) + '</td><td class="text-r">' + fmtRupiah(k.jumlah_kasbon) + '</td><td>' + badgeStatus(k.status) + '</td></tr>';
   }
-  html += '</tbody></table></div>';
-  if (!ada) html = '<div class="card"><div class="empty">Belum ada pengajuan</div></div>';
-  html += '</div>';
-  el.innerHTML = html;
+  html += '</tbody></table></div></div>';
+  el.innerHTML = ada ? html : '<div class="card"><div class="empty">Belum ada pengajuan</div></div>';
 }
-
 async function simpanIzin() {
   var s = getSession();
   var tglAj = document.getElementById('izTglAj').value;
@@ -2193,18 +1709,10 @@ async function simpanIzin() {
   var jenis = document.getElementById('izJenis').value;
   var ket = document.getElementById('izKet').value.trim();
   if (!tglAj || !tgl) { showToast('Lengkapi data', 'error'); return; }
-
-  // Validasi H-1 untuk istirahat, H-0 untuk sakit
-  var dAj = new Date(tglAj);
-  var dIz = new Date(tgl);
+  var dAj = new Date(tglAj), dIz = new Date(tgl);
   var diffDays = Math.floor((dIz - dAj) / (24 * 60 * 60 * 1000));
-  if (jenis === 'istirahat' && diffDays < 1) {
-    showToast('Izin istirahat minimal H-1', 'error'); return;
-  }
-  if (jenis === 'sakit' && diffDays < 0) {
-    showToast('Tanggal izin tidak boleh lewat', 'error'); return;
-  }
-
+  if (jenis === 'istirahat' && diffDays < 1) { showToast('Izin istirahat minimal H-1', 'error'); return; }
+  if (jenis === 'sakit' && diffDays < 0) { showToast('Tanggal izin tidak boleh lewat', 'error'); return; }
   var subId = generateSubmissionId('IZ');
   var data = {
     id_izin: subId, submission_id: subId,
@@ -2219,7 +1727,6 @@ async function simpanIzin() {
     else showToast(r.pesan || 'Gagal', 'error');
   });
 }
-
 async function tampilkanIzinSaya() {
   var el = document.getElementById('izList');
   if (!el) return;
@@ -2237,12 +1744,9 @@ async function tampilkanIzinSaya() {
     ada = true;
     html += '<tr><td>' + esc(k.tanggal_izin) + '</td><td>' + esc(k.jenis_izin) + '</td><td>' + badgeStatus(k.status) + '</td></tr>';
   }
-  html += '</tbody></table></div>';
-  if (!ada) html = '<div class="card"><div class="empty">Belum ada pengajuan</div></div>';
-  html += '</div>';
-  el.innerHTML = html;
+  html += '</tbody></table></div></div>';
+  el.innerHTML = ada ? html : '<div class="card"><div class="empty">Belum ada pengajuan</div></div>';
 }
-
 async function simpanKerusakan() {
   var s = getSession();
   var tgl = document.getElementById('krTgl').value;
@@ -2264,7 +1768,6 @@ async function simpanKerusakan() {
     else showToast(r.pesan || 'Gagal', 'error');
   });
 }
-
 async function tampilkanKerusakanSaya() {
   var el = document.getElementById('krList');
   if (!el) return;
@@ -2282,12 +1785,9 @@ async function tampilkanKerusakanSaya() {
     ada = true;
     html += '<tr><td>' + esc(k.tanggal) + '</td><td>' + esc(k.judul) + '</td><td>' + badgeStatus(k.status) + '</td></tr>';
   }
-  html += '</tbody></table></div>';
-  if (!ada) html = '<div class="card"><div class="empty">Belum ada laporan</div></div>';
-  html += '</div>';
-  el.innerHTML = html;
+  html += '</tbody></table></div></div>';
+  el.innerHTML = ada ? html : '<div class="card"><div class="empty">Belum ada laporan</div></div>';
 }
-
 async function simpanPermintaanPayroll() {
   var s = getSession();
   var tgl = document.getElementById('prTgl').value;
@@ -2306,7 +1806,6 @@ async function simpanPermintaanPayroll() {
     else showToast(r.pesan || 'Gagal', 'error');
   });
 }
-
 async function tampilkanPermintaanPayrollSaya() {
   var el = document.getElementById('prList');
   if (!el) return;
@@ -2324,39 +1823,23 @@ async function tampilkanPermintaanPayrollSaya() {
     ada = true;
     html += '<tr><td>' + esc(k.tanggal) + '</td><td>' + esc(k.alasan) + '</td><td>' + badgeStatus(k.status) + '</td></tr>';
   }
-  html += '</tbody></table></div>';
-  if (!ada) html = '<div class="card"><div class="empty">Belum ada permintaan</div></div>';
-  html += '</div>';
-  el.innerHTML = html;
+  html += '</tbody></table></div></div>';
+  el.innerHTML = ada ? html : '<div class="card"><div class="empty">Belum ada permintaan</div></div>';
 }
 
-function badgeStatus(st) {
-  st = String(st || '').toLowerCase();
-  if (st === 'disetujui' || st === 'disetujui_admin' || st === 'disetujui_kt') return '<span class="badge badge-green">' + esc(st) + '</span>';
-  if (st === 'menunggu') return '<span class="badge badge-yellow">menunggu</span>';
-  if (st === 'ditolak') return '<span class="badge badge-red">ditolak</span>';
-  if (st === 'belum_dibayar') return '<span class="badge badge-yellow">belum dibayar</span>';
-  if (st === 'sudah_dibayar') return '<span class="badge badge-green">sudah dibayar</span>';
-  return '<span class="badge badge-gray">' + esc(st || '-') + '</span>';
-}
-
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: ACC
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   ACC
+   ============================================================ */
 function renderAcc() {
-  var html = '';
-  html += '<div class="tabs">';
-  html += '<div class="tab active" data-acctab="izin">Izin</div>';
-  html += '<div class="tab" data-acctab="kasbon">Kasbon</div>';
-  html += '<div class="tab" data-acctab="kerusakan">Kerusakan</div>';
-  html += '<div class="tab" data-acctab="payroll">Permintaan Payroll</div>';
-  html += '<div class="tab" data-acctab="setoran">Setoran</div>';
-  html += '<div class="tab" data-acctab="resign">Resign</div>';
-  html += '</div>';
-  html += '<div id="accContent"></div>';
-  return html;
+  return '<div class="tabs">' +
+    '<div class="tab active" data-acctab="izin">Izin</div>' +
+    '<div class="tab" data-acctab="kasbon">Kasbon</div>' +
+    '<div class="tab" data-acctab="kerusakan">Kerusakan</div>' +
+    '<div class="tab" data-acctab="payroll">Permintaan Payroll</div>' +
+    '<div class="tab" data-acctab="setoran">Setoran</div>' +
+    '<div class="tab" data-acctab="resign">Resign</div>' +
+    '</div><div id="accContent"></div>';
 }
-
 function afterRenderAcc() {
   var tabs = document.querySelectorAll('.tab[data-acctab]');
   for (var i = 0; i < tabs.length; i++) {
@@ -2369,7 +1852,6 @@ function afterRenderAcc() {
   }
   renderAccTab('izin');
 }
-
 async function renderAccTab(tab) {
   var el = document.getElementById('accContent');
   if (!el) return;
@@ -2395,7 +1877,7 @@ async function renderAccTab(tab) {
     if (!bolehAcc(s.user_jabatan, jabPengaju, st)) continue;
     ada = true;
     html += '<div class="card">';
-    html += '<div class="fw-700 mb-8">' + esc(it.nama_karyawan || it.nama_pelapor || it.nama_pengaju || it.nama_pengaju || '-') + '</div>';
+    html += '<div class="fw-700 mb-8">' + esc(it.nama_karyawan || it.nama_pelapor || it.nama_pengaju || '-') + '</div>';
     html += '<div class="fs-12 c-gray mb-8">' + esc(jabPengaju) + ' · ' + badgeStatus(st) + '</div>';
     if (tab === 'izin') {
       html += '<div class="fs-12">Izin: ' + esc(it.tanggal_izin) + ' (' + esc(it.jenis_izin) + ')</div>';
@@ -2417,12 +1899,10 @@ async function renderAccTab(tab) {
     html += '<div class="row-flex mt-8">';
     html += '<button class="btn btn-primary btn-sm acc-setuju" data-sheet="' + sheet + '" data-row="' + it._row + '" data-jab="' + esc(jabPengaju) + '" data-status="' + esc(st) + '">Setujui</button>';
     html += '<button class="btn btn-danger btn-sm acc-tolak" data-sheet="' + sheet + '" data-row="' + it._row + '">Tolak</button>';
-    html += '</div>';
-    html += '</div>';
+    html += '</div></div>';
   }
   if (!ada) html = '<div class="empty">Tidak ada pengajuan untuk Anda ACC</div>';
   el.innerHTML = html;
-
   var btns1 = el.querySelectorAll('.acc-setuju');
   for (var a = 0; a < btns1.length; a++) {
     btns1[a].addEventListener('click', function() {
@@ -2436,7 +1916,6 @@ async function renderAccTab(tab) {
     });
   }
 }
-
 async function accSetuju(sheet, row, jabPengaju, status) {
   var s = getSession();
   var stBaru = getStatusSetelahAcc(status, s.user_jabatan);
@@ -2445,10 +1924,9 @@ async function accSetuju(sheet, row, jabPengaju, status) {
   if (s.user_jabatan === 'Admin') data.acc_admin_by = s.user_id;
   if (s.user_jabatan === 'Owner') data.acc_owner_by = s.user_id;
   var r = await updateData(sheet, row, data);
-  if (r.ok) { showToast('Disetujui', 'success'); renderAccTab(HALAMAN_AKTIF === 'acc' ? 'izin' : 'izin'); }
+  if (r.ok) { showToast('Disetujui', 'success'); renderAccTab('izin'); }
   else showToast(r.pesan || 'Gagal', 'error');
 }
-
 async function accTolak(sheet, row) {
   var alasan = prompt('Alasan penolakan:');
   if (alasan === null) return;
@@ -2459,21 +1937,19 @@ async function accTolak(sheet, row) {
   else showToast(r.pesan || 'Gagal', 'error');
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: PAYROLL (Owner)
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   PAYROLL
+   ============================================================ */
 function renderPayroll() {
   return '<div class="card"><div class="card-title">💰 Kelola Payroll</div>' +
     '<div class="field"><label>Periode</label><input type="text" id="pyPeriode" placeholder="2026-01-P1"></div>' +
     '<button class="btn btn-primary btn-block" id="pyGenerate">Generate Payroll</button>' +
-    '<button class="btn btn-outline btn-block mt-8" id="pyLoad">Tampilkan Payroll</button>' +
-    '</div><div id="pyList"></div>';
+    '<button class="btn btn-outline btn-block mt-8" id="pyLoad">Tampilkan Payroll</button></div>' +
+    '<div id="pyList"></div>';
 }
 function afterRenderPayroll() {
-  var btn = document.getElementById('pyGenerate');
-  if (btn) btn.addEventListener('click', function() { generatePayroll(); });
-  var btn2 = document.getElementById('pyLoad');
-  if (btn2) btn2.addEventListener('click', tampilkanPayroll);
+  document.getElementById('pyGenerate').addEventListener('click', generatePayroll);
+  document.getElementById('pyLoad').addEventListener('click', tampilkanPayroll);
   tampilkanPayroll();
 }
 async function generatePayroll() {
@@ -2500,14 +1976,12 @@ async function generatePayroll() {
     if (!map.hasOwnProperty(k)) continue;
     var m = map[k];
     var total = (m.unit * 3000) + m.tips + m.bonus - m.kasbon - m.wifi;
-    var subId = generateSubmissionId('PY');
     var data = {
       periode: periode, kode_cabang: m.cabang,
-      id_karyawan: m.id_karyawan, nama_karyawan: m.nama,
-      jabatan: m.jabatan, total_unit: m.unit, total_tips: m.tips,
-      total_bonus: m.bonus, total_kasbon: m.kasbon, total_wifi: m.wifi,
-      total_payroll: total, status: 'belum_dibayar',
-      dihapus: false
+      id_karyawan: m.id_karyawan, nama_karyawan: m.nama, jabatan: m.jabatan,
+      total_unit: m.unit, total_tips: m.tips, total_bonus: m.bonus,
+      total_kasbon: m.kasbon, total_wifi: m.wifi, total_payroll: total,
+      status: 'belum_dibayar', dihapus: false
     };
     var r2 = await simpanData('Payroll', data);
     if (r2.ok) sukses++;
@@ -2521,7 +1995,7 @@ async function tampilkanPayroll() {
   var r = await ambilData('Payroll');
   var list = (r.ok && Array.isArray(r.data)) ? r.data : [];
   var html = '<div class="card"><div class="card-title">Daftar Payroll</div>';
-  if (list.length === 0) { html += '<div class="empty">Belum ada payroll</div>'; }
+  if (list.length === 0) html += '<div class="empty">Belum ada payroll</div>';
   else {
     html += '<div class="table-wrap"><table><thead><tr><th>Periode</th><th>Nama</th><th class="text-r">Total</th><th>Status</th></tr></thead><tbody>';
     for (var i = list.length - 1; i >= 0; i--) {
@@ -2536,9 +2010,9 @@ async function tampilkanPayroll() {
   el.innerHTML = html;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: PAYROLL SAYA
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   PAYROLL SAYA
+   ============================================================ */
 function renderPayrollSaya() {
   return '<div class="card"><div class="card-title">💰 Payroll Saya</div><div id="pysList" class="empty">Memuat...</div></div>';
 }
@@ -2562,15 +2036,14 @@ async function afterRenderPayrollSaya() {
   el.innerHTML = ada ? html : '<div class="empty">Belum ada payroll</div>';
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: PAYROLL & LAPORAN (KT)
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   PAYROLL & LAPORAN (KT)
+   ============================================================ */
 function renderPayrollLaporan() {
-  var html = '<div class="tabs">';
-  html += '<div class="tab active" data-pltab="payroll">Payroll Saya</div>';
-  html += '<div class="tab" data-pltab="laporan">Buat Laporan</div>';
-  html += '</div><div id="plContent"></div>';
-  return html;
+  return '<div class="tabs">' +
+    '<div class="tab active" data-pltab="payroll">Payroll Saya</div>' +
+    '<div class="tab" data-pltab="laporan">Buat Laporan</div>' +
+    '</div><div id="plContent"></div>';
 }
 function afterRenderPayrollLaporan() {
   var tabs = document.querySelectorAll('.tab[data-pltab]');
@@ -2596,8 +2069,7 @@ function renderPlTab(tab) {
       '<div class="field"><label>Isi</label><textarea id="lpIsi"></textarea></div>' +
       '<button class="btn btn-primary btn-block" id="lpSimpan">Kirim Laporan</button></div>' +
       '<div id="lpList"></div>';
-    var btn = document.getElementById('lpSimpan');
-    if (btn) btn.addEventListener('click', simpanLaporan);
+    document.getElementById('lpSimpan').addEventListener('click', simpanLaporan);
     tampilkanLaporanSaya();
   }
 }
@@ -2638,15 +2110,14 @@ async function tampilkanLaporanSaya() {
   el.innerHTML = ada ? html : '<div class="card"><div class="empty">Belum ada laporan</div></div>';
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: MANUSIA (Owner) — HR SYSTEM
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   MANUSIA (Owner) — HR SYSTEM
+   ============================================================ */
 function renderManusia() {
-  var html = '<div class="tabs">';
-  html += '<div class="tab active" data-mntab="anggota">Anggota</div>';
-  html += '<div class="tab" data-mntab="cabang">Cabang</div>';
-  html += '</div><div id="mnContent"></div>';
-  return html;
+  return '<div class="tabs">' +
+    '<div class="tab active" data-mntab="anggota">Anggota</div>' +
+    '<div class="tab" data-mntab="cabang">Cabang</div>' +
+    '</div><div id="mnContent"></div>';
 }
 function afterRenderManusia() {
   var tabs = document.querySelectorAll('.tab[data-mntab]');
@@ -2674,7 +2145,15 @@ async function renderMnTab(tab) {
     document.getElementById('mnTambah').addEventListener('click', tambahAnggota);
     tampilkanAnggota();
   } else {
-    el.innerHTML = '<div class="card"><div class="card-title">🏪 Cabang</div><div id="mnCabList" class="empty">Memuat...</div></div>';
+    el.innerHTML = '<div class="card"><div class="card-title">🏪 Tambah Cabang</div>' +
+      '<div class="field"><label>Kode Cabang</label><input type="text" id="mnCabKode"></div>' +
+      '<div class="field"><label>Nama Cabang</label><input type="text" id="mnCabNama"></div>' +
+      '<div class="field"><label>Target Harian</label><input type="number" id="mnCabTarget" placeholder="0"></div>' +
+      '<div class="field"><label>Alamat</label><input type="text" id="mnCabAlamat"></div>' +
+      '<div class="field"><label>Telepon</label><input type="text" id="mnCabTelp"></div>' +
+      '<button class="btn btn-primary btn-block" id="mnCabTambah">Tambah Cabang</button></div>' +
+      '<div id="mnCabList"></div>';
+    document.getElementById('mnCabTambah').addEventListener('click', tambahCabang);
     tampilkanCabang();
   }
 }
@@ -2685,15 +2164,14 @@ async function tambahAnggota() {
   var cab = document.getElementById('mnCab').value.trim();
   if (!id || !nama) { showToast('Lengkapi data', 'error'); return; }
   if (jab === 'Owner') { showToast('Tidak bisa tambah Owner', 'error'); return; }
-  var r = await ambilData('Users');
+  var r = await ambilData('Users', true);
   var list = (r.ok && Array.isArray(r.data)) ? r.data : [];
   for (var i = 0; i < list.length; i++) {
     if (String(list[i].id) === String(id)) { showToast('ID sudah dipakai', 'error'); return; }
   }
   var data = {
     id: id, password: '123456', nama: nama, jabatan: jab,
-    kode_cabang: cab, status: 'aktif', tanggal_masuk: todayStr(),
-    dihapus: false
+    kode_cabang: cab, status: 'aktif', tanggal_masuk: todayStr(), dihapus: false
   };
   var r2 = await simpanData('Users', data);
   if (r2.ok) { showToast('Anggota ditambah', 'success'); tampilkanAnggota(); }
@@ -2709,54 +2187,27 @@ async function tampilkanAnggota() {
     var u = list[i];
     if (!u) continue;
     if (String(u.dihapus).toLowerCase() === 'true') continue;
-    html += '<tr>';
-    html += '<td>' + esc(u.id) + '</td>';
-    html += '<td>' + esc(u.nama) + '</td>';
-    html += '<td>' + esc(u.jabatan) + '</td>';
-    html += '<td>' + esc(u.kode_cabang) + '</td>';
-    html += '<td>';
+    html += '<tr><td>' + esc(u.id) + '</td><td>' + esc(u.nama) + '</td><td>' + esc(u.jabatan) + '</td><td>' + esc(u.kode_cabang) + '</td><td style="white-space:nowrap">';
     if (u.jabatan !== 'Owner') {
-      html += '<button class="btn btn-sm btn-gray mn-reset" data-id="' + esc(u.id) + '" data-row="' + u._row + '">🔑</button> ';
-      if (u.jabatan === 'Karyawan') html += '<button class="btn btn-sm btn-gold mn-naik" data-id="' + esc(u.id) + '" data-row="' + u._row + '" data-jab="' + esc(u.jabatan) + '">⬆️</button>';
-      if (u.jabatan === 'Kepala Toko') html += '<button class="btn btn-sm btn-gold mn-naik" data-id="' + esc(u.id) + '" data-row="' + u._row + '" data-jab="' + esc(u.jabatan) + '">⬆️</button>';
-      if (u.jabatan === 'Admin') html += '<button class="btn btn-sm btn-outline mn-turun" data-id="' + esc(u.id) + '" data-row="' + u._row + '" data-jab="' + esc(u.jabatan) + '">⬇️</button>';
-      if (u.jabatan === 'Kepala Toko') html += '<button class="btn btn-sm btn-outline mn-turun" data-id="' + esc(u.id) + '" data-row="' + u._row + '" data-jab="' + esc(u.jabatan) + '">⬇️</button>';
-      html += '<button class="btn btn-sm btn-danger mn-hapus" data-id="' + esc(u.id) + '" data-row="' + u._row + '">🗑️</button>';
-    } else {
-      html += '<span class="fs-11 c-gray">Owner</span>';
-    }
-    html += '</td>';
-    html += '</tr>';
+      html += '<button class="btn btn-sm btn-gray mn-reset" data-row="' + u._row + '">🔑</button> ';
+      if (u.jabatan === 'Karyawan' || u.jabatan === 'Kepala Toko') html += '<button class="btn btn-sm btn-gold mn-naik" data-row="' + u._row + '" data-jab="' + esc(u.jabatan) + '">⬆️</button> ';
+      if (u.jabatan === 'Admin' || u.jabatan === 'Kepala Toko') html += '<button class="btn btn-sm btn-outline mn-turun" data-row="' + u._row + '" data-jab="' + esc(u.jabatan) + '">⬇️</button> ';
+      html += '<button class="btn btn-sm btn-danger mn-hapus" data-row="' + u._row + '">🗑️</button>';
+    } else html += '<span class="fs-11 c-gray">Owner</span>';
+    html += '</td></tr>';
   }
   html += '</tbody></table></div></div>';
   el.innerHTML = html;
-
   var btns = el.querySelectorAll('.mn-hapus');
-  for (var a = 0; a < btns.length; a++) {
-    btns[a].addEventListener('click', function() {
-      hapusAnggota(Number(this.getAttribute('data-row')), this.getAttribute('data-id'));
-    });
-  }
-  var btnsNaik = el.querySelectorAll('.mn-naik');
-  for (var b = 0; b < btnsNaik.length; b++) {
-    btnsNaik[b].addEventListener('click', function() {
-      naikkanJabatan(Number(this.getAttribute('data-row')), this.getAttribute('data-jab'));
-    });
-  }
-  var btnsTurun = el.querySelectorAll('.mn-turun');
-  for (var c = 0; c < btnsTurun.length; c++) {
-    btnsTurun[c].addEventListener('click', function() {
-      turunkanJabatan(Number(this.getAttribute('data-row')), this.getAttribute('data-jab'));
-    });
-  }
-  var btnsReset = el.querySelectorAll('.mn-reset');
-  for (var d = 0; d < btnsReset.length; d++) {
-    btnsReset[d].addEventListener('click', function() {
-      resetPassword(Number(this.getAttribute('data-row')));
-    });
-  }
+  for (var a = 0; a < btns.length; a++) btns[a].addEventListener('click', function() { hapusAnggota(Number(this.getAttribute('data-row'))); });
+  var bn = el.querySelectorAll('.mn-naik');
+  for (var b = 0; b < bn.length; b++) bn[b].addEventListener('click', function() { naikkanJabatan(Number(this.getAttribute('data-row')), this.getAttribute('data-jab')); });
+  var bt = el.querySelectorAll('.mn-turun');
+  for (var c = 0; c < bt.length; c++) bt[c].addEventListener('click', function() { turunkanJabatan(Number(this.getAttribute('data-row')), this.getAttribute('data-jab')); });
+  var br = el.querySelectorAll('.mn-reset');
+  for (var d = 0; d < br.length; d++) br[d].addEventListener('click', function() { resetPassword(Number(this.getAttribute('data-row'))); });
 }
-async function hapusAnggota(row, id) {
+async function hapusAnggota(row) {
   var alasan = prompt('Alasan hapus:');
   if (alasan === null) return;
   var r = await updateData('Users', row, { dihapus: true, alasan_hapus: alasan || '-', status: 'nonaktif' });
@@ -2767,47 +2218,42 @@ async function naikkanJabatan(row, jabLama) {
   var jabBaru;
   if (jabLama === 'Karyawan') jabBaru = 'Kepala Toko';
   else if (jabLama === 'Kepala Toko') jabBaru = 'Admin';
-  else if (jabLama === 'Admin') { showToast('Admin tidak bisa naik ke Owner', 'error'); return; }
-  else { showToast('Jabatan tidak bisa dinaikkan', 'error'); return; }
-  if (!confirm('Naikkan jabatan dari ' + jabLama + ' ke ' + jabBaru + '?')) return;
+  else { showToast('Admin mentok, tidak bisa ke Owner', 'error'); return; }
+  if (!confirm('Naikkan jabatan ' + jabLama + ' → ' + jabBaru + '?')) return;
   var r = await updateData('Users', row, { jabatan: jabBaru });
   if (r.ok) {
     var s = getSession();
-    var sid = generateSubmissionId('JAB');
     try {
       await simpanData('Log_Submisi', {
-        submission_id: sid, timestamp: nowISO(),
+        submission_id: generateSubmissionId('JAB'), timestamp: nowISO(),
         user_id: s ? s.user_id : '', user_nama: s ? s.user_nama : '',
         action: 'ubah_jabatan', sheet: 'Users',
         detail: JSON.stringify({ jabatan_lama: jabLama, jabatan_baru: jabBaru }),
         device_info: navigator.userAgent
       });
     } catch (e) {}
-    showToast('Jabatan dinaikkan', 'success');
-    tampilkanAnggota();
+    showToast('Jabatan dinaikkan', 'success'); tampilkanAnggota();
   } else showToast(r.pesan || 'Gagal', 'error');
 }
 async function turunkanJabatan(row, jabLama) {
   var jabBaru;
   if (jabLama === 'Admin') jabBaru = 'Kepala Toko';
   else if (jabLama === 'Kepala Toko') jabBaru = 'Karyawan';
-  else { showToast('Jabatan tidak bisa diturunkan', 'error'); return; }
-  if (!confirm('Turunkan jabatan dari ' + jabLama + ' ke ' + jabBaru + '?')) return;
+  else { showToast('Karyawan sudah paling bawah', 'error'); return; }
+  if (!confirm('Turunkan jabatan ' + jabLama + ' → ' + jabBaru + '?')) return;
   var r = await updateData('Users', row, { jabatan: jabBaru });
   if (r.ok) {
     var s = getSession();
-    var sid = generateSubmissionId('JAB');
     try {
       await simpanData('Log_Submisi', {
-        submission_id: sid, timestamp: nowISO(),
+        submission_id: generateSubmissionId('JAB'), timestamp: nowISO(),
         user_id: s ? s.user_id : '', user_nama: s ? s.user_nama : '',
         action: 'ubah_jabatan', sheet: 'Users',
         detail: JSON.stringify({ jabatan_lama: jabLama, jabatan_baru: jabBaru }),
         device_info: navigator.userAgent
       });
     } catch (e) {}
-    showToast('Jabatan diturunkan', 'success');
-    tampilkanAnggota();
+    showToast('Jabatan diturunkan', 'success'); tampilkanAnggota();
   } else showToast(r.pesan || 'Gagal', 'error');
 }
 async function resetPassword(row) {
@@ -2815,7 +2261,22 @@ async function resetPassword(row) {
   if (baru === null) return;
   if (String(baru).length < 6) { showToast('Min 6 karakter', 'error'); return; }
   var r = await updateData('Users', row, { password: String(baru) });
-  if (r.ok) { showToast('Password direset', 'success'); }
+  if (r.ok) showToast('Password direset', 'success');
+  else showToast(r.pesan || 'Gagal', 'error');
+}
+async function tambahCabang() {
+  var kode = document.getElementById('mnCabKode').value.trim();
+  var nama = document.getElementById('mnCabNama').value.trim();
+  var target = Number(document.getElementById('mnCabTarget').value) || 0;
+  var alamat = document.getElementById('mnCabAlamat').value.trim();
+  var telp = document.getElementById('mnCabTelp').value.trim();
+  if (!kode || !nama) { showToast('Lengkapi data', 'error'); return; }
+  var data = {
+    kode_cabang: kode, nama_cabang: nama, target_harian: target,
+    alamat: alamat, telepon: telp, status: 'aktif'
+  };
+  var r = await simpanData('Target_Cabang', data);
+  if (r.ok) { showToast('Cabang ditambah', 'success'); tampilkanCabang(); }
   else showToast(r.pesan || 'Gagal', 'error');
 }
 async function tampilkanCabang() {
@@ -2823,19 +2284,19 @@ async function tampilkanCabang() {
   if (!el) return;
   var r = await ambilData('Target_Cabang', true);
   var list = (r.ok && Array.isArray(r.data)) ? r.data : [];
-  var html = '<div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama</th><th>Target</th></tr></thead><tbody>';
+  var html = '<div class="card"><div class="card-title">Daftar Cabang</div><div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama</th><th>Target</th><th>Status</th></tr></thead><tbody>';
   for (var i = 0; i < list.length; i++) {
     var c = list[i];
     if (!c) continue;
-    html += '<tr><td>' + esc(c.kode_cabang) + '</td><td>' + esc(c.nama_cabang) + '</td><td>' + esc(c.target_harian) + '</td></tr>';
+    html += '<tr><td>' + esc(c.kode_cabang) + '</td><td>' + esc(c.nama_cabang) + '</td><td>' + esc(c.target_harian) + '</td><td>' + badgeStatus(c.status) + '</td></tr>';
   }
-  html += '</tbody></table></div>';
+  html += '</tbody></table></div></div>';
   el.innerHTML = html;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: PENGATURAN (Owner)
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   PENGATURAN
+   ============================================================ */
 function renderPengaturan() {
   return '<div class="card"><div class="card-title">🔧 Pengaturan Global</div><div id="pgList" class="empty">Memuat...</div></div>';
 }
@@ -2848,7 +2309,7 @@ async function afterRenderPengaturan() {
   for (var i = 0; i < list.length; i++) {
     var p = list[i];
     if (!p) continue;
-    html += '<tr><td>' + esc(p.key) + '</td><td><input type="text" value="' + esc(p.value) + '" data-pgrow="' + p._row + '" style="padding:4px;border:1px solid #E5E7EB;border-radius:4px;width:100%"></td><td><button class="btn btn-sm btn-primary pg-save" data-row="' + p._row + '">💾</button></td></tr>';
+    html += '<tr><td class="fs-11">' + esc(p.key) + '</td><td><input type="text" value="' + esc(p.value) + '" data-pgrow="' + p._row + '" style="padding:4px;border:1px solid #E5E7EB;border-radius:4px;width:100%"></td><td><button class="btn btn-sm btn-primary pg-save" data-row="' + p._row + '">💾</button></td></tr>';
   }
   html += '</tbody></table></div>';
   el.innerHTML = html;
@@ -2867,17 +2328,17 @@ async function simpanPengaturan(row, value) {
   else showToast(r.pesan || 'Gagal', 'error');
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: KELOLA DATA (Owner/Admin)
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   KELOLA DATA
+   ============================================================ */
 function renderKelolaData() {
-  var html = '<div class="tabs">';
   var tabs = [
     ['pendapatan','Pendapatan'], ['pengeluaran','Pengeluaran'],
     ['payroll','Payroll'], ['pengajuan','Pengajuan'],
     ['setoran','Setoran'], ['laporan_barang','Laporan Barang'],
     ['laporan_token','Laporan Token']
   ];
+  var html = '<div class="tabs">';
   for (var i = 0; i < tabs.length; i++) {
     html += '<div class="tab' + (i === 0 ? ' active' : '') + '" data-kdtab="' + tabs[i][0] + '">' + tabs[i][1] + '</div>';
   }
@@ -2912,11 +2373,12 @@ async function renderKdTab(tab) {
   if (list.length === 0) html += '<div class="empty">Belum ada data</div>';
   else {
     html += '<div class="table-wrap"><table><thead><tr><th>Info</th><th>Aksi</th></tr></thead><tbody>';
-    var max = Math.min(list.length, 30);
-    for (var i = list.length - 1; i >= 0 && html.length < 30000; i--) {
+    var count = 0;
+    for (var i = list.length - 1; i >= 0 && count < 40; i--) {
       var it = list[i];
       if (!it) continue;
       if (String(it.dihapus).toLowerCase() === 'true') continue;
+      count++;
       var info = '';
       if (tab === 'pendapatan') info = esc(it.tanggal) + ' · ' + esc(it.nama_karyawan) + ' · ' + fmtAngka(it.unit) + ' unit';
       else if (tab === 'pengeluaran') info = esc(it.tanggal) + ' · ' + esc(it.kategori) + ' · ' + fmtRupiah(it.jumlah);
@@ -2925,8 +2387,7 @@ async function renderKdTab(tab) {
       else if (tab === 'setoran') info = esc(it.tanggal_setoran) + ' · ' + esc(it.nama_pengaju) + ' · ' + fmtRupiah(it.jumlah_setoran);
       else if (tab === 'laporan_barang') info = esc(it.tanggal) + ' · ' + esc(it.nama_barang) + ' · ' + fmtAngka(it.jumlah);
       else if (tab === 'laporan_token') info = esc(it.tanggal_pengajuan) + ' · ' + esc(it.jenis_token);
-      html += '<tr><td class="fs-12">' + info + '</td>';
-      html += '<td><button class="btn btn-sm btn-danger kd-hapus" data-sheet="' + sheet + '" data-row="' + it._row + '">🗑️</button></td></tr>';
+      html += '<tr><td class="fs-12">' + info + '</td><td><button class="btn btn-sm btn-danger kd-hapus" data-sheet="' + sheet + '" data-row="' + it._row + '">🗑️</button></td></tr>';
     }
     html += '</tbody></table></div>';
   }
@@ -2946,9 +2407,9 @@ async function hapusKelola(sheet, row) {
   else showToast(r.pesan || 'Gagal', 'error');
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: DANA EXPANSI
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   DANA EXPANSI
+   ============================================================ */
 function renderDanaExpansi() {
   return '<div class="card"><div class="card-title">💎 Tambah Transaksi</div>' +
     '<div class="field"><label>Tanggal</label><input type="date" id="deTgl" value="' + todayStr() + '"></div>' +
@@ -2959,8 +2420,7 @@ function renderDanaExpansi() {
     '<div id="deList"></div>';
 }
 function afterRenderDanaExpansi() {
-  var btn = document.getElementById('deSimpan');
-  if (btn) btn.addEventListener('click', simpanDanaExpansi);
+  document.getElementById('deSimpan').addEventListener('click', simpanDanaExpansi);
   tampilkanDanaExpansi();
 }
 async function simpanDanaExpansi() {
@@ -2985,7 +2445,7 @@ async function tampilkanDanaExpansi() {
   var r = await ambilData('Dana_Expansi', true);
   var list = (r.ok && Array.isArray(r.data)) ? r.data : [];
   var saldo = 0;
-  var html = '<div class="card"><div class="card-title">Riwayat Transaksi</div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th class="text-r">Jumlah</th></tr></thead><tbody>';
+  var html = '<div class="card"><div class="card-title">Riwayat</div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th class="text-r">Jumlah</th></tr></thead><tbody>';
   for (var i = list.length - 1; i >= 0; i--) {
     var d = list[i];
     if (!d) continue;
@@ -2996,14 +2456,13 @@ async function tampilkanDanaExpansi() {
     html += '<tr><td>' + esc(d.tanggal) + '</td><td>' + esc(d.jenis) + '</td><td class="text-r">' + fmtRupiah(jml) + '</td></tr>';
   }
   html += '</tbody></table></div>';
-  html += '<div class="stat-card mt-8"><div class="label">Saldo Dana Expansi</div><div class="value gold">' + fmtRupiah(saldo) + '</div></div>';
-  html += '</div>';
+  html += '<div class="stat-card mt-8"><div class="label">Saldo Dana Expansi</div><div class="value gold">' + fmtRupiah(saldo) + '</div></div></div>';
   el.innerHTML = html;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: BIAYA SEWA
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   BIAYA SEWA
+   ============================================================ */
 function renderBiayaSewa() {
   return '<div class="card"><div class="card-title">🏠 Tambah Biaya Sewa</div>' +
     '<div class="field"><label>Kode Cabang</label><input type="text" id="bsKode"></div>' +
@@ -3017,8 +2476,7 @@ function renderBiayaSewa() {
     '<div id="bsList"></div>';
 }
 function afterRenderBiayaSewa() {
-  var btn = document.getElementById('bsSimpan');
-  if (btn) btn.addEventListener('click', simpanBiayaSewa);
+  document.getElementById('bsSimpan').addEventListener('click', simpanBiayaSewa);
   tampilkanBiayaSewa();
 }
 async function simpanBiayaSewa() {
@@ -3058,9 +2516,9 @@ async function tampilkanBiayaSewa() {
   el.innerHTML = html;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: PERSIAPAN CABANG
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   PERSIAPAN CABANG
+   ============================================================ */
 function renderPersiapanCabang() {
   return '<div class="card"><div class="card-title">🏗️ Rencana Cabang Baru</div>' +
     '<div class="field"><label>Nama Cabang Target</label><input type="text" id="pcNama"></div>' +
@@ -3072,8 +2530,7 @@ function renderPersiapanCabang() {
     '<div id="pcList"></div>';
 }
 function afterRenderPersiapanCabang() {
-  var btn = document.getElementById('pcSimpan');
-  if (btn) btn.addEventListener('click', simpanPersiapanCabang);
+  document.getElementById('pcSimpan').addEventListener('click', simpanPersiapanCabang);
   tampilkanPersiapanCabang();
 }
 async function simpanPersiapanCabang() {
@@ -3109,7 +2566,7 @@ async function tampilkanPersiapanCabang() {
     html += '<div class="card"><div class="fw-700 mb-8">' + esc(p.nama_cabang_target) + '</div>';
     html += '<div class="fs-12 c-gray">Target: ' + fmtRupiah(p.target_dana) + '</div>';
     html += '<div class="fs-12">Terkumpul: ' + fmtRupiah(p.dana_terkumpul) + ' (' + persen + '%)</div>';
-    html += '<div class="progress-bar mt-8"><div class="progress-fill" style="width:' + persen + '%"></div></div>';
+    html += '<div class="progress-bar mt-8" style="background:#E5E7EB"><div class="progress-fill" style="width:' + persen + '%"></div></div>';
     if (p.target_buka) html += '<div class="fs-11 c-gray mt-8">Target buka: ' + esc(p.target_buka) + '</div>';
     html += '</div>';
   }
@@ -3117,17 +2574,17 @@ async function tampilkanPersiapanCabang() {
   el.innerHTML = html;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: LAPORAN BARANG
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   LAPORAN BARANG
+   ============================================================ */
 function renderLaporanBarang() {
   var s = getSession();
   var html = '';
   if (isKepalaToko() || isKaryawan()) {
     html += '<div class="card"><div class="card-title">📦 Lapor Barang</div>' +
-      '<div class="field"><label>Nama Barang</label><input type="text" id="lbNama"></div>' +
+      '<div class="field"><label>Nama Barang</label><input type="text" id="lbNama" placeholder="beras, kopi, gula, sabun, kanebo, dll"></div>' +
       '<div class="field"><label>Jumlah</label><input type="number" id="lbJml" placeholder="0"></div>' +
-      '<div class="field"><label>Satuan</label><input type="text" id="lbSat" placeholder="pcs"></div>' +
+      '<div class="field"><label>Satuan</label><input type="text" id="lbSat" placeholder="pcs / kg / liter"></div>' +
       '<div class="field"><label>Keterangan</label><textarea id="lbKet"></textarea></div>' +
       '<button class="btn btn-primary btn-block" id="lbSimpan">Kirim</button></div>';
   }
@@ -3166,21 +2623,22 @@ async function tampilkanLaporanBarang() {
   var r = await ambilData('Laporan_Barang', true);
   var list = (r.ok && Array.isArray(r.data)) ? r.data : [];
   var html = '<div class="card"><div class="card-title">Riwayat Laporan Barang</div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Barang</th><th>Jumlah</th><th>Pelapor</th></tr></thead><tbody>';
+  var ada = false;
   for (var i = list.length - 1; i >= 0; i--) {
     var b = list[i];
     if (!b) continue;
     if (String(b.dihapus).toLowerCase() === 'true') continue;
+    ada = true;
     html += '<tr><td>' + esc(b.tanggal) + '</td><td>' + esc(b.nama_barang) + '</td><td>' + fmtAngka(b.jumlah) + ' ' + esc(b.satuan || '') + '</td><td>' + esc(b.nama_pelapor) + '</td></tr>';
   }
   html += '</tbody></table></div></div>';
-  el.innerHTML = html;
+  el.innerHTML = ada ? html : '<div class="card"><div class="empty">Belum ada laporan</div></div>';
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: LAPORAN TOKEN
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   LAPORAN TOKEN
+   ============================================================ */
 function renderLaporanToken() {
-  var s = getSession();
   var html = '';
   if (isKepalaToko()) {
     html += '<div class="card"><div class="card-title">🔑 Lapor Token</div>' +
@@ -3246,21 +2704,22 @@ async function tampilkanLaporanToken() {
   var r = await ambilData('Laporan_Token', true);
   var list = (r.ok && Array.isArray(r.data)) ? r.data : [];
   var html = '<div class="card"><div class="card-title">Daftar Token</div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th>Nomor</th><th>Kode</th><th>Status</th></tr></thead><tbody>';
+  var ada = false;
   for (var i = list.length - 1; i >= 0; i--) {
     var t = list[i];
     if (!t) continue;
     if (String(t.dihapus).toLowerCase() === 'true') continue;
+    ada = true;
     html += '<tr><td>' + esc(t.tanggal_pengajuan) + '</td><td>' + esc(t.jenis_token) + '</td><td>' + esc(t.nomor_token) + '</td><td>' + esc(t.kode_pengisian || '-') + '</td><td>' + badgeStatus(t.status) + '</td></tr>';
   }
   html += '</tbody></table></div></div>';
-  el.innerHTML = html;
+  el.innerHTML = ada ? html : '<div class="card"><div class="empty">Belum ada token</div></div>';
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: SETORAN
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   SETORAN
+   ============================================================ */
 function renderSetoran() {
-  var s = getSession();
   var html = '';
   if (isKepalaToko()) {
     html += '<div class="card"><div class="card-title">💵 Konfirmasi Setoran</div>' +
@@ -3301,20 +2760,22 @@ async function tampilkanSetoran() {
   var r = await ambilData('Setoran', true);
   var list = (r.ok && Array.isArray(r.data)) ? r.data : [];
   var html = '<div class="card"><div class="card-title">Riwayat Setoran</div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th class="text-r">Jumlah</th><th>Status</th></tr></thead><tbody>';
+  var ada = false;
   for (var i = list.length - 1; i >= 0; i--) {
     var st = list[i];
     if (!st) continue;
     if (String(st.dihapus).toLowerCase() === 'true') continue;
     if (isKepalaToko() && String(st.id_pengaju) !== String(s.user_id)) continue;
+    ada = true;
     html += '<tr><td>' + esc(st.tanggal_setoran) + '</td><td class="text-r">' + fmtRupiah(st.jumlah_setoran) + '</td><td>' + badgeStatus(st.status) + '</td></tr>';
   }
   html += '</tbody></table></div></div>';
-  el.innerHTML = html;
+  el.innerHTML = ada ? html : '<div class="card"><div class="empty">Belum ada setoran</div></div>';
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: KONFIRMASI SETORAN (KT)
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   KONFIRMASI SETORAN
+   ============================================================ */
 function renderKonfirmasiSetoran() {
   return '<div class="card"><div class="card-title">💵 Konfirmasi Setoran</div><div id="ksSetor" class="empty">Memuat...</div></div>';
 }
@@ -3338,9 +2799,9 @@ async function afterRenderKonfirmasiSetoran() {
   el.innerHTML = ada ? html : '<div class="empty">Belum ada setoran</div>';
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: LIHAT TOKEN SAYA
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   LIHAT TOKEN SAYA
+   ============================================================ */
 function renderLihatToken() {
   return '<div class="card"><div class="card-title">🔑 Token Saya</div><div id="ltsList" class="empty">Memuat...</div></div>';
 }
@@ -3350,7 +2811,7 @@ async function afterRenderLihatToken() {
   var s = getSession();
   var r = await ambilData('Laporan_Token', true);
   var list = (r.ok && Array.isArray(r.data)) ? r.data : [];
-  var html = '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th>Kode</th></tr></thead><tbody>';
+  var html = '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th>Kode</th><th></th></tr></thead><tbody>';
   var ada = false;
   for (var i = list.length - 1; i >= 0; i--) {
     var t = list[i];
@@ -3358,15 +2819,24 @@ async function afterRenderLihatToken() {
     if (String(t.dihapus).toLowerCase() === 'true') continue;
     if (String(t.kode_cabang) !== String(s.kode_cabang)) continue;
     ada = true;
-    html += '<tr><td>' + esc(t.tanggal_pengajuan) + '</td><td>' + esc(t.jenis_token) + '</td><td>' + esc(t.kode_pengisian || '-') + '</td></tr>';
+    var kode = esc(t.kode_pengisian || '-');
+    html += '<tr><td>' + esc(t.tanggal_pengajuan) + '</td><td>' + esc(t.jenis_token) + '</td><td>' + kode + '</td><td>' + (t.kode_pengisian ? '<button class="btn btn-sm btn-gray lts-copy" data-kode="' + kode + '">📋</button>' : '') + '</td></tr>';
   }
   html += '</tbody></table></div>';
   el.innerHTML = ada ? html : '<div class="empty">Belum ada token</div>';
+  var btns = el.querySelectorAll('.lts-copy');
+  for (var j = 0; j < btns.length; j++) {
+    btns[j].addEventListener('click', function() {
+      var kode = this.getAttribute('data-kode');
+      try { navigator.clipboard.writeText(kode); showToast('Kode disalin', 'success'); }
+      catch (e) { showToast('Gagal salin', 'error'); }
+    });
+  }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: LAPORAN (Owner/Admin/KT)
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   LAPORAN
+   ============================================================ */
 function renderLaporan() {
   return '<div class="card"><div class="card-title">📝 Laporan KT</div><div id="lpAll" class="empty">Memuat...</div></div>';
 }
@@ -3376,29 +2846,30 @@ async function afterRenderLaporan() {
   var r = await ambilData('Laporan', true);
   var list = (r.ok && Array.isArray(r.data)) ? r.data : [];
   var html = '';
+  var ada = false;
   for (var i = list.length - 1; i >= 0; i--) {
     var l = list[i];
     if (!l) continue;
     if (String(l.dihapus).toLowerCase() === 'true') continue;
+    ada = true;
     html += '<div class="card" style="background:#F9FAFB"><div class="fw-700">' + esc(l.judul) + '</div>';
     html += '<div class="fs-11 c-gray mb-8">' + esc(l.tanggal) + ' · ' + esc(l.kode_cabang) + '</div>';
     html += '<div class="fs-12">' + esc(l.isi || '-') + '</div></div>';
   }
-  el.innerHTML = html || '<div class="empty">Belum ada laporan</div>';
+  el.innerHTML = ada ? html : '<div class="empty">Belum ada laporan</div>';
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: HR (Owner/Admin)
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   HR
+   ============================================================ */
 function renderHR() {
-  var html = '<div class="tabs">';
-  html += '<div class="tab active" data-hrtab="data">Data Karyawan</div>';
-  html += '<div class="tab" data-hrtab="sp">SP</div>';
-  html += '<div class="tab" data-hrtab="resign">Resign/PHK</div>';
-  html += '<div class="tab" data-hrtab="hadir">Rekap Kehadiran</div>';
-  html += '<div class="tab" data-hrtab="eval">Evaluasi</div>';
-  html += '</div><div id="hrContent"></div>';
-  return html;
+  return '<div class="tabs">' +
+    '<div class="tab active" data-hrtab="data">Data Karyawan</div>' +
+    '<div class="tab" data-hrtab="sp">SP</div>' +
+    '<div class="tab" data-hrtab="resign">Resign/PHK</div>' +
+    '<div class="tab" data-hrtab="hadir">Rekap Kehadiran</div>' +
+    '<div class="tab" data-hrtab="eval">Evaluasi</div>' +
+    '</div><div id="hrContent"></div>';
 }
 function afterRenderHR() {
   var tabs = document.querySelectorAll('.tab[data-hrtab]');
@@ -3439,7 +2910,7 @@ async function renderHrTab(tab) {
     el.innerHTML = '<div class="card"><div class="card-title">Ajukan Resign</div>' +
       '<div class="field"><label>ID Karyawan</label><input type="text" id="rsId"></div>' +
       '<div class="field"><label>Tanggal Efektif</label><input type="date" id="rsTgl" value="' + todayStr() + '"></div>' +
-      '<div class="field"><label>Jenis</label><select id="rsJenis"><option value="resign_baik">Resign Baik</option><option value="resign_buruk">Resign Tidak Baik</option><option value="phk">PHK</option></select></div>' +
+      '<div class="field"><label>Jenis</label><select id="rsJenis"><option value="resign_baik">Resign Baik (20%)</option><option value="resign_buruk">Resign Tidak Baik (50%)</option><option value="phk">PHK (0%)</option></select></div>' +
       '<div class="field"><label>Alasan</label><textarea id="rsAlasan"></textarea></div>' +
       '<button class="btn btn-primary btn-block" id="rsSimpan">Ajukan</button></div><div id="rsList"></div>';
     document.getElementById('rsSimpan').addEventListener('click', simpanResign);
@@ -3458,9 +2929,8 @@ async function simpanSP() {
   var alasan = document.getElementById('spAlasan').value.trim();
   if (!id) { showToast('Isi ID', 'error'); return; }
   var s = getSession();
-  var subId = generateSubmissionId('SP');
   var data = {
-    id_sp: subId, tanggal: todayStr(), id_karyawan: id,
+    id_sp: generateSubmissionId('SP'), tanggal: todayStr(), id_karyawan: id,
     tingkat: tingkat, alasan: alasan, dibuat_oleh: s ? s.user_id : '',
     status: 'aktif', dihapus: false
   };
@@ -3474,14 +2944,16 @@ async function tampilkanSP() {
   var r = await ambilData('SP_Karyawan', true);
   var list = (r.ok && Array.isArray(r.data)) ? r.data : [];
   var html = '<div class="card"><div class="card-title">Riwayat SP</div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Karyawan</th><th>Tingkat</th></tr></thead><tbody>';
+  var ada = false;
   for (var i = list.length - 1; i >= 0; i--) {
     var sp = list[i];
     if (!sp) continue;
     if (String(sp.dihapus).toLowerCase() === 'true') continue;
+    ada = true;
     html += '<tr><td>' + esc(sp.tanggal) + '</td><td>' + esc(sp.id_karyawan) + '</td><td>' + esc(sp.tingkat) + '</td></tr>';
   }
   html += '</tbody></table></div></div>';
-  el.innerHTML = html;
+  el.innerHTML = ada ? html : '<div class="card"><div class="empty">Belum ada SP</div></div>';
 }
 async function simpanResign() {
   var id = document.getElementById('rsId').value.trim();
@@ -3489,10 +2961,9 @@ async function simpanResign() {
   var jenis = document.getElementById('rsJenis').value;
   var alasan = document.getElementById('rsAlasan').value.trim();
   if (!id || !tgl) { showToast('Lengkapi data', 'error'); return; }
-  // Validasi H-7
   var d = new Date(tgl);
   var diff = Math.floor((d - new Date()) / (24 * 60 * 60 * 1000));
-  if (diff < 7) { showToast('Minimal H-7', 'error'); return; }
+  if (jenis !== 'phk' && diff < 7) { showToast('Minimal H-7', 'error'); return; }
   var potongan = 0;
   if (jenis === 'resign_baik') potongan = 20;
   else if (jenis === 'resign_buruk') potongan = 50;
@@ -3513,14 +2984,16 @@ async function tampilkanResign() {
   var r = await ambilData('Resign_PHK', true);
   var list = (r.ok && Array.isArray(r.data)) ? r.data : [];
   var html = '<div class="card"><div class="card-title">Riwayat Resign/PHK</div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>ID</th><th>Jenis</th><th>Status</th></tr></thead><tbody>';
+  var ada = false;
   for (var i = list.length - 1; i >= 0; i--) {
     var rs = list[i];
     if (!rs) continue;
     if (String(rs.dihapus).toLowerCase() === 'true') continue;
+    ada = true;
     html += '<tr><td>' + esc(rs.tanggal_efektif) + '</td><td>' + esc(rs.id_karyawan) + '</td><td>' + esc(rs.jenis) + '</td><td>' + badgeStatus(rs.status) + '</td></tr>';
   }
   html += '</tbody></table></div></div>';
-  el.innerHTML = html;
+  el.innerHTML = ada ? html : '<div class="card"><div class="empty">Belum ada pengajuan</div></div>';
 }
 async function tampilkanHadir() {
   var el = document.getElementById('hdList');
@@ -3538,12 +3011,14 @@ async function tampilkanHadir() {
     map[key].hadir++;
   }
   var html = '<div class="table-wrap"><table><thead><tr><th>Karyawan</th><th class="text-r">Total Hadir</th></tr></thead><tbody>';
+  var ada = false;
   for (var k in map) {
     if (!map.hasOwnProperty(k)) continue;
+    ada = true;
     html += '<tr><td>' + esc(map[k].nama) + '</td><td class="text-r">' + fmtAngka(map[k].hadir) + '</td></tr>';
   }
   html += '</tbody></table></div>';
-  el.innerHTML = html;
+  el.innerHTML = ada ? html : '<div class="empty">Belum ada data</div>';
 }
 async function tampilkanEvaluasi() {
   var el = document.getElementById('evList');
@@ -3560,41 +3035,35 @@ async function tampilkanEvaluasi() {
     map[key].unit += Number(p.unit) || 0;
   }
   var arr = [];
-  for (var k in map) if (map.hasOwnProperty(k)) arr.push({ id: k, nama: map[k].nama, unit: map[k].unit });
+  for (var k in map) if (map.hasOwnProperty(k)) arr.push({ nama: map[k].nama, unit: map[k].unit });
   arr.sort(function(a, b) { return b.unit - a.unit; });
   var html = '<div class="table-wrap"><table><thead><tr><th>Rank</th><th>Nama</th><th class="text-r">Total Unit</th></tr></thead><tbody>';
   for (var j = 0; j < arr.length; j++) {
     html += '<tr><td>' + (j + 1) + '</td><td>' + esc(arr[j].nama) + '</td><td class="text-r">' + fmtAngka(arr[j].unit) + '</td></tr>';
   }
   html += '</tbody></table></div>';
-  el.innerHTML = html || '<div class="empty">Belum ada data</div>';
+  el.innerHTML = arr.length ? html : '<div class="empty">Belum ada data</div>';
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HALAMAN: PROFIL
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   PROFIL
+   ============================================================ */
 function renderProfil() {
   var s = getSession();
   if (!s) return '<div class="empty">Session tidak ditemukan</div>';
-  var html = '<div class="card">';
-  html += '<div class="text-c" style="padding:12px 0">';
+  var html = '<div class="card"><div class="text-c" style="padding:12px 0">';
   html += '<div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#C8102E,#8B0000);color:#FBBF24;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;margin:0 auto 12px;border:3px solid #FBBF24">' + esc(String(s.user_nama).charAt(0).toUpperCase()) + '</div>';
   html += '<div class="fw-700" style="font-size:16px">' + esc(s.user_nama) + '</div>';
   html += '<div class="fs-12 c-gray">' + esc(s.user_jabatan) + '</div>';
   if (s.is_demo) html += '<span class="badge badge-yellow mt-8" style="display:inline-block">MODE DEMO</span>';
-  html += '</div>';
-  html += '</div>';
-
+  html += '</div></div>';
   html += '<div class="card"><div class="card-title">Detail Akun</div>';
   html += '<div class="row-flex" style="border-bottom:1px solid #F3F4F6;padding:8px 0"><span class="fs-12 c-gray">ID</span><span class="fs-12 fw-700 text-r">' + esc(s.user_id) + '</span></div>';
   html += '<div class="row-flex" style="border-bottom:1px solid #F3F4F6;padding:8px 0"><span class="fs-12 c-gray">Jabatan</span><span class="fs-12 fw-700 text-r">' + esc(s.user_jabatan) + '</span></div>';
   html += '<div class="row-flex" style="border-bottom:1px solid #F3F4F6;padding:8px 0"><span class="fs-12 c-gray">Cabang</span><span class="fs-12 fw-700 text-r">' + esc(s.kode_cabang) + '</span></div>';
   html += '<div class="row-flex" style="padding:8px 0"><span class="fs-12 c-gray">Login</span><span class="fs-12 fw-700 text-r">' + new Date(s.login_time).toLocaleString('id-ID') + '</span></div>';
   html += '</div>';
-
-  html += '<div class="card">';
-  html += '<button class="btn btn-danger btn-block" id="prLogout">🚪 Logout</button>';
-  html += '</div>';
+  html += '<div class="card"><button class="btn btn-danger btn-block" id="prLogout">🚪 Logout</button></div>';
   return html;
 }
 function afterRenderProfil() {
@@ -3602,9 +3071,9 @@ function afterRenderProfil() {
   if (btn) btn.addEventListener('click', doLogout);
 }
 
-// ═══════════════════════════════════════════════════════════════
-// LOGOUT
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   LOGOUT
+   ============================================================ */
 function doLogout() {
   if (!confirm('Yakin logout?')) return;
   try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
@@ -3612,42 +3081,34 @@ function doLogout() {
   window.location.href = 'index.html';
 }
 
-// ═══════════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════════
+/* ============================================================
+   INIT
+   ============================================================ */
 document.addEventListener('DOMContentLoaded', function() {
   var s = getSession();
   if (!s) { window.location.href = 'index.html'; return; }
 
-  // Header info
   var elNama = document.getElementById('hdrNama');
   var elJab = document.getElementById('hdrJabatan');
   if (elNama) elNama.textContent = s.user_nama;
   if (elJab) elJab.textContent = s.user_jabatan + (s.is_demo ? ' (DEMO)' : '');
 
-  // Header buttons
   var btnProfil = document.getElementById('btnProfil');
   if (btnProfil) btnProfil.addEventListener('click', function() { navigasi('profil'); });
   var btnLogout = document.getElementById('btnLogout');
   if (btnLogout) btnLogout.addEventListener('click', doLogout);
 
-  // Modal close global
   var modal = document.getElementById('modalOverlay');
-  if (modal) {
-    modal.addEventListener('click', function(e) {
-      if (e.target === modal) tutupModal();
-    });
-  }
+  if (modal) modal.addEventListener('click', function(e) {
+    if (e.target === modal) tutupModal();
+  });
 
-  // Error panel buttons
   var btnErrorClose = document.getElementById('btnErrorClose');
   var btnErrorWA = document.getElementById('btnErrorWA');
   var btnErrorCopy = document.getElementById('btnErrorCopy');
   var btnErrorDetail = document.getElementById('btnErrorDetail');
   var errorDetail = document.getElementById('errorDetail');
-  if (btnErrorClose) btnErrorClose.addEventListener('click', function() {
-    document.getElementById('errorPanel').classList.remove('show');
-  });
+  if (btnErrorClose) btnErrorClose.addEventListener('click', function() { document.getElementById('errorPanel').classList.remove('show'); });
   if (btnErrorWA) btnErrorWA.addEventListener('click', function() {
     window.open('https://wa.me/' + WA_DEVELOPER + '?text=' + encodeURIComponent(formatLaporanError()), '_blank');
   });
@@ -3673,44 +3134,24 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.removeChild(ta);
   }
 
-  // Offline detection
   window.addEventListener('offline', function() { showToast('Tidak ada koneksi internet', 'error'); });
   window.addEventListener('online', function() { showToast('Koneksi kembali', 'success'); });
 
-  // Back button Android
   history.pushState(null, '', location.href);
   window.addEventListener('popstate', function() {
     var modal = document.getElementById('modalOverlay');
     if (modal && modal.classList.contains('show')) {
       tutupModal();
-      history.pushState(null, '', location.href);
-      return;
+      history.pushState(null, '', location.href); return;
     }
     if (HALAMAN_AKTIF !== 'home') {
       navigasi('home');
-      history.pushState(null, '', location.href);
-      return;
+      history.pushState(null, '', location.href); return;
     }
   });
 
-  // Mulai
   navigasi('home');
 });
-
-// ═══════════════════════════════════════════════════════════════
-// MODAL HELPER
-// ═══════════════════════════════════════════════════════════════
-function bukaModal(html) {
-  var overlay = document.getElementById('modalOverlay');
-  var content = document.getElementById('modalContent');
-  if (!overlay || !content) return;
-  content.innerHTML = '<div class="modal-head"><h3>Detail</h3><button class="modal-close-btn" onclick="tutupModal()">✕</button></div>' + html;
-  overlay.classList.add('show');
-}
-function tutupModal() {
-  var overlay = document.getElementById('modalOverlay');
-  if (overlay) overlay.classList.remove('show');
-}
 </script>
 </body>
 </html>

@@ -4,439 +4,277 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#C8102E">
-<title>STEAM MP 7000 — Dashboard</title>
+<title>STEAM MP 7000</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;width:100%}
-body{
-  font-family:'Poppins',system-ui,-apple-system,sans-serif;
-  background:#F9FAFB;color:#1F2937;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-  padding-top:calc(60px + env(safe-area-inset-top));
-  padding-bottom:calc(110px + env(safe-area-inset-bottom));
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { overflow-x:hidden; width:100%; }
+body {
+  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+  background: #F9FAFB; color: #1F2937;
+  padding-top: 64px;
+  padding-bottom: calc(200px + env(safe-area-inset-bottom));
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
 }
+.main { padding: 16px; max-width: 1100px; margin: 0 auto; padding-bottom: 20px; }
+.main > *:last-child { margin-bottom: 20px; }
+.header {
+  position: fixed; top:0; left:0; right:0;
+  height: 64px; z-index: 900;
+  background: #C8102E;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 14px; box-shadow: 0 1px 4px rgba(0,0,0,.1);
+}
+.bottom-nav {
+  position: fixed; bottom:0; left:0; right:0; z-index: 900;
+  background: #fff; border-top: 1px solid #E5E7EB;
+  box-shadow: 0 -1px 4px rgba(0,0,0,.06);
+  display: flex; padding: 6px 4px calc(8px + env(safe-area-inset-bottom));
+}
+.toast-box {
+  position: fixed; bottom: calc(120px + env(safe-area-inset-bottom));
+  left: 50%; transform: translateX(-50%) translateY(20px);
+  z-index: 2000; background: #1F2937; color:#fff;
+  padding: 10px 16px; border-radius: 8px;
+  font-size: 12.5px; font-weight: 600;
+  opacity:0; pointer-events:none; transition:.25s;
+  max-width: 90vw; text-align:center;
+}
+.toast-box.show { opacity:1; transform: translateX(-50%) translateY(0); }
+.toast-box.success { background: #059669; }
+.toast-box.error { background: #DC2626; }
+.toast-box.warning { background: #D97706; }
+.modal-overlay {
+  position: fixed; inset:0; z-index: 1500;
+  background: rgba(0,0,0,.5);
+  display: none; align-items: flex-end; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background:#fff; border-radius: 16px 16px 0 0;
+  width: 100%; max-width: 520px;
+  max-height: 85vh; overflow-y: auto;
+  padding: 16px 16px calc(20px + env(safe-area-inset-bottom));
+  animation: slideUp .22s ease;
+}
+@keyframes slideUp { from{ transform:translateY(40px); opacity:0; } to{ transform:none; opacity:1; } }
+.loading-iklan {
+  position: fixed; inset:0; z-index: 9999;
+  background: #C8102E;
+  display: none; align-items: center; justify-content: center;
+  padding: 24px; text-align: center;
+}
+.loading-iklan.show { display: flex; }
+.sedekah-btn {
+  position: fixed; bottom: calc(120px + env(safe-area-inset-bottom));
+  right: 16px; z-index: 800;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: #FBBF24; color:#78350F;
+  border: none; cursor: pointer; font-size: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  display: flex; align-items: center; justify-content: center; font-weight: 700;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { scroll-margin-bottom: 300px; }
+.tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; }
+@keyframes fade { from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-/* ===== HEADER ===== */
-.header{
-  position:fixed;top:0;left:0;right:0;z-index:800;
-  background:linear-gradient(135deg,#C8102E 0%,#8B0000 100%);
-  color:#fff;padding:8px 12px;
-  display:flex;align-items:center;gap:10px;
-  box-shadow:0 2px 10px rgba(0,0,0,.18);
-  padding-top:calc(8px + env(safe-area-inset-top));
-  min-height:56px;
-}
-.logo-mp{
-  width:36px;height:36px;border-radius:50%;
-  background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);
-  border:2px solid #fff;
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:800;color:#78350F;flex-shrink:0;
-}
-.header .info{flex:1;min-width:0}
-.header .info h1{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
-.header .info p{font-size:10px;opacity:.85;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;margin-top:1px}
-.header .hdr-btn{
-  background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);
-  color:#fff;width:34px;height:34px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;cursor:pointer;flex-shrink:0;
-  padding:0;
-}
-.header .hdr-btn:active{background:rgba(255,255,255,.3)}
-
-/* ===== MAIN ===== */
-.main{
-  padding:14px 14px 24px;
-  max-width:1100px;margin:0 auto;
-  width:100%;
-}
-
-/* ===== BOTTOM NAV ===== */
-.bottom-nav{
-  position:fixed;bottom:0;left:0;right:0;z-index:900;
-  background:#fff;border-top:1px solid #F3F4F6;
-  box-shadow:0 -2px 12px rgba(0,0,0,.08);
-  display:flex;
-  padding:6px 4px calc(6px + env(safe-area-inset-bottom));
-  min-height:64px;
-}
-.bn-item{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-  padding:6px 2px;border:none;background:transparent;cursor:pointer;
-  color:#9CA3AF;font-family:inherit;font-size:9px;font-weight:500;
-  border-radius:8px;transition:color .15s;min-width:0;
-}
-.bn-ic{font-size:18px;line-height:1}
-.bn-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.bn-item.active{color:#C8102E;font-weight:700}
-.bn-item.active .bn-ic{transform:scale(1.1)}
-
-/* ===== CARD ===== */
-.card{
-  background:#fff;border-radius:12px;padding:14px;
-  box-shadow:0 1px 4px rgba(0,0,0,.05);
-  border:1px solid #F3F4F6;
-  margin-bottom:12px;
-}
-.card:last-child{margin-bottom:0}
-.card-title{font-size:14px;font-weight:700;margin-bottom:10px;color:#1F2937;display:flex;align-items:center;gap:6px;line-height:1.3}
-.card-title .ic{font-size:16px;flex-shrink:0}
-.card-sub{font-size:11.5px;color:#6B7280;margin-bottom:8px;line-height:1.4}
-
-/* ===== SAPAAN ===== */
-.sapaan{font-size:18px;font-weight:800;margin-bottom:4px;color:#1F2937;line-height:1.3}
-.sapaan-sub{font-size:12px;color:#6B7280;margin-bottom:14px;line-height:1.4}
-
-/* ===== MOTIVASI ===== */
-.card-motivasi{
-  background:linear-gradient(135deg,#FFFBEB 0%,#FEF3C7 100%);
-  border:1.5px solid #FDE68A;border-radius:12px;
-  padding:12px 14px;margin-bottom:12px;
-}
-.mot-head{font-size:10.5px;font-weight:800;color:#92400E;letter-spacing:.3px;margin-bottom:4px}
-.mot-isi{font-size:12.5px;color:#78350F;line-height:1.5;font-style:italic;font-weight:500}
-.mot-foot{font-size:10px;color:#B45309;margin-top:6px;font-weight:500}
-
-/* ===== EXPANSI ===== */
-.card-expansi{
-  background:linear-gradient(135deg,#FEF2F2 0%,#FEE2E2 100%);
-  border:1.5px solid #FCA5A5;border-radius:12px;
-  padding:12px 14px;margin-bottom:12px;
-}
-.exp-head{font-size:10.5px;font-weight:800;color:#991B1B;letter-spacing:.3px;margin-bottom:4px}
-.exp-saldo{font-size:20px;font-weight:800;color:#C8102E}
-.exp-target{font-size:10.5px;color:#7F1D1D;margin-top:4px}
-.progress-bar{height:8px;background:#FEE2E2;border-radius:4px;margin-top:8px;overflow:hidden;border:1px solid #FCA5A5}
-.progress-fill{height:100%;background:linear-gradient(90deg,#FBBF24,#F59E0B);border-radius:3px;transition:width .5s}
-
-/* ===== STAT ===== */
-.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
-.stat-card{
-  background:#fff;border-radius:12px;padding:12px;
-  border:1px solid #F3F4F6;border-left:4px solid #C8102E;
-  box-shadow:0 1px 3px rgba(0,0,0,.04);
-}
-.stat-card .st-label{font-size:10px;color:#6B7280;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
-.stat-card .st-val{font-size:17px;font-weight:800;color:#C8102E;margin-top:4px;word-break:break-word}
-.stat-card .st-val.gold{color:#B45309}
-
-/* ===== MENU GRID ===== */
-.sec-title{font-size:13px;font-weight:700;color:#1F2937;margin:14px 0 8px;padding-left:2px}
-.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
-.menu-card{
-  background:#fff;border:1px solid #F3F4F6;border-radius:12px;
-  padding:14px 10px;text-align:center;cursor:pointer;
-  transition:transform .12s,box-shadow .15s;
-  box-shadow:0 1px 3px rgba(0,0,0,.04);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  min-height:110px;
-}
-.menu-card:active{transform:scale(.97)}
-.menu-card.highlight{border-color:#FDE68A;background:linear-gradient(135deg,#FFFBEB 0%,#fff 100%)}
-.mc-ic{font-size:26px;margin-bottom:6px;display:block;line-height:1}
-.mc-nama{font-size:12px;font-weight:700;color:#1F2937;line-height:1.25;word-break:break-word}
-.mc-desc{font-size:9.5px;color:#9CA3AF;margin-top:3px;line-height:1.3;word-break:break-word}
-
-/* ===== DONASI ===== */
-.card-donasi{
-  background:linear-gradient(135deg,#FFFBEB 0%,#FEF3C7 100%);
-  border:1.5px dashed #F59E0B;border-radius:12px;
-  padding:14px;margin-bottom:12px;
-}
-.don-head{font-size:11px;font-weight:800;color:#92400E;letter-spacing:.3px;margin-bottom:6px}
-.don-teks{font-size:11.5px;color:#78350F;line-height:1.5;margin-bottom:10px;font-weight:500}
-
-/* ===== BUTTONS ===== */
-.btn{
-  width:100%;min-height:44px;padding:11px 14px;
-  font-family:inherit;font-size:13px;font-weight:700;
-  letter-spacing:.3px;border-radius:10px;border:none;cursor:pointer;
-  transition:transform .12s,opacity .15s;
-  display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  text-align:center;line-height:1.3;
-}
-.btn:active{transform:scale(.98)}
-.btn:disabled{opacity:.6;cursor:not-allowed}
-.btn-primary{background:linear-gradient(135deg,#C8102E 0%,#A00D25 100%);color:#fff;box-shadow:0 3px 10px rgba(200,16,46,.25)}
-.btn-gold{background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#78350F;box-shadow:0 3px 10px rgba(245,158,11,.25)}
-.btn-outline{background:#fff;color:#C8102E;border:1.5px solid #C8102E}
-.btn-danger{background:linear-gradient(135deg,#EF4444 0%,#DC2626 100%);color:#fff}
-.btn-gray{background:#F3F4F6;color:#374151;border:1px solid #E5E7EB}
-.btn-sm{padding:8px 12px;font-size:11.5px;min-height:36px;width:auto;border-radius:8px}
-.btn-xs{padding:5px 8px;font-size:10.5px;min-height:28px;width:auto;border-radius:6px}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.btn-row .btn{flex:1;min-width:110px}
-
-/* ===== FORM ===== */
-.form-group{margin-bottom:12px}
-.form-label{display:block;font-size:11.5px;font-weight:600;color:#374151;margin-bottom:5px}
-.form-hint{font-size:10px;color:#9CA3AF;margin-top:4px;line-height:1.4}
-.form-input,.form-select,.form-textarea{
-  width:100%;padding:10px 12px;
-  font-family:inherit;font-size:13px;font-weight:500;
-  color:#111827;background:#fff;
-  border:1.5px solid #E5E7EB;border-radius:10px;
-  outline:none;transition:border-color .15s;
-  -webkit-appearance:none;
-}
-.form-input:focus,.form-select:focus,.form-textarea:focus{
-  border-color:#C8102E;box-shadow:0 0 0 3px rgba(200,16,46,.1)
-}
-.form-textarea{resize:vertical;min-height:70px}
-.form-select{
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 12px center;padding-right:34px;
-}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-
-/* ===== TABLE ===== */
-.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;border:1px solid #F3F4F6;margin:0 -2px}
-table{width:100%;border-collapse:collapse;font-size:11.5px}
-thead{background:#F9FAFB}
-th{padding:9px 10px;text-align:left;font-weight:700;color:#6B7280;text-transform:uppercase;font-size:10.5px;letter-spacing:.3px;border-bottom:1.5px solid #E5E7EB;white-space:nowrap}
-td{padding:9px 10px;border-bottom:1px solid #F3F4F6;color:#374151;vertical-align:top}
-tr:last-child td{border-bottom:none}
-
-/* ===== BADGE ===== */
-.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.2px;line-height:1.4}
-.badge-success{background:#D1FAE5;color:#065F46}
-.badge-warning{background:#FEF3C7;color:#92400E}
-.badge-error{background:#FEE2E2;color:#991B1B}
-.badge-info{background:#DBEAFE;color:#1E40AF}
-.badge-gray{background:#F3F4F6;color:#4B5563}
-.badge-gold{background:#FEF3C7;color:#78350F}
-
-/* ===== TABS ===== */
-.tabs{
-  display:flex;gap:6px;margin-bottom:12px;
-  overflow-x:auto;-webkit-overflow-scrolling:touch;
-  padding-bottom:4px;
-  scrollbar-width:none;
-}
-.tabs::-webkit-scrollbar{display:none}
-.tab{
-  padding:8px 14px;font-family:inherit;font-size:11.5px;font-weight:600;
-  background:#F3F4F6;color:#6B7280;border:none;border-radius:8px;cursor:pointer;
-  white-space:nowrap;flex-shrink:0;min-height:36px;
-}
-.tab.active{background:#C8102E;color:#fff}
-
-/* ===== BANNER ===== */
-.total-banner{
-  background:linear-gradient(135deg,#C8102E 0%,#8B0000 100%);
-  color:#fff;border-radius:12px;padding:16px;margin-bottom:12px;
-  box-shadow:0 4px 14px rgba(200,16,46,.25);
-}
-.tb-label{font-size:10.5px;font-weight:700;opacity:.85;letter-spacing:.3px;text-transform:uppercase}
-.tb-val{font-size:24px;font-weight:800;margin-top:4px;word-break:break-word}
-.tb-sub{font-size:11px;opacity:.85;margin-top:4px;line-height:1.4}
-
-/* ===== INFO ROW ===== */
-.info-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;font-size:12px;border-bottom:1px dashed #F3F4F6}
-.info-row:last-child{border-bottom:none}
-.ir-label{color:#6B7280;flex-shrink:0}
-.ir-val{font-weight:700;color:#1F2937;text-align:right;word-break:break-word}
-
-/* ===== MISC ===== */
-.empty{text-align:center;padding:22px 12px;color:#9CA3AF}
-.empty .em-ic{font-size:36px;display:block;margin-bottom:8px;opacity:.6}
-.empty .em-txt{font-size:12.5px}
-.divider{height:1px;background:#F3F4F6;margin:12px 0}
-.role-note{background:#FEF3C7;border-left:3px solid #D97706;color:#92400E;padding:10px 12px;border-radius:8px;font-size:11.5px;line-height:1.5;margin-bottom:10px}
-.tag-cabang{display:inline-block;padding:1px 7px;border-radius:12px;font-size:9.5px;font-weight:700;background:#DBEAFE;color:#1E40AF}
-.mono{font-family:'Courier New',monospace}
-.code-box{
-  display:flex;justify-content:space-between;align-items:center;gap:8px;
-  padding:10px 12px;border:1.5px dashed #C8102E;border-radius:8px;
-  background:#FEF2F2;font-family:'Courier New',monospace;
-  font-size:12.5px;font-weight:700;color:#991B1B;margin:8px 0;
-  word-break:break-all;
-}
-.code-box button{
-  background:#C8102E;color:#fff;border:none;
-  padding:5px 10px;border-radius:6px;font-size:10.5px;
-  font-weight:700;cursor:pointer;flex-shrink:0;
-}
-.check-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0}
-.check-row input[type=checkbox]{margin-top:3px;flex-shrink:0}
-
-/* ===== TOAST ===== */
-.toast-box{
-  position:fixed;top:calc(72px + env(safe-area-inset-top));left:50%;
-  transform:translate(-50%,-20px);
-  background:#1F2937;color:#fff;padding:11px 16px;border-radius:12px;
-  font-size:12.5px;font-weight:500;z-index:9500;
-  box-shadow:0 8px 24px rgba(0,0,0,.25);
-  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;
-  max-width:calc(100% - 32px);text-align:center;line-height:1.4;
-}
-.toast-box.show{opacity:1;transform:translate(-50%,0)}
-.toast-box.success{background:#059669}
-.toast-box.error{background:#DC2626}
-.toast-box.warning{background:#D97706}
-
-/* ===== MODAL ===== */
-.modal-overlay{
-  display:none;position:fixed;inset:0;z-index:9200;
-  background:rgba(0,0,0,.55);
-  align-items:flex-end;justify-content:center;
-  padding:0;
-}
-.modal-overlay.show{display:flex}
-.modal{
-  background:#fff;border-radius:20px 20px 0 0;
-  width:100%;max-width:520px;
-  max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:20px 18px calc(24px + env(safe-area-inset-bottom));
-  animation:slideUp .3s cubic-bezier(.22,1,.36,1) both;
-}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px}
-.modal-title{font-size:15px;font-weight:700;color:#C8102E;line-height:1.3}
-.modal-close{
-  background:none;border:none;font-size:20px;cursor:pointer;
-  color:#6B7280;padding:4px 8px;border-radius:8px;flex-shrink:0;line-height:1;
-}
-
-/* ===== LOADING IKLAN ===== */
-.loading-iklan{
-  display:none;position:fixed;inset:0;z-index:9990;
-  background:linear-gradient(135deg,#C8102E,#8B0000);
-  align-items:center;justify-content:center;flex-direction:column;
-  padding:28px;text-align:center;
-}
-.loading-iklan.show{display:flex}
-.li-spinner{
-  width:48px;height:48px;border:4px solid rgba(255,255,255,.2);
-  border-top-color:#FBBF24;border-radius:50%;
-  animation:spin .8s linear infinite;margin-bottom:16px;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.li-teks{
-  background:rgba(255,255,255,.15);color:#fff;font-size:12.5px;
-  font-style:italic;line-height:1.55;padding:12px 14px;border-radius:12px;
-  max-width:340px;border:1px solid rgba(251,191,36,.3);margin-bottom:12px;
-}
-.li-sub{color:rgba(255,255,255,.75);font-size:11.5px;font-weight:500;margin-bottom:14px}
-.li-bar{width:200px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden}
-.li-bar-fill{height:100%;background:linear-gradient(90deg,#FBBF24,#F59E0B);width:0;animation:barFill 3s linear forwards}
-@keyframes barFill{to{width:100%}}
-
-/* ===== ERROR PANEL ===== */
-#errorPanel{
-  display:none;position:fixed;inset:0;z-index:9995;
-  background:rgba(0,0,0,.75);align-items:center;justify-content:center;
-  padding:16px;overflow-y:auto;
-}
-.ep-card{
-  background:#fff;border-radius:16px;width:100%;max-width:420px;
-  padding:20px 16px;box-shadow:0 20px 60px rgba(0,0,0,.4);
-  margin:auto;
-}
-.ep-card h2{font-size:16px;font-weight:800;color:#C8102E;text-align:center;margin-bottom:10px}
-#errorPesan{
-  background:#FEF2F2;border-left:3px solid #C8102E;color:#B91C1C;
-  font-family:'Courier New',monospace;font-size:11px;padding:10px 12px;
-  border-radius:8px;margin-bottom:10px;word-break:break-word;
-  line-height:1.5;max-height:180px;overflow-y:auto;
-}
-#errorDetail{
-  display:none;background:#F9FAFB;border:1px solid #E5E7EB;
-  border-radius:8px;padding:10px;font-family:'Courier New',monospace;
-  font-size:10px;color:#374151;line-height:1.5;margin-bottom:10px;
-  max-height:220px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;
-}
-#errorDetail.show{display:block}
-
-/* ===== TUTORIAL ===== */
-#tutorialOverlay{display:none}
-
-/* ===== RESPONSIVE ===== */
-@media(min-width:600px){
-  .menu-grid{grid-template-columns:repeat(3,1fr)}
-  .stat-grid{grid-template-columns:repeat(4,1fr)}
-}
-@media(min-width:900px){
-  .menu-grid{grid-template-columns:repeat(4,1fr)}
-  .main{padding:20px 20px 24px}
-}
-
-.scroll-pad-bottom{height:20px}
+.card { background:#fff; border-radius:10px; padding:14px; box-shadow:0 1px 4px rgba(0,0,0,.06); margin-bottom:12px; }
+.card-title { font-size:14px; font-weight:700; margin-bottom:12px; display:flex; gap:8px; align-items:center; }
+.menu-grid { display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:14px; }
+.menu-card { background:#fff; border-radius:10px; padding:14px 12px; box-shadow:0 1px 4px rgba(0,0,0,.06); text-align:center; cursor:pointer; transition:.15s; }
+.menu-card:active { transform:scale(.97); }
+.menu-card.highlight { border:1.5px solid #FBBF24; }
+.menu-card .mc-ic { font-size:22px; margin-bottom:6px; }
+.menu-card .mc-nama { font-size:12.5px; font-weight:700; margin-bottom:2px; }
+.menu-card .mc-desc { font-size:10px; color:#6B7280; }
+.btn { border:none; border-radius:8px; padding:11px 16px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; width:100%; transition:.15s; }
+.btn:active { transform:scale(.97); }
+.btn-primary { background:#C8102E; color:#fff; }
+.btn-gold { background:#FBBF24; color:#78350F; }
+.btn-outline { background:#fff; color:#C8102E; border:1.5px solid #C8102E; }
+.btn-gray { background:#F3F4F6; color:#374151; }
+.btn-danger { background:#DC2626; color:#fff; }
+.btn-sm { padding:7px 12px; font-size:11.5px; width:auto; }
+.btn-xs { padding:5px 9px; font-size:10.5px; width:auto; border-radius:6px; }
+.btn-row { display:flex; gap:8px; }
+.btn-row .btn { flex:1; }
+.form-group { margin-bottom:12px; }
+.form-label { display:block; font-size:11.5px; font-weight:600; color:#374151; margin-bottom:5px; }
+.form-input, .form-select, .form-textarea { width:100%; padding:10px 12px; border:1.5px solid #E5E7EB; border-radius:8px; font-family:inherit; font-size:13px; background:#fff; outline:none; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color:#C8102E; }
+.form-row { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+.form-textarea { resize:vertical; min-height:70px; }
+.badge { display:inline-block; padding:3px 8px; border-radius:99px; font-size:10px; font-weight:700; }
+.badge-success { background:#D1FAE5; color:#065F46; }
+.badge-warning { background:#FEF3C7; color:#92400E; }
+.badge-error { background:#FEE2E2; color:#991B1B; }
+.badge-gray { background:#F3F4F6; color:#4B5563; }
+table { width:100%; border-collapse:collapse; font-size:11.5px; }
+th { padding:9px 10px; text-align:left; font-weight:700; background:#F9FAFB; color:#374151; border-bottom:1.5px solid #E5E7EB; font-size:10.5px; text-transform:uppercase; white-space:nowrap; }
+td { padding:9px 10px; border-bottom:1px solid #F3F4F6; color:#4B5563; }
+.info-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #F3F4F6; font-size:12.5px; }
+.info-row:last-child { border-bottom:none; }
+.info-row .ir-label { color:#6B7280; font-weight:500; }
+.info-row .ir-val { font-weight:700; color:#1F2937; text-align:right; }
+.empty { text-align:center; padding:30px 16px; color:#6B7280; font-size:12.5px; }
+.empty .em-ic { font-size:36px; display:block; margin-bottom:8px; opacity:.5; }
+.stat-grid { display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:14px; }
+.stat-card { background:#fff; border-radius:10px; padding:14px; box-shadow:0 1px 4px rgba(0,0,0,.06); }
+.stat-card .st-label { font-size:10.5px; color:#6B7280; font-weight:600; text-transform:uppercase; }
+.stat-card .st-val { font-size:18px; font-weight:800; color:#C8102E; margin-top:4px; }
+.stat-card .st-val.gold { color:#B45309; }
+.sapaan { font-size:20px; font-weight:700; margin-bottom:2px; }
+.sapaan-sub { font-size:12.5px; color:#6B7280; margin-bottom:16px; }
+.sec-title { font-size:13px; font-weight:700; margin:16px 0 10px; color:#374151; }
+.tabs { display:flex; gap:6px; overflow-x:auto; margin-bottom:14px; padding-bottom:2px; scrollbar-width:none; }
+.tabs::-webkit-scrollbar { display:none; }
+.tab { flex-shrink:0; padding:8px 14px; border-radius:99px; border:1.5px solid #E5E7EB; background:#fff; font-size:11.5px; font-weight:600; color:#6B7280; cursor:pointer; white-space:nowrap; }
+.tab.active { background:#C8102E; color:#fff; border-color:#C8102E; }
+.divider { height:1px; background:#F3F4F6; margin:12px 0; }
+.header-left { display:flex; align-items:center; gap:10px; min-width:0; }
+.logo-mp { width:38px; height:38px; border-radius:50%; flex-shrink:0; background:#FBBF24; color:#7C2D12; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
+.header-info { min-width:0; color:#fff; }
+.header-info .nama { font-size:13.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:160px; }
+.header-info .jabatan { font-size:10.5px; color:#FECACA; }
+.icon-btn { width:36px; height:36px; border-radius:9px; border:none; background:rgba(255,255,255,.2); color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.bn-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; padding:7px 2px; border:none; background:none; cursor:pointer; font-family:inherit; color:#6B7280; }
+.bn-item .bn-ic { font-size:19px; line-height:1; }
+.bn-item .bn-label { font-size:9.5px; font-weight:600; }
+.bn-item.active { color:#C8102E; }
+.role-note { background:#FEF3C7; border-left:4px solid #F59E0B; border-radius:6px; padding:10px 12px; font-size:11.5px; color:#78350F; margin-bottom:12px; }
 </style>
 </head>
 <body>
 
-<header class="header">
-  <div class="logo-mp">MP</div>
-  <div class="info">
-    <h1 id="hdrNama">Memuat...</h1>
-    <p id="hdrJabatan">-</p>
-  </div>
-  <button class="hdr-btn" onclick="navigasi('profil')" aria-label="Profil">👤</button>
-  <button class="hdr-btn" onclick="logout()" aria-label="Keluar">🚪</button>
-</header>
-
-<main id="mainContent" class="main"></main>
-<nav id="bottomNav" class="bottom-nav"></nav>
-<div id="toastBox" class="toast-box"></div>
-<div id="modalOverlay" class="modal-overlay"><div id="modalContent" class="modal"></div></div>
-<div id="iklanLoading" class="loading-iklan">
-  <div class="li-spinner"></div>
-  <div class="li-teks" id="liTeks">Sedang memuat iklan...</div>
-  <div class="li-sub">Sedang memuat iklan...</div>
-  <div class="li-bar"><div class="li-bar-fill"></div></div>
-</div>
-<div id="errorPanel">
-  <div class="ep-card">
-    <h2>⚠️ TERJADI ERROR</h2>
-    <div id="errorPesan">-</div>
-    <div id="errorDetail"></div>
-    <div style="display:flex;flex-direction:column;gap:7px">
-      <button class="btn btn-gold" onclick="kirimWAError()">📱 Kirim ke WA Developer</button>
-      <button class="btn btn-gray" onclick="salinError()">📋 Salin Detail Error</button>
-      <button class="btn btn-outline" onclick="toggleDetailError()" id="btnDetail">🔽 Lihat Detail</button>
-      <button class="btn btn-danger" onclick="tutupErrorPanel()">Tutup</button>
+  <!-- HALAMAN LOGIN -->
+  <div id="loginPage" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:#F9FAFB">
+    <div style="background:#fff;border-radius:16px;max-width:400px;width:100%;padding:28px 22px;box-shadow:0 4px 20px rgba(0,0,0,.08);text-align:center">
+      <div style="width:70px;height:70px;border-radius:50%;background:#C8102E;color:#FBBF24;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:3px solid #FBBF24">MP</div>
+      <div style="font-size:20px;font-weight:800;color:#C8102E;margin-bottom:2px">STEAM MP 7000</div>
+      <div style="font-size:10.5px;color:#6B7280;margin-bottom:20px">Jujur Disiplin Tanggung Jawab</div>
+      <div id="loginError" style="display:none;background:#FEF2F2;border-left:3px solid #C8102E;padding:9px 11px;border-radius:6px;font-size:12px;color:#B91C1C;margin-bottom:14px;text-align:left"></div>
+      <div style="text-align:left;margin-bottom:12px">
+        <label style="font-size:11.5px;font-weight:600;color:#374151;display:block;margin-bottom:5px">ID Pengguna</label>
+        <input type="text" id="loginId" class="form-input" placeholder="Masukkan ID" autocomplete="username">
+      </div>
+      <div style="text-align:left;margin-bottom:16px;position:relative">
+        <label style="font-size:11.5px;font-weight:600;color:#374151;display:block;margin-bottom:5px">Password</label>
+        <input type="password" id="loginPass" class="form-input" placeholder="Masukkan password" autocomplete="current-password">
+        <button id="togglePass" style="position:absolute;right:8px;bottom:8px;width:30px;height:30px;border:none;background:transparent;font-size:16px;cursor:pointer;border-radius:6px">👁</button>
+      </div>
+      <button class="btn btn-primary" id="btnMasuk" style="margin-bottom:8px">MASUK</button>
+      <button class="btn btn-outline" id="btnDemo">COBA DEMO</button>
+      <div style="font-size:10px;color:#9CA3AF;margin-top:16px">Steam MP Manajemen © 2026</div>
     </div>
   </div>
-</div>
-<div id="tutorialOverlay"></div>
+
+  <!-- HALAMAN DASHBOARD -->
+  <div id="dashboardPage" style="display:none">
+    <header class="header">
+      <div class="header-left">
+        <div class="logo-mp">MP</div>
+        <div class="header-info">
+          <div class="nama" id="hdrNama">—</div>
+          <div class="jabatan" id="hdrJabatan">—</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="icon-btn" onclick="navigasi('profil')">👤</button>
+        <button class="icon-btn" onclick="logout()">⏻</button>
+      </div>
+    </header>
+    <main id="mainContent" class="main"></main>
+    <nav id="bottomNav" class="bottom-nav"></nav>
+    <button class="sedekah-btn" onclick="sedekahIklan()" title="Donasi">💛</button>
+  </div>
+
+  <div id="toastBox" class="toast-box"></div>
+
+  <div id="modalOverlay" class="modal-overlay" onclick="if(event.target===this)tutupModal()">
+    <div id="modalContent" class="modal"></div>
+  </div>
+
+  <div id="loadingIklan" class="loading-iklan">
+    <div style="text-align:center;color:#fff">
+      <div style="width:48px;height:48px;border:4px solid rgba(255,255,255,.25);border-top-color:#FBBF24;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px"></div>
+      <div id="iklanTeks" style="font-size:13px;font-weight:600;line-height:1.6;max-width:340px;font-style:italic"></div>
+      <div style="font-size:10px;color:#FECACA;margin-top:14px">Mohon tunggu sebentar...</div>
+    </div>
+  </div>
 
 <script>
-// ============================================================
+// ═══════════════════════════════════════════════════════════════
 // KONFIGURASI
-// ============================================================
-var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbyo-_qhnxRtVxadqm5ePyhjMwlN-Q2RsqU1qwwJ3GoNDjv3D59PZIXNb6niDoKRZ-I-/exec';
+// ═══════════════════════════════════════════════════════════════
+var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbyPExuPcaDFdjOrLYh9eIKtBmwpzNNRTED4tdYHzLcKGR9KQI4AwkaOiLh65DAu1qYG/exec';
 var TOKEN = 'steam-mp-7000-2026';
 var SESSION_KEY = 'steam_mp_session';
 var IKLAN_DURASI = 3000;
-var IKLAN_DURASI_REWARDED = 5000;
-var IKLAN_COOLDOWN = 30000;      // ← DIPERBESAR dari 5 detik ke 30 detik
-var IKLAN_NAV_THRESHOLD = 6;     // ← DIPERBESAR dari 2 ke 6 navigasi
+var IKLAN_COOLDOWN = 60000;
 var IKLAN_URL_MONETAG = 'https://omg10.com/4/11785165';
 var IKLAN_URL_ADSTERRA = 'https://www.profitableratecpmnetwork.com/q9qnyhdf9c?key=56f60182ff2837aef7d8e65616a77746';
 var WA_DEVELOPER = '6281525742110';
 
-// ============================================================
-// STATE GLOBAL
-// ============================================================
+// ═══════════════════════════════════════════════════════════════
+// DATA DUMMY
+// ═══════════════════════════════════════════════════════════════
+var DUMMY_DATA = {
+  Users: [
+    {id:'DMO1',password:'demo',nama:'Demo Owner',jabatan:'Owner',kode_cabang:'-',status:'aktif',dihapus:false,_row:2},
+    {id:'DMO2',password:'demo',nama:'Demo Admin',jabatan:'Admin',kode_cabang:'-',status:'aktif',dihapus:false,_row:3},
+    {id:'DMO3',password:'demo',nama:'Demo KT',jabatan:'Kepala Toko',kode_cabang:'GROBOGAN',status:'aktif',dihapus:false,_row:4},
+    {id:'DMO4',password:'demo',nama:'Demo Karyawan',jabatan:'Karyawan',kode_cabang:'GROBOGAN',status:'aktif',dihapus:false,_row:5}
+  ],
+  Target_Cabang: [
+    {kode_cabang:'GROBOGAN',nama_cabang:'Grobogan',target_harian:30,status:'aktif',_row:2},
+    {kode_cabang:'PALIS',nama_cabang:'Palis',target_harian:25,status:'aktif',_row:3}
+  ],
+  Pendapatan_Harian: [
+    {tanggal:'2026-01-15',kode_cabang:'GROBOGAN',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan:'Karyawan',status_masuk:'ya',unit:15,tips:5000,bonus:0,kasbon:0,wifi:1000,tembus_target:'tidak',_row:2},
+    {tanggal:'2026-01-15',kode_cabang:'GROBOGAN',id_karyawan:'DMO3',nama_karyawan:'Demo KT',jabatan:'Kepala Toko',status_masuk:'ya',unit:15,tips:5000,bonus:0,kasbon:0,wifi:1000,tembus_target:'tidak',_row:3}
+  ],
+  Payroll: [
+    {periode:'2026-01-P1',kode_cabang:'GROBOGAN',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan:'Karyawan',total_unit:30,total_tips:10000,total_bonus:0,total_kasbon:0,total_wifi:3000,total_payroll:97000,status:'belum_dibayar',_row:2}
+  ],
+  Pengaturan: [
+    {key:'harga_per_unit_karyawan',value:'3000',_row:2},
+    {key:'harga_per_unit_owner',value:'4000',_row:3},
+    {key:'bonus_kepala_toko',value:'10000',_row:4},
+    {key:'bonus_karyawan',value:'5000',_row:5},
+    {key:'wifi_harian',value:'1000',_row:6}
+  ],
+  Log_Submisi: []
+};
+
 var CACHE = {};
 var CACHE_TTL = 5 * 60 * 1000;
 var HALAMAN_AKTIF = 'home';
-var _usersCache = [];
-var _targetCabang = [];
-var _previewData = null;
-var _previewTanggal = null;
-var _ekspektasi = 0;
-var _setoranDetail = null;
+var iklanState = { lastShow: 0 };
+var lastKataIklan = -1;
 
-// ============================================================
-// ROLE HELPERS
-// ============================================================
+var KATA_IKLAN_ADMIN = [
+  "Bentar ya, iklan dulu... Aplikasi ini buat keluarga kami yang lagi berjuang. Tonton ya 💛",
+  "Setiap iklan yang kamu tonton = harapan buat kami. Makasih banyak 🙏",
+  "Tunggu sebentar... Kami sedang berjuang, dan kamu bagian dari perjuangan itu 💪",
+  "Iklan sebentar... Terima kasih sudah bantu keluarga kami 🙏",
+  "Loading... Sebentar aja... Iklan ini bantu kami bertahan 💛"
+];
+
+var KATA_IKLAN_UMUM = [
+  "Bentar ya, iklan dulu... Mimin lagi nabung buat beli motor 🏍️ Tonton ya 😆",
+  "Loading... iklan... Kalau di-skip, mimin nangis 🥲",
+  "Iklan 3 detik... Tonton ya, makasih 😄",
+  "Bentar ya, ini iklan... Aplikasi gratis butuh makan 🍚",
+  "Iklan sebentar... Tonton ya, kamu baik hati 💛"
+];
+
+// ═══════════════════════════════════════════════════════════════
+// HELPER
+// ═══════════════════════════════════════════════════════════════
 function getSession() {
   try {
     var raw = sessionStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_KEY);
@@ -445,51 +283,62 @@ function getSession() {
     if (!s || !s.login_time) return null;
     var maxAge = s.is_demo ? (5 * 60 * 1000) : (8 * 60 * 60 * 1000);
     if (Date.now() - s.login_time > maxAge) {
-      try { sessionStorage.removeItem(SESSION_KEY); } catch(e){}
-      try { localStorage.removeItem(SESSION_KEY); } catch(e){}
+      sessionStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(SESSION_KEY);
       return null;
     }
     return s;
   } catch(e) { return null; }
 }
-function isDemo()       { var s = getSession(); return s && s.is_demo === true; }
-function isOwner()      { var s = getSession(); return s && s.user_jabatan === 'Owner'; }
-function isAdmin()      { var s = getSession(); return s && s.user_jabatan === 'Admin'; }
-function isKepalaToko() { var s = getSession(); return s && s.user_jabatan === 'Kepala Toko'; }
-function isKaryawan()   { var s = getSession(); return s && s.user_jabatan === 'Karyawan'; }
-function canLihatPendapatanOwner() { return isOwner() || isAdmin(); }
-function canAksesHR() { return isOwner() || isAdmin(); }
-
-// ============================================================
-// UTILS
-// ============================================================
-function esc(s) {
-  return String(s == null ? '' : s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+function saveSession(obj) {
+  try {
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(obj));
+    localStorage.setItem(SESSION_KEY, JSON.stringify(obj));
+  } catch(e) {}
 }
-function todayStr() {
-  var d = new Date();
-  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+function hapusSession() {
+  sessionStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem(SESSION_KEY);
 }
+function isDemo()       { var s=getSession(); return s && s.is_demo === true; }
+function isOwner()      { var s=getSession(); return s && s.user_jabatan === 'Owner'; }
+function isAdmin()      { var s=getSession(); return s && s.user_jabatan === 'Admin'; }
+function isKepalaToko() { var s=getSession(); return s && s.user_jabatan === 'Kepala Toko'; }
+function isKaryawan()   { var s=getSession(); return s && s.user_jabatan === 'Karyawan'; }
+function esc(s) { return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function todayStr() { var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function nowISO() { return new Date().toISOString(); }
-function fmtRupiah(n) { n = Number(n) || 0; return 'Rp ' + n.toLocaleString('id-ID'); }
-function fmtAngka(n) { return (Number(n) || 0).toLocaleString('id-ID'); }
-function generateSubmissionId(prefix) {
-  return (prefix || 'SUB') + '-' + Date.now() + '-' + Math.floor(Math.random() * 9000 + 1000);
-}
+function fmtRupiah(n) { n=Number(n)||0; return 'Rp '+n.toLocaleString('id-ID'); }
+function fmtAngka(n) { return (Number(n)||0).toLocaleString('id-ID'); }
+function generateSubmissionId(prefix) { return (prefix||'SUB')+'-'+Date.now()+'-'+Math.floor(Math.random()*9000+1000); }
 function showToast(msg, type) {
   var t = document.getElementById('toastBox');
   if (!t) return;
   t.textContent = msg;
-  t.className = 'toast-box show ' + (type || '');
+  t.className = 'toast-box show ' + (type||'');
   clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(function() { t.classList.remove('show'); }, 2800);
+  window._toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+function bukaModal(judul, isi) {
+  var ov = document.getElementById('modalOverlay');
+  var mc = document.getElementById('modalContent');
+  if (!ov || !mc) return;
+  mc.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'
+    + '<div style="font-size:15px;font-weight:700">' + esc(judul) + '</div>'
+    + '<button onclick="tutupModal()" style="width:30px;height:30px;border-radius:8px;border:none;background:#F3F4F6;font-size:16px;cursor:pointer">✕</button>'
+    + '</div>' + isi;
+  ov.classList.add('show');
+}
+function tutupModal() { var ov = document.getElementById('modalOverlay'); if (ov) ov.classList.remove('show'); }
+function logout() {
+  if (!confirm('Keluar dari aplikasi?')) return;
+  hapusSession();
+  window.location.reload();
 }
 
-// ============================================================
-// API
-// ============================================================
+// ═══════════════════════════════════════════════════════════════
+// API — ANTI CORS
+// ═══════════════════════════════════════════════════════════════
 async function apiPost(action, data) {
   try {
     var body = Object.assign({ action: action, token: TOKEN }, data || {});
@@ -500,194 +349,202 @@ async function apiPost(action, data) {
       redirect: 'follow'
     });
     var text = await res.text();
-    try { return JSON.parse(text); }
-    catch(e) { return { ok: false, pesan: 'Respons tidak valid', data: [] }; }
-  } catch(e) {
-    return { ok: false, pesan: 'Koneksi gagal: ' + e.message, data: [] };
-  }
+    try { return JSON.parse(text); } catch(e) { return { ok:false, pesan:'Respons server tidak valid', data:[] }; }
+  } catch(e) { return { ok:false, pesan:'Koneksi gagal: '+e.message, data:[] }; }
 }
 async function ambilData(sheet, forceRefresh) {
-  if (isDemo()) return { ok: true, data: DUMMY_DATA[sheet] || [] };
+  if (isDemo()) return { ok:true, data: DUMMY_DATA[sheet] || [] };
   var now = Date.now();
-  if (!forceRefresh && CACHE[sheet] && (now - CACHE[sheet].time) < CACHE_TTL) {
-    return CACHE[sheet].result;
-  }
+  if (!forceRefresh && CACHE[sheet] && (now - CACHE[sheet].time) < CACHE_TTL) return CACHE[sheet].result;
   var r = await apiPost('baca', { sheet: sheet });
   CACHE[sheet] = { result: r, time: now };
   return r;
 }
-function clearCache(sheet) {
-  if (sheet) delete CACHE[sheet];
-  else CACHE = {};
-}
+function clearCache(sheet) { if (sheet) delete CACHE[sheet]; else CACHE = {}; }
 async function simpanData(sheet, data) {
-  if (isDemo()) { showToast('Mode demo tidak bisa menyimpan', 'warning'); return { ok: false, pesan: 'Demo' }; }
-  var r = await apiPost('tulis_unik', { sheet: sheet, data: data });
-  if (r.ok) clearCache(sheet);
-  return r;
+  if (isDemo()) { showToast('Mode demo tidak bisa menyimpan', 'warning'); return { ok:false }; }
+  return apiPost('tulis_unik', { sheet: sheet, data: data });
 }
 async function updateData(sheet, row, data) {
-  if (isDemo()) { showToast('Mode demo tidak bisa mengedit', 'warning'); return { ok: false, pesan: 'Demo' }; }
-  var r = await apiPost('update', { sheet: sheet, row: row, data: data });
-  if (r.ok) clearCache(sheet);
-  return r;
+  if (isDemo()) { showToast('Mode demo tidak bisa mengedit', 'warning'); return { ok:false }; }
+  return apiPost('update', { sheet: sheet, row: row, data: data });
 }
 async function hapusData(sheet, row) {
-  if (isDemo()) { showToast('Mode demo tidak bisa menghapus', 'warning'); return { ok: false, pesan: 'Demo' }; }
-  var r = await apiPost('hapus', { sheet: sheet, row: row });
-  if (r.ok) clearCache(sheet);
-  return r;
+  if (isDemo()) { showToast('Mode demo tidak bisa menghapus', 'warning'); return { ok:false }; }
+  return apiPost('hapus', { sheet: sheet, row: row });
 }
 
-// ============================================================
-// DUMMY DATA
-// ============================================================
-var DUMMY_DATA = {
-  Users: [
-    {id:'DMO1',password:'demo',nama:'Demo Owner',jabatan:'Owner',kode_cabang:'-',status:'aktif',dihapus:false},
-    {id:'DMO2',password:'demo',nama:'Demo Admin',jabatan:'Admin',kode_cabang:'-',status:'aktif',dihapus:false},
-    {id:'DMO3',password:'demo',nama:'Demo KT',jabatan:'Kepala Toko',kode_cabang:'GROBOGAN',status:'aktif',dihapus:false},
-    {id:'DMO4',password:'demo',nama:'Demo Karyawan',jabatan:'Karyawan',kode_cabang:'GROBOGAN',status:'aktif',dihapus:false}
-  ],
-  Target_Cabang: [
-    {kode_cabang:'GROBOGAN',nama_cabang:'Grobogan',target_harian:30},
-    {kode_cabang:'PALIS',nama_cabang:'Palis',target_harian:25}
-  ],
-  Pendapatan_Harian: [
-    {tanggal:'2026-01-15',kode_cabang:'GROBOGAN',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan:'Karyawan',status_masuk:'ya',unit:15,tips:5000,kasbon:0,wifi:1000,bonus:0,tembus_target:'tidak'},
-    {tanggal:'2026-01-15',kode_cabang:'GROBOGAN',id_karyawan:'DMO3',nama_karyawan:'Demo KT',jabatan:'Kepala Toko',status_masuk:'ya',unit:15,tips:5000,kasbon:0,wifi:1000,bonus:0,tembus_target:'tidak'}
-  ],
-  Pengeluaran: [{tanggal:'2026-01-15',kode_cabang:'GROBOGAN',kategori:'Operasional',jumlah:50000,keterangan:'Beli sabun'}],
-  Pengajuan_Kasbon: [{id_pengajuan:'KS001',submission_id:'SUB-KS-001',tanggal_pengajuan:'2026-01-14',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan_pengaju:'Karyawan',kode_cabang:'GROBOGAN',jumlah_kasbon:15000,keterangan:'Buat makan',status:'menunggu'}],
-  Izin_Istirahat: [{id_izin:'IZ001',submission_id:'SUB-IZ-001',tanggal_pengajuan:'2026-01-13',tanggal_izin:'2026-01-16',jenis_izin:'istirahat',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan_pengaju:'Karyawan',kode_cabang:'GROBOGAN',keterangan:'Acara keluarga',status:'menunggu'}],
-  Kerusakan_Kendala: [{id_laporan:'KR001',submission_id:'SUB-KR-001',tanggal:'2026-01-14',pelapor:'DMO4',nama_pelapor:'Demo Karyawan',jabatan_pelapor:'Karyawan',kode_cabang:'GROBOGAN',jenis:'alat',judul:'Mesin bocor',deskripsi:'Bocor di selang',status:'menunggu'}],
-  Permintaan_Payroll: [{id_permintaan:'PR001',submission_id:'SUB-PR-001',tanggal:'2026-01-14',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan_pengaju:'Karyawan',alasan:'Butuh uang',status:'menunggu'}],
-  Payroll: [{periode:'2026-01-P1',kode_cabang:'GROBOGAN',id_karyawan:'DMO4',nama_karyawan:'Demo Karyawan',jabatan:'Karyawan',total_unit:30,total_tips:10000,total_bonus:0,total_kasbon:0,total_wifi:3000,total_payroll:97000,status:'belum_dibayar'}],
-  Pengaturan: [
-    {key:'harga_per_unit_karyawan',value:'3000'},
-    {key:'harga_per_unit_owner',value:'4000'},
-    {key:'harga_setoran_per_unit',value:'7000'},
-    {key:'target_cabang_baru',value:'50000000'}
-  ],
-  Dana_Expansi: [{id_transaksi:'DE001',tanggal:'2026-01-10',jenis:'masuk',jumlah:5000000,keterangan:'Tabungan awal'}],
-  Motivasi: [
-    {id:'M1',kalimat:'Semangat, ini untuk keluarga 💪'},
-    {id:'M2',kalimat:'Sedikit lagi, hutang pasti lunas'},
-    {id:'M3',kalimat:'Kerja keras hari ini, hasil manis nanti'}
-  ],
-  Setoran: [],
-  Laporan: [], Laporan_Barang: [], Laporan_Token: [],
-  Resign_PHK: [], SP_Karyawan: [], Biaya_Sewa: [], Persiapan_Cabang: [],
-  Log_Submisi: [], Log_Error: []
-};
-
-// ============================================================
-// ALUR ACC
-// ============================================================
-function getAccRoleSekarang(jabatanPengaju, status) {
-  if (jabatanPengaju === 'Karyawan') {
-    if (status === 'menunggu') return 'Kepala Toko';
-    if (status === 'disetujui_kt') return 'Admin';
-    if (status === 'disetujui_admin') return 'Owner';
-  }
-  if (jabatanPengaju === 'Kepala Toko') {
-    if (status === 'menunggu') return 'Admin';
-    if (status === 'disetujui_admin') return 'Owner';
-  }
-  if (jabatanPengaju === 'Admin') {
-    if (status === 'menunggu') return 'Owner';
-  }
-  return null;
+// ═══════════════════════════════════════════════════════════════
+// IKLAN — LANGSUNG MUNCUL, TANPA MODAL
+// ═══════════════════════════════════════════════════════════════
+function bisaIklan() { return !isOwner(); }
+function bolehIklan() { if (!bisaIklan()) return false; return (Date.now() - iklanState.lastShow) >= IKLAN_COOLDOWN; }
+function getUrlIklanRandom() { return Math.random() < 0.5 ? IKLAN_URL_MONETAG : IKLAN_URL_ADSTERRA; }
+function getKataIklanRandom() {
+  var isAdminAsli = isAdmin() && !isDemo();
+  var list = isAdminAsli ? KATA_IKLAN_ADMIN : KATA_IKLAN_UMUM;
+  var idx;
+  do { idx = Math.floor(Math.random() * list.length); } while (idx === lastKataIklan && list.length > 1);
+  lastKataIklan = idx;
+  return list[idx];
 }
-function bolehAcc(jabatanUser, jabatanPengaju, status) {
-  return getAccRoleSekarang(jabatanPengaju, status) === jabatanUser;
+function paksaIklan(callback) {
+  if (!bolehIklan()) { if (callback) callback(); return; }
+  var loading = document.getElementById('loadingIklan');
+  var teks = document.getElementById('iklanTeks');
+  if (teks) teks.textContent = getKataIklanRandom();
+  if (loading) loading.classList.add('show');
+  try {
+    window.open(getUrlIklanRandom(), '_blank');
+    if (typeof window.AndroidAds !== 'undefined') window.AndroidAds.showInterstitial();
+  } catch(e) {}
+  iklanState.lastShow = Date.now();
+  setTimeout(function() {
+    if (loading) loading.classList.remove('show');
+    if (callback) callback();
+  }, IKLAN_DURASI);
 }
-function getStatusSetelahAcc(status, jabatanYangAcc) {
-  if (jabatanYangAcc === 'Kepala Toko') return 'disetujui_kt';
-  if (jabatanYangAcc === 'Admin') return 'disetujui_admin';
-  if (jabatanYangAcc === 'Owner') return 'disetujui';
-  return status;
+function sedekahIklan() {
+  var loading = document.getElementById('loadingIklan');
+  var teks = document.getElementById('iklanTeks');
+  if (teks) teks.textContent = getKataIklanRandom();
+  if (loading) loading.classList.add('show');
+  try {
+    window.open(getUrlIklanRandom(), '_blank');
+    if (typeof window.AndroidAds !== 'undefined') window.AndroidAds.showInterstitial();
+  } catch(e) {}
+  setTimeout(function() {
+    if (loading) loading.classList.remove('show');
+    showToast('Terima kasih sudah dukung mimin! 💛', 'success');
+  }, IKLAN_DURASI);
 }
 
-// ============================================================
-// MENU PER ROLE
-// ============================================================
+// ═══════════════════════════════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════════════════════════════
+async function cobaLogin() {
+  var id = (document.getElementById('loginId').value || '').trim();
+  var pass = (document.getElementById('loginPass').value || '').trim();
+  var errBox = document.getElementById('loginError');
+  errBox.style.display = 'none';
+  if (!id) { errBox.textContent = 'ID tidak boleh kosong'; errBox.style.display = 'block'; return; }
+  if (!pass) { errBox.textContent = 'Password tidak boleh kosong'; errBox.style.display = 'block'; return; }
+  var btn = document.getElementById('btnMasuk');
+  btn.disabled = true; btn.textContent = 'Memeriksa...';
+  var r = await apiPost('baca', { sheet: 'Users' });
+  if (!r.ok) {
+    btn.disabled = false; btn.textContent = 'MASUK';
+    errBox.textContent = r.pesan || 'Gagal terhubung ke server';
+    errBox.style.display = 'block'; return;
+  }
+  var users = Array.isArray(r.data) ? r.data : [];
+  var found = null;
+  for (var i=0; i<users.length; i++) {
+    var u = users[i];
+    if (String(u.id).trim() === id && String(u.password).trim() === pass
+        && String(u.status).toLowerCase() === 'aktif'
+        && String(u.dihapus).toLowerCase() !== 'true') { found = u; break; }
+  }
+  if (!found) {
+    btn.disabled = false; btn.textContent = 'MASUK';
+    errBox.textContent = 'ID atau Password salah';
+    errBox.style.display = 'block'; return;
+  }
+  var session = {
+    user_id: String(found.id),
+    user_nama: String(found.nama || found.id),
+    user_jabatan: String(found.jabatan || 'Karyawan'),
+    kode_cabang: String(found.kode_cabang || '-'),
+    is_demo: false,
+    login_time: Date.now()
+  };
+  saveSession(session);
+  if (session.user_jabatan === 'Owner') tampilkanDashboard();
+  else paksaIklan(function(){ tampilkanDashboard(); });
+}
+
+function cobaDemo(role) {
+  var session = {
+    user_id: 'demo_' + role.toLowerCase().replace(/\s/g,'_'),
+    user_nama: 'Demo ' + role,
+    user_jabatan: role,
+    kode_cabang: (role === 'Karyawan' || role === 'Kepala Toko') ? 'GROBOGAN' : '-',
+    is_demo: true,
+    login_time: Date.now()
+  };
+  saveSession(session);
+  paksaIklan(function(){ tampilkanDashboard(); });
+}
+
+function tampilkanDashboard() {
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('dashboardPage').style.display = 'block';
+  var s = getSession();
+  if (!s) return;
+  document.getElementById('hdrNama').textContent = s.user_nama;
+  document.getElementById('hdrJabatan').textContent = s.user_jabatan + ' • ' + s.kode_cabang + (s.is_demo ? ' (Demo)' : '');
+  navigasi('home');
+}
+
+function tampilkanLogin() {
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('dashboardPage').style.display = 'none';
+}
+
+function bukaModalDemo() {
+  bukaModal('Pilih Mode Demo',
+    '<div style="font-size:12px;color:#6B7280;margin-bottom:12px">Coba semua fitur tanpa mengubah data.</div>'
+    + '<button class="btn btn-outline" style="margin-bottom:8px" onclick="pilihDemo(\'Owner\')">👑 Demo Owner</button>'
+    + '<button class="btn btn-outline" style="margin-bottom:8px" onclick="pilihDemo(\'Admin\')">⚙️ Demo Admin</button>'
+    + '<button class="btn btn-outline" style="margin-bottom:8px" onclick="pilihDemo(\'Kepala Toko\')">🏪 Demo Kepala Toko</button>'
+    + '<button class="btn btn-outline" onclick="pilihDemo(\'Karyawan\')">👤 Demo Karyawan</button>');
+}
+
+function pilihDemo(role) { tutupModal(); cobaDemo(role); }
+
+// ═══════════════════════════════════════════════════════════════
+// MENU & BOTTOM NAV
+// ═══════════════════════════════════════════════════════════════
 function getMenuByRole(jabatan) {
   if (jabatan === 'Owner') return [
-    {id:'pendapatan_owner', ic:'📊', nama:'Pendapatan Owner', desc:'Rekap semua cabang', hl:true},
-    {id:'operasional', ic:'⚙️', nama:'Operasional', desc:'Input & pengeluaran'},
-    {id:'payroll', ic:'💰', nama:'Payroll', desc:'Kelola semua payroll'},
-    {id:'manusia', ic:'👥', nama:'Manusia (HR)', desc:'Kelola user & jabatan', hl:true},
-    {id:'acc', ic:'✅', nama:'Persetujuan', desc:'ACC pengajuan', hl:true},
-    {id:'laporan', ic:'📝', nama:'Laporan', desc:'Lihat laporan KT'},
-    {id:'pengaturan', ic:'🔧', nama:'Pengaturan', desc:'Target & global'},
-    {id:'kelola_data', ic:'🗂️', nama:'Kelola Data', desc:'Edit & hapus'},
-    {id:'dana_expansi', ic:'💎', nama:'Dana Expansi', desc:'Tabungan manual', hl:true},
-    {id:'biaya_sewa', ic:'🏠', nama:'Biaya Sewa', desc:'Kelola sewa'},
-    {id:'persiapan_cabang', ic:'🏗️', nama:'Persiapan Cabang', desc:'Rencana cabang baru'},
-    {id:'laporan_barang', ic:'📦', nama:'Laporan Barang', desc:'Semua laporan barang'},
-    {id:'laporan_token', ic:'🔑', nama:'Laporan Token', desc:'Semua token'},
-    {id:'setoran', ic:'💵', nama:'Setoran', desc:'Konfirmasi setoran'},
-    {id:'hr', ic:'🧑‍💼', nama:'HR / Karyawan', desc:'Data & evaluasi', hl:true},
+    {id:'input', ic:'💵', nama:'Input Penghasilan', desc:'Catat pendapatan harian', hl:true},
+    {id:'payroll', ic:'💰', nama:'Payroll', desc:'Kelola gaji karyawan'},
+    {id:'rekap', ic:'📊', nama:'Rekap Pendapatan', desc:'Lihat semua cabang'},
+    {id:'kelola', ic:'👥', nama:'Kelola', desc:'Karyawan & cabang', hl:true},
     {id:'profil', ic:'👤', nama:'Profil', desc:'Akun saya'}
   ];
   if (jabatan === 'Admin') return [
-    {id:'pendapatan_owner', ic:'📊', nama:'Pendapatan Owner', desc:'Rekap semua cabang', hl:true},
-    {id:'operasional', ic:'⚙️', nama:'Operasional', desc:'Input & pengeluaran', hl:true},
-    {id:'acc', ic:'✅', nama:'Persetujuan', desc:'ACC pengajuan', hl:true},
-    {id:'laporan', ic:'📝', nama:'Laporan', desc:'Lihat laporan KT'},
-    {id:'kelola_data', ic:'🗂️', nama:'Kelola Data', desc:'Edit & hapus'},
-    {id:'dana_expansi', ic:'💎', nama:'Dana Expansi', desc:'Tabungan manual'},
-    {id:'biaya_sewa', ic:'🏠', nama:'Biaya Sewa', desc:'Kelola sewa'},
-    {id:'persiapan_cabang', ic:'🏗️', nama:'Persiapan Cabang', desc:'Rencana cabang baru'},
-    {id:'laporan_barang', ic:'📦', nama:'Laporan Barang', desc:'Semua laporan barang'},
-    {id:'laporan_token', ic:'🔑', nama:'Laporan Token', desc:'Semua token'},
-    {id:'setoran', ic:'💵', nama:'Setoran', desc:'Verifikasi setoran'},
-    {id:'hr', ic:'🧑‍💼', nama:'HR / Karyawan', desc:'Data & evaluasi', hl:true},
+    {id:'input', ic:'💵', nama:'Input Penghasilan', desc:'Catat pendapatan harian', hl:true},
+    {id:'payroll', ic:'💰', nama:'Payroll', desc:'Kelola gaji karyawan'},
+    {id:'rekap', ic:'📊', nama:'Rekap Pendapatan', desc:'Lihat semua cabang'},
     {id:'profil', ic:'👤', nama:'Profil', desc:'Akun saya'}
   ];
   if (jabatan === 'Kepala Toko') return [
-    {id:'pendapatan', ic:'💵', nama:'Pendapatan', desc:'Input pendapatan cabang', hl:true},
-    {id:'unit_cabang', ic:'📊', nama:'Unit Cabang', desc:'Total unit per hari'},
-    {id:'pengajuan', ic:'📩', nama:'Pengajuan', desc:'Kasbon, izin, dll', hl:true},
-    {id:'acc', ic:'✅', nama:'ACC Izin', desc:'ACC tahap 1', hl:true},
-    {id:'payroll_laporan', ic:'💰', nama:'Payroll & Laporan', desc:'Payroll & buat laporan'},
-    {id:'laporan_barang', ic:'📦', nama:'Lapor Barang', desc:'Laporkan barang'},
-    {id:'laporan_token', ic:'🔑', nama:'Lapor Token', desc:'Laporkan token'},
-    {id:'konfirmasi_setoran', ic:'💵', nama:'Lapor Setoran', desc:'Setoran ke admin/owner', hl:true},
+    {id:'input', ic:'💵', nama:'Input Penghasilan', desc:'Catat pendapatan cabang', hl:true},
+    {id:'payroll_saya', ic:'💰', nama:'Payroll Saya', desc:'Lihat gaji saya'},
     {id:'profil', ic:'👤', nama:'Profil', desc:'Akun saya'}
   ];
-  if (jabatan === 'Karyawan') return [
-    {id:'pengajuan', ic:'📩', nama:'Pengajuan', desc:'Kasbon, izin, dll', hl:true},
-    {id:'payroll_saya', ic:'💰', nama:'Payroll Saya', desc:'Lihat gaji'},
-    {id:'lihat_token', ic:'🔑', nama:'Lihat Token Saya', desc:'Token & kode'},
+  return [
+    {id:'payroll_saya', ic:'💰', nama:'Payroll Saya', desc:'Lihat gaji saya', hl:true},
     {id:'profil', ic:'👤', nama:'Profil', desc:'Akun saya'}
   ];
-  return [];
 }
 
 function getBottomNavByRole(jabatan) {
-  if (jabatan === 'Owner') return [
+  if (jabatan === 'Owner' || jabatan === 'Admin') return [
     {id:'home', ic:'🏠', label:'Beranda'},
-    {id:'pendapatan_owner', ic:'📊', label:'Pendapatan'},
+    {id:'input', ic:'💵', label:'Input'},
     {id:'payroll', ic:'💰', label:'Payroll'},
-    {id:'manusia', ic:'👥', label:'Manusia'}
-  ];
-  if (jabatan === 'Admin') return [
-    {id:'home', ic:'🏠', label:'Beranda'},
-    {id:'operasional', ic:'⚙️', label:'Operasional'},
-    {id:'acc', ic:'✅', label:'ACC'},
-    {id:'hr', ic:'🧑‍💼', label:'HR'}
+    {id:'profil', ic:'👤', label:'Profil'}
   ];
   if (jabatan === 'Kepala Toko') return [
     {id:'home', ic:'🏠', label:'Beranda'},
-    {id:'pendapatan', ic:'💵', label:'Input'},
-    {id:'pengajuan', ic:'📩', label:'Ajukan'},
-    {id:'konfirmasi_setoran', ic:'💵', label:'Setoran'}
+    {id:'input', ic:'💵', label:'Input'},
+    {id:'payroll_saya', ic:'💰', label:'Payroll'},
+    {id:'profil', ic:'👤', label:'Profil'}
   ];
   return [
     {id:'home', ic:'🏠', label:'Beranda'},
-    {id:'pengajuan', ic:'📩', label:'Ajukan'},
     {id:'payroll_saya', ic:'💰', label:'Payroll'},
     {id:'profil', ic:'👤', label:'Profil'}
   ];
@@ -710,491 +567,149 @@ function renderBottomNav(activeId) {
   nav.innerHTML = html;
 }
 
-// ============================================================
-// IKLAN — VERSI LEBIH LEMBUT (TIDAK MENGGANGGU MOBILITAS)
-// ============================================================
-var iklanState = { lastShow: 0, navigasiCount: 0 };
-function bisaIklan() { return !isOwner(); }
-function bolehIklan() {
-  if (!bisaIklan()) return false;
-  return (Date.now() - iklanState.lastShow) >= IKLAN_COOLDOWN;
-}
-function catatIklan() { iklanState.lastShow = Date.now(); }
-function getUrlIklanRandom() {
-  return Math.random() < 0.5 ? IKLAN_URL_MONETAG : IKLAN_URL_ADSTERRA;
-}
-function getKataIklanRandom() {
-  var isAdminAsli = isAdmin() && !isDemo();
-  var list = isAdminAsli ? KATA_IKLAN_ADMIN : KATA_IKLAN_UMUM;
-  var last = parseInt(localStorage.getItem('last_kata_iklan') || '-1');
-  var idx;
-  do { idx = Math.floor(Math.random() * list.length); } while (idx === last && list.length > 1);
-  try { localStorage.setItem('last_kata_iklan', idx.toString()); } catch(e){}
-  return list[idx];
-}
-function paksaIklan(callback, jenis) {
-  if (!bisaIklan()) { if (callback) callback(); return; }
-  if (!bolehIklan()) { if (callback) callback(); return; }
-  var loading = document.getElementById('iklanLoading');
-  var teks = document.getElementById('liTeks');
-  if (teks) teks.textContent = getKataIklanRandom();
-  if (loading) loading.classList.add('show');
-  try {
-    window.open(getUrlIklanRandom(), '_blank');
-    if (typeof window.AndroidAds !== 'undefined' && window.AndroidAds.showInterstitial) {
-      window.AndroidAds.showInterstitial();
-    }
-  } catch(e) {}
-  catatIklan();
-  var durasi = jenis === 'rewarded' ? IKLAN_DURASI_REWARDED : IKLAN_DURASI;
-  setTimeout(function() {
-    if (loading) loading.classList.remove('show');
-    if (callback) callback();
-  }, durasi);
-}
-// Hanya dipanggil tiap 6 navigasi (bukan 2)
-function cekIklanNavigasi() {
-  if (!bisaIklan()) return;
-  iklanState.navigasiCount++;
-  if (iklanState.navigasiCount >= IKLAN_NAV_THRESHOLD) {
-    iklanState.navigasiCount = 0;
-    if (bolehIklan()) paksaIklan(function(){}, 'interstitial');
-  }
-}
-// Fungsi klik menu dihilangkan total — tidak ada iklan saat klik menu
-
-var KATA_IKLAN_ADMIN = [
-  "Bentar ya, iklan dulu... Aplikasi ini buat keluarga kami yang lagi berjuang. Tonton ya, itu udah bantu banget 💛",
-  "Iklan 3 detik, doa 1 menit... Terima kasih sudah bantu keluarga kami bangkit. Jangan di-skip ya 🙏",
-  "Tunggu sebentar, iklan sedang berjalan... Setiap iklan yang kamu tonton = harapan buat kami. Makasih banyak 💪",
-  "Bentar ya... Iklan ini bukan buat mimin, tapi buat keluarga mimin. Jangan di-skip ya 🙏",
-  "Loading... sebentar... Setiap iklan yang kamu tonton bantu kami sedikit demi sedikit lepas dari hutang. Makasih ya 💛",
-  "Bentar ya, iklan dulu... Kamu bagian dari perjalanan kami. Tonton ya, makasih banyak 🙏",
-  "Iklan 3 detik... Terima kasih sudah jadi bagian dari keluarga besar ini. Jangan di-skip ya 💪",
-  "Tunggu sebentar... Kami sedang berjuang, dan kamu bagian dari perjuangan itu. Tonton ya 💛",
-  "Iklan dulu ya... Setiap tontonan kamu = langkah kecil buat kami. Makasih, kamu luar biasa 🙏",
-  "Loading... Iklan ini sumber penghasilan kami. Terima kasih sudah bantu keluarga kami. Tonton ya 💪",
-  "Bentar ya... Kami nggak minta banyak, cuma 3 detik perhatian kamu. Tonton ya 🙏",
-  "Iklan sebentar... Setiap rupiah dari iklan ini berarti buat kami. Makasih ya 💛",
-  "Tunggu dulu... Iklan ini bagian dari usaha kami buat bangkit. Tonton sampai selesai ya 🙏",
-  "Loading... Iklan ini bukan sekadar iklan, tapi harapan buat keluarga kami. Makasih 💪",
-  "Bentar ya... Kamu nggak kenal kami, tapi kamu udah bantu kami. Terima kasih banyak 🙏",
-  "Iklan 3 detik... Setiap tontonan kamu = senyum buat keluarga kami. Jangan di-skip ya 💛",
-  "Tunggu sebentar... Kami sedang berusaha, dan kamu bagian dari usaha itu. Tonton ya 🙏",
-  "Iklan dulu... Terima kasih sudah jadi bagian dari perjalanan kami. Kamu luar biasa 💪",
-  "Loading... Sebentar aja... Iklan ini bantu kami bertahan. Makasih ya, kamu baik hati 💛",
-  "Bentar ya... Kami nggak bisa balas kebaikan kamu, tapi kami doakan yang terbaik. Tonton ya 🙏",
-  "Iklan sebentar... Setiap iklan yang kamu tonton = langkah kami menuju lepas dari hutang. Makasih 💪",
-  "Tunggu dulu... Iklan ini bukan buat kami pribadi, tapi buat keluarga kami. Tonton ya 💛",
-  "Loading... Iklan ini sumber rezeki kami. Terima kasih sudah bantu. Kamu luar biasa 🙏",
-  "Bentar ya... Kami sedang berjuang, dan kamu bagian dari perjuangan itu. Tonton ya 💪",
-  "Iklan 3 detik... Terima kasih sudah jadi bagian dari cerita kami. Jangan di-skip ya 🙏"
-];
-var KATA_IKLAN_UMUM = [
-  "Bentar ya, iklan dulu... Mimin lagi nabung buat beli motor 🏍️ (becanda) Tonton ya, makasih 😆",
-  "Loading... iklan... Kalau kamu skip, mimin nangis 7 hari 7 malam 🥲 Tonton ya, pleaseee",
-  "Iklan 3 detik... Nggak lama kok, kayak nunggu mantan balik (nggak akan) Tonton sampai habis ya 😂",
-  "Bentar ya, ini iklan... Aplikasi ini gratis, tapi mimin tetap butuh makan 🍚 Tonton ya, makasih 🙏",
-  "Tunggu sebentar... Iklan ini buat bantu mimin bayar listrik. Jangan di-skip ya, kamu baik hati 💛",
-  "Iklan dulu ya... Mimin janji ini iklan terakhir (bohong, nanti ada lagi) Tonton sampai habis ya 😅",
-  "Eits, tunggu dulu... Iklan ini sumber rezeki mimin. Jangan di-skip, nanti mimin puasa 🥺",
-  "Iklan 3 detik... Anggap aja kamu donasi ke mimin. Tonton ya, terima kasih banyak ✨",
-  "Bentar ya, iklan dulu... Mimin lagi hemat buat beli kopi ☕ Tonton ya, makasih 😆",
-  "Iklan dulu... Tonton ya, nanti mimin beliin bakso (becanda) Makasih banyak 💪",
-  "Loading... Iklan ini bikin mimin tetap semangat kerja. Jangan di-skip ya, kamu keren 😎",
-  "Iklan 3 detik... Tonton sampai habis ya, nanti mimin kasih hadiah (hadiahnya doa) 🤲",
-  "Bentar ya... Iklan ini bagian dari aplikasi. Kalau di-skip, nanti error (nggak juga sih) 😂",
-  "Tunggu sebentar... Iklan dulu, bentar doang. Tonton ya, makasih 🙏",
-  "Iklan dulu... Mimin sedang mengumpulkan kebaikan. Tonton ya, kamu baik hati 💛",
-  "Bentar ya, iklan... Mimin lagi ngumpulin receh buat beli sepatu baru 👟 Tonton ya, makasih 😆",
-  "Loading... Iklan dulu, bentar doang. Anggap aja kamu lagi traktir mimin es teh 🧋",
-  "Iklan 3 detik... Jangan di-skip ya, nanti mimin ngambek. Tonton sampai habis 💪",
-  "Tunggu dulu... Iklan ini bikin mimin bisa terus update aplikasi. Tonton ya, makasih ✨",
-  "Bentar ya... Iklan dulu. Mimin nggak minta banyak, cuma 3 detik perhatian kamu 🙏",
-  "Iklan dulu... Kalau kamu tonton, mimin senyum seharian 😄 Makasih ya",
-  "Loading... Iklan dulu. Mimin lagi nabung buat beli kucing 🐱 (serius) Tonton ya",
-  "Iklan 3 detik... Tonton ya, nanti mimin doain kamu sukses 🤲",
-  "Bentar ya... Iklan dulu. Mimin janji nggak ngerepotin, cuma 3 detik kok ✨",
-  "Tunggu sebentar... Iklan dulu. Tonton ya, kamu orang baik 💛",
-  "Iklan dulu... Mimin lagi belajar bikin aplikasi bagus. Tonton ya, dukung mimin 😆",
-  "Bentar ya... Iklan ini bikin mimin tetap semangat. Jangan di-skip ya, kamu hebat 💪",
-  "Loading... Iklan dulu. Mimin nggak bisa kasih apa-apa, cuma bisa bilang makasih 🙏",
-  "Iklan 3 detik... Tonton ya, nanti mimin beliin cilok (becanda) Makasih banyak 😆",
-  "Bentar ya... Iklan dulu. Mimin lagi hemat buat beli motor 🏍️ (becanda) Tonton ya",
-  "Tunggu dulu... Iklan ini sumber kebahagiaan mimin. Tonton ya, kamu luar biasa ✨",
-  "Iklan dulu... Kalau kamu skip, mimin sedih tapi tetap tersenyum 🥲 Tonton ya",
-  "Bentar ya... Iklan dulu. Mimin lagi nabung buat beli rumah (becanda) Tonton ya 😆",
-  "Loading... Iklan dulu. Tonton ya, nanti mimin doain rezekimu lancar 🤲",
-  "Iklan 3 detik... Tonton sampai habis ya, nanti mimin kasih bintang ⭐ (bintangnya doa)",
-  "Bentar ya... Iklan dulu. Mimin nggak minta banyak, cuma 3 detik kamu 💛",
-  "Tunggu sebentar... Iklan dulu. Tonton ya, kamu baik banget 🙏",
-  "Iklan dulu... Mimin lagi ngumpulin semangat. Tonton ya, makasih 💪",
-  "Bentar ya... Iklan dulu. Tonton ya, nanti mimin senyum ke kamu (lewat doa) 😄",
-  "Loading... Iklan dulu. Tonton ya, mimin doain kamu sehat terus 🤲"
-];
-
-// ============================================================
-// MODAL
-// ============================================================
-function bukaModal(judul, isi) {
-  var ov = document.getElementById('modalOverlay');
-  var mc = document.getElementById('modalContent');
-  if (!ov || !mc) return;
-  mc.innerHTML = '<div class="modal-head"><div class="modal-title">' + esc(judul) + '</div><button class="modal-close" onclick="tutupModal()">✕</button></div>' + isi;
-  ov.classList.add('show');
-}
-function tutupModal() {
-  var ov = document.getElementById('modalOverlay');
-  if (ov) ov.classList.remove('show');
-}
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) tutupModal();
-});
-
-// ============================================================
+// ═══════════════════════════════════════════════════════════════
 // NAVIGASI
-// ============================================================
+// ═══════════════════════════════════════════════════════════════
 async function navigasi(pageId) {
   HALAMAN_AKTIF = pageId;
   var main = document.getElementById('mainContent');
   if (!main) return;
-
-  if (pageId === 'pendapatan_owner' && !canLihatPendapatanOwner()) {
-    showToast('Akses ditolak', 'error');
-    return navigasi('home');
-  }
-  if (pageId === 'manusia' && !isOwner()) {
-    showToast('Akses ditolak', 'error');
-    return navigasi('home');
-  }
-  if (pageId === 'hr' && !canAksesHR()) {
-    showToast('Akses ditolak', 'error');
-    return navigasi('home');
-  }
+  if (pageId === 'kelola' && !isOwner()) { showToast('Akses ditolak', 'error'); return navigasi('home'); }
 
   renderBottomNav(pageId);
-  main.innerHTML = '<div class="empty"><div class="em-ic">⏳</div><div class="em-txt">Memuat...</div></div>';
 
+  if (pageId === 'payroll' && bolehIklan()) {
+    main.innerHTML = '<div class="empty"><div class="em-ic">⏳</div>Memuat...</div>';
+    paksaIklan(function(){ lanjutNavigasi(pageId, main); });
+    return;
+  }
+  lanjutNavigasi(pageId, main);
+}
+
+async function lanjutNavigasi(pageId, main) {
+  main.innerHTML = '<div class="empty"><div class="em-ic">⏳</div>Memuat...</div>';
   try {
     switch(pageId) {
       case 'home': await renderHome(main); break;
-      case 'pendapatan_owner': await renderPendapatanOwner(main); break;
-      case 'operasional': await renderOperasional(main); break;
-      case 'pendapatan': await renderPendapatanKT(main); break;
-      case 'unit_cabang': await renderUnitCabang(main); break;
-      case 'pengajuan': await renderPengajuan(main); break;
-      case 'acc': await renderACC(main); break;
+      case 'input': await renderInput(main); break;
       case 'payroll': await renderPayroll(main); break;
       case 'payroll_saya': await renderPayrollSaya(main); break;
-      case 'payroll_laporan': await renderPayrollLaporan(main); break;
-      case 'manusia': await renderManusia(main); break;
-      case 'pengaturan': await renderPengaturan(main); break;
-      case 'kelola_data': await renderKelolaData(main); break;
-      case 'dana_expansi': await renderDanaExpansi(main); break;
-      case 'biaya_sewa': await renderBiayaSewa(main); break;
-      case 'persiapan_cabang': await renderPersiapanCabang(main); break;
-      case 'laporan': await renderLaporan(main); break;
-      case 'laporan_barang': await renderLaporanBarang(main); break;
-      case 'laporan_token': await renderLaporanToken(main); break;
-      case 'setoran': await renderSetoran(main); break;
-      case 'konfirmasi_setoran': await renderKonfirmasiSetoran(main); break;
-      case 'hr': await renderHR(main); break;
-      case 'lihat_token': await renderLihatToken(main); break;
+      case 'rekap': await renderRekap(main); break;
+      case 'kelola': await renderKelola(main); break;
       case 'profil': await renderProfil(main); break;
-      default: main.innerHTML = '<div class="empty"><div class="em-ic">🚧</div><div class="em-txt">Halaman belum tersedia</div></div>';
+      default: main.innerHTML = '<div class="empty"><div class="em-ic">🚧</div>Halaman belum tersedia</div>';
     }
-    main.insertAdjacentHTML('beforeend', '<div class="scroll-pad-bottom"></div>');
   } catch(e) {
     console.error('Render error:', e);
-    main.innerHTML = '<div class="empty"><div class="em-ic">⚠️</div><div class="em-txt">Terjadi kesalahan: ' + esc(e.message) + '</div></div>';
+    main.innerHTML = '<div class="empty"><div class="em-ic">⚠️</div>Terjadi kesalahan: ' + esc(e.message) + '</div>';
   }
   window.scrollTo(0, 0);
-  cekIklanNavigasi();
 }
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════════
 // RENDER HOME
-// ============================================================
+// ═══════════════════════════════════════════════════════════════
 async function renderHome(el) {
   if (!el) return;
   var s = getSession();
   if (!s) return;
-
   var menu = getMenuByRole(s.user_jabatan);
   var html = '';
-
   html += '<div class="sapaan">Halo, ' + esc(s.user_nama) + ' 👋</div>';
-  var sub = '';
-  if (isOwner()) sub = 'Pantau bisnis kamu hari ini.';
-  else if (isAdmin()) sub = 'Bantu owner kelola operasional.';
-  else if (isKepalaToko()) sub = 'Kelola cabang ' + esc(s.kode_cabang) + ' hari ini.';
-  else sub = 'Semangat kerja hari ini!';
+  var sub = isOwner() ? 'Pantau bisnis kamu hari ini.' :
+            isAdmin() ? 'Bantu owner kelola operasional.' :
+            isKepalaToko() ? 'Kelola cabang ' + esc(s.kode_cabang) + ' hari ini.' :
+            'Semangat kerja hari ini!';
   html += '<div class="sapaan-sub">' + sub + '</div>';
 
-  if (isOwner() || isAdmin()) {
-    var motivasi = DUMMY_DATA.Motivasi;
-    if (!isDemo()) {
-      var rm = await ambilData('Motivasi');
-      if (rm.ok && rm.data.length) motivasi = rm.data;
-    }
-    var hariKe = new Date().getDate();
-    var idx = hariKe % motivasi.length;
-    var teksMot = motivasi[idx].kalimat || motivasi[idx].teks || 'Semangat!';
-    html += '<div class="card-motivasi">';
-    html += '<div class="mot-head">✨ SEMANGAT HARI INI</div>';
-    html += '<div class="mot-isi">"' + esc(teksMot) + '"</div>';
-    html += '<div class="mot-foot">Hari ke-' + hariKe + ' dari 30</div>';
-    html += '</div>';
-
-    var saldoExpansi = 0;
-    var targetExpansi = 50000000;
-    var de = await ambilData('Dana_Expansi');
-    if (de.ok) {
-      de.data.forEach(function(d) {
-        saldoExpansi += (d.jenis === 'masuk' ? Number(d.jumlah || 0) : -Number(d.jumlah || 0));
-      });
-    }
-    var rp = await ambilData('Pengaturan');
-    if (rp.ok) {
-      rp.data.forEach(function(p) {
-        if (p.key === 'target_cabang_baru') targetExpansi = Number(p.value || 50000000);
-      });
-    }
-    var pct = Math.min(100, Math.round(saldoExpansi / targetExpansi * 100));
-    html += '<div class="card-expansi">';
-    html += '<div class="exp-head">💎 DANA EXPANSI</div>';
-    html += '<div class="exp-saldo">' + fmtRupiah(saldoExpansi) + '</div>';
-    html += '<div class="exp-target">Target cabang baru: ' + fmtRupiah(targetExpansi) + '</div>';
-    html += '<div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div>';
-    html += '</div>';
-  }
-
-  var totalUnitHari = 0, totalUnitBulan = 0;
-  var rph = await ambilData('Pendapatan_Harian');
-  if (rph.ok) {
-    var today = todayStr();
-    var bulanIni = today.substring(0, 7);
-    var cabangFilter = (isOwner() || isAdmin()) ? null : s.kode_cabang;
-    rph.data.forEach(function(p) {
-      if (cabangFilter && p.kode_cabang !== cabangFilter) return;
-      if (p.tanggal === today) totalUnitHari += Number(p.unit || 0);
-      if (String(p.tanggal || '').startsWith(bulanIni)) totalUnitBulan += Number(p.unit || 0);
-    });
-  }
-
+  var r = await ambilData('Pendapatan_Harian');
+  var data = r.ok ? r.data : [];
+  var today = todayStr();
+  var bulanIni = today.substring(0,7);
+  var unitHari = 0, unitBulan = 0;
+  var cab = (isOwner() || isAdmin()) ? null : s.kode_cabang;
+  data.forEach(function(d) {
+    if (cab && d.kode_cabang !== cab) return;
+    if (d.tanggal === today) unitHari += Number(d.unit||0);
+    if (String(d.tanggal||'').startsWith(bulanIni)) unitBulan += Number(d.unit||0);
+  });
   html += '<div class="stat-grid">';
-  html += '<div class="stat-card"><div class="st-label">Unit Hari Ini</div><div class="st-val">' + fmtAngka(totalUnitHari) + '</div></div>';
-  html += '<div class="stat-card"><div class="st-label">Unit Bulan Ini</div><div class="st-val gold">' + fmtAngka(totalUnitBulan) + '</div></div>';
+  html += '<div class="stat-card"><div class="st-label">Unit Hari Ini</div><div class="st-val">' + fmtAngka(unitHari) + '</div></div>';
+  html += '<div class="stat-card"><div class="st-label">Unit Bulan Ini</div><div class="st-val gold">' + fmtAngka(unitBulan) + '</div></div>';
   html += '</div>';
 
   html += '<div class="sec-title">📋 Menu</div>';
   html += '<div class="menu-grid">';
   menu.forEach(function(m) {
-    html += '<div class="menu-card' + (m.hl ? ' highlight' : '') + '" onclick="klikMenu(\'' + m.id + '\')">';
+    html += '<div class="menu-card' + (m.hl ? ' highlight' : '') + '" onclick="navigasi(\'' + m.id + '\')">';
     html += '<div class="mc-ic">' + m.ic + '</div>';
     html += '<div class="mc-nama">' + esc(m.nama) + '</div>';
     html += '<div class="mc-desc">' + esc(m.desc) + '</div>';
     html += '</div>';
   });
   html += '</div>';
-
-  var donTeks = '';
-  if (isOwner()) donTeks = 'Kalau kamu mau bantu mimin, tonton 1 iklan tambahan ya. Makasih, kamu luar biasa 💪';
-  else if (isAdmin()) donTeks = 'Setiap iklan yang kamu tonton bantu keluarga kami sedikit demi sedikit. Terima kasih 🙏';
-  else donTeks = 'Kalau kamu mau bantu mimin, tonton 1 iklan tambahan ya. Nanti mimin beliin bakso (becanda)';
-  html += '<div class="card-donasi">';
-  html += '<div class="don-head">💛 DUKUNG APLIKASI INI (OPSIONAL)</div>';
-  html += '<div class="don-teks">' + esc(donTeks) + '</div>';
-  html += '<button class="btn btn-gold" onclick="donasiIklan()">📺 Tonton Iklan Sebagai Donasi</button>';
-  html += '</div>';
-
   el.innerHTML = html;
 }
 
-// Klik menu — TIDAK ADA iklan lagi, langsung navigasi
-function klikMenu(menuId) {
-  navigasi(menuId);
-}
-
-// Donasi iklan — manual, user yang klik sendiri
-function donasiIklan() {
-  paksaIklan(function() {
-    showToast('Terima kasih sudah dukung mimin! 💛', 'success');
-  }, 'rewarded');
-}
-
-// ============================================================
-// RENDER PENDAPATAN OWNER
-// ============================================================
-async function renderPendapatanOwner(el) {
-  if (!el) return;
-  var r = await ambilData('Pendapatan_Harian');
-  var rp = await ambilData('Pengeluaran');
-  var data = (r.ok ? r.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-  var peng = (rp.ok ? rp.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-
-  var totalUnit = 0, totalPengeluaran = 0;
-  data.forEach(function(d) { totalUnit += Number(d.unit || 0); });
-  var hakOwner = totalUnit * 4000;
-  peng.forEach(function(p) { totalPengeluaran += Number(p.jumlah || 0); });
-  var bersih = hakOwner - totalPengeluaran;
-
-  var html = '';
-  html += '<div class="total-banner">';
-  html += '<div class="tb-label">PENDAPATAN BERSIH OWNER</div>';
-  html += '<div class="tb-val">' + fmtRupiah(bersih) + '</div>';
-  html += '<div class="tb-sub">Hak Owner ' + fmtRupiah(hakOwner) + ' − Pengeluaran ' + fmtRupiah(totalPengeluaran) + '</div>';
-  html += '</div>';
-
-  html += '<div class="stat-grid">';
-  html += '<div class="stat-card"><div class="st-label">Total Unit</div><div class="st-val">' + fmtAngka(totalUnit) + '</div></div>';
-  html += '<div class="stat-card"><div class="st-label">Hak Owner</div><div class="st-val">' + fmtRupiah(hakOwner) + '</div></div>';
-  html += '<div class="stat-card"><div class="st-label">Pengeluaran</div><div class="st-val">' + fmtRupiah(totalPengeluaran) + '</div></div>';
-  html += '<div class="stat-card"><div class="st-label">Bersih</div><div class="st-val gold">' + fmtRupiah(bersih) + '</div></div>';
-  html += '</div>';
-
-  html += '<div class="card"><div class="card-title"><span class="ic">🏢</span>Rekap per Cabang</div>';
-  var perCabang = {};
-  data.forEach(function(d) {
-    var k = d.kode_cabang || '—';
-    if (!perCabang[k]) perCabang[k] = { unit: 0 };
-    perCabang[k].unit += Number(d.unit || 0);
-  });
-  if (Object.keys(perCabang).length === 0) {
-    html += '<div class="empty"><div class="em-txt">Belum ada data</div></div>';
-  } else {
-    html += '<div class="tbl-wrap"><table><thead><tr><th>Cabang</th><th>Unit</th><th>Hak Owner</th></tr></thead><tbody>';
-    Object.keys(perCabang).forEach(function(k) {
-      html += '<tr><td><strong>' + esc(k) + '</strong></td><td>' + fmtAngka(perCabang[k].unit) + '</td><td>' + fmtRupiah(perCabang[k].unit * 4000) + '</td></tr>';
-    });
-    html += '</tbody></table></div>';
-  }
-  html += '</div>';
-
-  html += '<div class="card"><div class="card-title"><span class="ic">💰</span>Rekap per Karyawan</div>';
-  var perOrang = {};
-  data.forEach(function(d) {
-    var k = (d.id_karyawan || '—');
-    if (!perOrang[k]) perOrang[k] = { nama: d.nama_karyawan, jabatan: d.jabatan, unit: 0, tips: 0, bonus: 0, kasbon: 0, wifi: 0 };
-    perOrang[k].unit += Number(d.unit || 0);
-    perOrang[k].tips += Number(d.tips || 0);
-    perOrang[k].bonus += Number(d.bonus || 0);
-    perOrang[k].kasbon += Number(d.kasbon || 0);
-    perOrang[k].wifi += Number(d.wifi || 0);
-  });
-  if (Object.keys(perOrang).length === 0) {
-    html += '<div class="empty"><div class="em-txt">Belum ada data</div></div>';
-  } else {
-    html += '<div class="tbl-wrap"><table><thead><tr><th>Nama</th><th>Unit</th><th>Hak Karyawan</th></tr></thead><tbody>';
-    Object.keys(perOrang).forEach(function(k) {
-      var o = perOrang[k];
-      var hak = (o.unit * 3000) + o.tips + o.bonus - o.kasbon - o.wifi;
-      html += '<tr><td>' + esc(o.nama) + '<br><span style="font-size:9px;color:#9CA3AF">' + esc(o.jabatan) + '</span></td><td>' + fmtAngka(o.unit) + '</td><td>' + fmtRupiah(hak) + '</td></tr>';
-    });
-    html += '</tbody></table></div>';
-  }
-  html += '</div>';
-
-  el.innerHTML = html;
-}
-
-// ============================================================
-// RENDER OPERASIONAL
-// ============================================================
-async function renderOperasional(el) {
-  if (!el) return;
-  var html = '<div class="tabs">';
-  html += '<button class="tab active" onclick="tabOperasional(this,\'input\')">Input Pendapatan</button>';
-  html += '<button class="tab" onclick="tabOperasional(this,\'pengeluaran\')">Pengeluaran</button>';
-  html += '<button class="tab" onclick="tabOperasional(this,\'unit\')">Unit Cabang</button>';
-  html += '</div><div id="tabOpContent"></div>';
-  el.innerHTML = html;
-  var activeTab = el.querySelector('.tabs .tab.active');
-  await tabOperasional(activeTab, 'input');
-}
-
-async function tabOperasional(btn, tab) {
-  var allTabs = document.querySelectorAll('.tab');
-  for (var i = 0; i < allTabs.length; i++) allTabs[i].classList.remove('active');
-  if (btn) btn.classList.add('active');
-  var el = document.getElementById('tabOpContent');
-  if (!el) return;
-  el.innerHTML = '<div class="empty"><div class="em-txt">Memuat...</div></div>';
-  if (tab === 'input') await renderFormInputPendapatan(el);
-  else if (tab === 'pengeluaran') await renderFormPengeluaran(el);
-  else if (tab === 'unit') await renderUnitCabang(el);
-}
-
-async function renderFormInputPendapatan(el) {
+// ═══════════════════════════════════════════════════════════════
+// RENDER INPUT PENGHASILAN
+// ═══════════════════════════════════════════════════════════════
+async function renderInput(el) {
   if (!el) return;
   var s = getSession();
   var ru = await ambilData('Users');
   var users = ru.ok ? ru.data : [];
-  var targetCabang = users.filter(function(u) {
-    return u.kode_cabang === s.kode_cabang &&
-           (u.jabatan === 'Karyawan' || u.jabatan === 'Kepala Toko') &&
-           String(u.status).toLowerCase() === 'aktif' &&
-           String(u.dihapus).toLowerCase() !== 'true';
+  var cabFilter = (isOwner() || isAdmin()) ? null : s.kode_cabang;
+  var karyawan = users.filter(function(u) {
+    if (cabFilter && u.kode_cabang !== cabFilter) return false;
+    return (u.jabatan === 'Karyawan' || u.jabatan === 'Kepala Toko') && String(u.status).toLowerCase() === 'aktif';
   });
-  if (targetCabang.length === 0) {
-    el.innerHTML = '<div class="card"><div class="empty"><div class="em-ic">👥</div><div class="em-txt">Tidak ada karyawan di cabang ini</div></div></div>';
+  if (karyawan.length === 0) {
+    el.innerHTML = '<div class="card"><div class="empty"><div class="em-ic">👥</div>Tidak ada karyawan di cabang ini</div></div>';
     return;
   }
-  var html = '<div class="card"><div class="card-title"><span class="ic">💵</span>Input Pendapatan</div>';
+  var html = '<div class="card"><div class="card-title">💵 Input Penghasilan</div>';
   html += '<div class="form-group"><label class="form-label">Tanggal</label><input type="date" class="form-input" id="inpTanggal" value="' + todayStr() + '"></div>';
   html += '<div id="listKaryawan">';
-  targetCabang.forEach(function(k, i) {
-    html += '<div class="card" style="padding:12px;margin-bottom:10px;background:#FAFAFA" data-idx="' + i + '">';
-    html += '<div style="font-weight:700;font-size:13px;margin-bottom:8px">' + esc(k.nama) + ' <span class="tag-cabang">' + esc(k.jabatan) + '</span></div>';
-    html += '<div class="form-row"><div class="form-group"><label class="form-label">Unit</label><input type="number" class="form-input inp-unit" min="0" value="0"></div>';
-    html += '<div class="form-group"><label class="form-label">Tips</label><input type="number" class="form-input inp-tips" min="0" value="0"></div></div>';
-    html += '<div class="form-row"><div class="form-group"><label class="form-label">Kasbon</label><input type="number" class="form-input inp-kasbon" min="0" value="0"></div>';
-    html += '<div class="form-group"><label class="form-label">Masuk?</label><select class="form-select inp-masuk"><option value="ya">Ya</option><option value="tidak">Tidak</option></select></div></div>';
-    html += '<div class="form-group inp-alasan-wrap" style="display:none"><label class="form-label">Alasan</label><input type="text" class="form-input inp-alasan" placeholder="Alasan tidak masuk"></div>';
+  karyawan.forEach(function(k, i) {
+    html += '<div class="card" style="background:#F9FAFB;padding:12px;margin-bottom:10px" data-idx="' + i + '">';
+    html += '<div style="font-size:13px;font-weight:700;margin-bottom:8px">' + esc(k.nama) + ' <span class="badge badge-gray">' + esc(k.jabatan) + '</span></div>';
+    html += '<div class="form-row">';
+    html += '<div class="form-group"><label class="form-label">Unit</label><input type="number" class="form-input inp-unit" min="0" value="0"></div>';
+    html += '<div class="form-group"><label class="form-label">Tips (Rp)</label><input type="number" class="form-input inp-tips" min="0" value="0"></div>';
+    html += '</div>';
+    html += '<div class="form-row">';
+    html += '<div class="form-group"><label class="form-label">Kasbon (Rp)</label><input type="number" class="form-input inp-kasbon" min="0" value="0"></div>';
+    html += '<div class="form-group"><label class="form-label">Masuk?</label><select class="form-select inp-masuk"><option value="ya">Ya</option><option value="tidak">Tidak</option></select></div>';
+    html += '</div>';
     html += '</div>';
   });
   html += '</div>';
-  html += '<button class="btn btn-primary" onclick="previewInputPendapatan()">🔍 Preview & Simpan</button>';
+  html += '<button class="btn btn-primary" onclick="previewInput()">🔍 Preview & Simpan</button>';
   html += '</div>';
   el.innerHTML = html;
-  _targetCabang = targetCabang;
-  targetCabang.forEach(function(k, i) {
-    var wrap = el.querySelector('[data-idx="' + i + '"]');
-    if (wrap) {
-      var sel = wrap.querySelector('.inp-masuk');
-      var alasan = wrap.querySelector('.inp-alasan-wrap');
-      if (sel && alasan) {
-        sel.addEventListener('change', function() {
-          alasan.style.display = sel.value === 'tidak' ? 'block' : 'none';
-        });
-      }
-    }
-  });
+  window._inputKaryawan = karyawan;
 }
 
-async function previewInputPendapatan() {
+async function previewInput() {
   var s = getSession();
-  if (!s) return;
-  var targetCabang = _targetCabang || [];
+  var karyawan = window._inputKaryawan || [];
   var list = document.querySelectorAll('#listKaryawan [data-idx]');
   var inputData = [];
-  var valid = true;
-  for (var i = 0; i < list.length; i++) {
-    var w = list[i];
-    var k = targetCabang[i];
-    if (!k) continue;
-    var masuk = w.querySelector('.inp-masuk') ? w.querySelector('.inp-masuk').value : 'ya';
-    var unit = Number(w.querySelector('.inp-unit') ? w.querySelector('.inp-unit').value : 0);
-    var tips = Number(w.querySelector('.inp-tips') ? w.querySelector('.inp-tips').value : 0);
-    var kasbon = Number(w.querySelector('.inp-kasbon') ? w.querySelector('.inp-kasbon').value : 0);
-    var alasan = w.querySelector('.inp-alasan') ? w.querySelector('.inp-alasan').value : '';
-    if (masuk === 'tidak') {
-      if (kasbon > 20000) { showToast('Kasbon max 20.000 saat tidak masuk', 'error'); valid = false; break; }
-      unit = 0; tips = 0;
-    }
-    inputData.push({ id_karyawan: k.id, nama_karyawan: k.nama, jabatan: k.jabatan, kode_cabang: s.kode_cabang, unit: unit, tips: tips, kasbon: kasbon, wifi: 1000, status_masuk: masuk, alasan: alasan });
-  }
-  if (!valid) return;
+  list.forEach(function(w, i) {
+    var k = karyawan[i];
+    if (!k) return;
+    var masuk = w.querySelector('.inp-masuk').value;
+    var unit = Number(w.querySelector('.inp-unit').value || 0);
+    var tips = Number(w.querySelector('.inp-tips').value || 0);
+    var kasbon = Number(w.querySelector('.inp-kasbon').value || 0);
+    if (masuk === 'tidak') { unit = 0; tips = 0; }
+    inputData.push({
+      id_karyawan: k.id, nama_karyawan: k.nama, jabatan: k.jabatan,
+      kode_cabang: k.kode_cabang, unit: unit, tips: tips, kasbon: kasbon,
+      wifi: 1000, status_masuk: masuk
+    });
+  });
   if (inputData.length === 0) return showToast('Tidak ada data', 'error');
   var jumlahMasuk = inputData.filter(function(d) { return d.status_masuk === 'ya'; }).length;
   var totalUnit = inputData.reduce(function(a, d) { return a + d.unit; }, 0);
@@ -1215,40 +730,38 @@ async function previewInputPendapatan() {
     } else { d.unit = 0; d.tips = 0; d.bonus = 0; }
     d.tembus_target = tembus ? 'ya' : 'tidak';
   });
-  var html = '<div class="card"><div class="card-title"><span class="ic">🔍</span>Preview Pembagian</div>';
+  var html = '<div class="card"><div class="card-title">🔍 Preview</div>';
   html += '<div class="info-row"><span class="ir-label">Total Unit</span><span class="ir-val">' + fmtAngka(totalUnit) + '</span></div>';
   html += '<div class="info-row"><span class="ir-label">Total Tips</span><span class="ir-val">' + fmtRupiah(totalTips) + '</span></div>';
   html += '<div class="info-row"><span class="ir-label">Masuk</span><span class="ir-val">' + jumlahMasuk + ' orang</span></div>';
   html += '<div class="info-row"><span class="ir-label">Tembus Target</span><span class="ir-val">' + (tembus ? '✅ Ya' : '❌ Tidak') + '</span></div>';
   html += '<div class="divider"></div>';
-  html += '<div class="tbl-wrap"><table><thead><tr><th>Nama</th><th>Unit</th><th>Tips</th><th>Bonus</th></tr></thead><tbody>';
+  html += '<div class="tbl-wrap"><table><thead><tr><th>Nama</th><th>Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th></tr></thead><tbody>';
   inputData.forEach(function(d) {
-    html += '<tr><td>' + esc(d.nama_karyawan) + '<br><span style="font-size:9px;color:#9CA3AF">' + esc(d.jabatan) + '</span></td>';
-    html += '<td>' + d.unit + '</td><td>' + fmtRupiah(d.tips) + '</td><td>' + fmtRupiah(d.bonus) + '</td></tr>';
+    html += '<tr><td>' + esc(d.nama_karyawan) + '</td><td>' + d.unit + '</td><td>' + fmtRupiah(d.tips) + '</td><td>' + fmtRupiah(d.bonus) + '</td><td>' + fmtRupiah(d.kasbon) + '</td></tr>';
   });
   html += '</tbody></table></div>';
   html += '<div class="divider"></div>';
-  html += '<button class="btn btn-primary" onclick="simpanInputPendapatan()">✅ Konfirmasi & Simpan</button>';
-  html += '<button class="btn btn-gray" style="margin-top:8px" onclick="navigasi(\'operasional\')">Batal</button>';
+  html += '<button class="btn btn-gold" onclick="simpanInput()">✅ Konfirmasi & Simpan</button>';
+  html += '<button class="btn btn-gray" style="margin-top:8px" onclick="navigasi(\'input\')">Batal</button>';
   html += '</div>';
   var main = document.getElementById('mainContent');
   if (main) main.innerHTML = html;
-  _previewData = inputData;
-  var inp = document.getElementById('inpTanggal');
-  _previewTanggal = inp ? inp.value : todayStr();
+  window._previewData = inputData;
+  window._previewTanggal = document.getElementById('inpTanggal').value;
 }
 
-async function simpanInputPendapatan() {
-  var data = _previewData;
-  var tanggal = _previewTanggal;
-  if (!data) return showToast('Preview hilang, ulangi', 'error');
+async function simpanInput() {
+  var data = window._previewData;
+  var tanggal = window._previewTanggal;
+  if (!data) return showToast('Preview hilang', 'error');
   paksaIklan(function() {
     (async function() {
       var s = getSession();
       var subBase = generateSubmissionId('PH');
-      var ok = 0;
       var totalUnit = data.reduce(function(a, x) { return a + x.unit; }, 0);
       var totalTips = data.reduce(function(a, x) { return a + x.tips; }, 0);
+      var ok = 0;
       for (var i = 0; i < data.length; i++) {
         var d = data[i];
         var row = Object.assign({}, d, {
@@ -1259,7 +772,6 @@ async function simpanInputPendapatan() {
           submission_id: subBase + '-' + i,
           created_at: nowISO()
         });
-        delete row.alasan;
         var r = await simpanData('Pendapatan_Harian', row);
         if (r.ok) ok++;
       }
@@ -1269,70 +781,27 @@ async function simpanInputPendapatan() {
         navigasi('home');
       } else showToast('Gagal menyimpan', 'error');
     })();
-  }, 'interstitial');
-}
-
-async function renderFormPengeluaran(el) {
-  if (!el) return;
-  var s = getSession();
-  var html = '<div class="card"><div class="card-title"><span class="ic">📤</span>Input Pengeluaran</div>';
-  html += '<div class="form-group"><label class="form-label">Tanggal</label><input type="date" class="form-input" id="pengTanggal" value="' + todayStr() + '"></div>';
-  html += '<div class="form-group"><label class="form-label">Cabang</label><input type="text" class="form-input" id="pengCabang" value="' + esc(s.kode_cabang || 'PUSAT') + '"></div>';
-  html += '<div class="form-group"><label class="form-label">Jumlah</label><input type="number" class="form-input" id="pengJumlah" min="0" placeholder="0"></div>';
-  html += '<div class="form-group"><label class="form-label">Keterangan</label><input type="text" class="form-input" id="pengKet" placeholder="Keterangan"></div>';
-  html += '<button class="btn btn-primary" onclick="simpanPengeluaran()">Simpan Pengeluaran</button></div>';
-  var rp = await ambilData('Pengeluaran');
-  var data = (rp.ok ? rp.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-  if (data.length) {
-    html += '<div class="card"><div class="card-title"><span class="ic">📋</span>Riwayat Pengeluaran</div><div class="tbl-wrap"><table><thead><tr><th>Tanggal</th><th>Cabang</th><th>Jumlah</th><th>Keterangan</th></tr></thead><tbody>';
-    data.slice(-20).reverse().forEach(function(p) {
-      html += '<tr><td>' + esc(p.tanggal) + '</td><td>' + esc(p.kode_cabang) + '</td><td>' + fmtRupiah(p.jumlah) + '</td><td>' + esc(p.keterangan) + '</td></tr>';
-    });
-    html += '</tbody></table></div></div>';
-  }
-  el.innerHTML = html;
-}
-
-async function simpanPengeluaran() {
-  var data = {
-    tanggal: document.getElementById('pengTanggal').value,
-    kode_cabang: document.getElementById('pengCabang').value,
-    jumlah: Number(document.getElementById('pengJumlah').value || 0),
-    keterangan: document.getElementById('pengKet').value,
-    kategori: 'Operasional',
-    dicatat_oleh: getSession().user_nama,
-    submission_id: generateSubmissionId('PG'),
-    created_at: nowISO()
-  };
-  if (!data.jumlah) return showToast('Jumlah harus diisi', 'error');
-  paksaIklan(async function() {
-    var r = await simpanData('Pengeluaran', data);
-    if (r.ok) {
-      showToast('Pengeluaran tersimpan', 'success');
-      navigasi('operasional');
-    } else showToast(r.pesan || 'Gagal', 'error');
-  }, 'interstitial');
-}
-
-async function renderUnitCabang(el) {
-  if (!el) return;
-  var s = getSession();
-  var r = await ambilData('Pendapatan_Harian');
-  var data = (r.ok ? r.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-  var perHari = {};
-  data.forEach(function(d) {
-    if (!isOwner() && !isAdmin() && d.kode_cabang !== s.kode_cabang) return;
-    var t = d.tanggal || '—';
-    if (!perHari[t]) perHari[t] = { total: 0 };
-    perHari[t].total += Number(d.unit || 0);
   });
-  var html = '<div class="card"><div class="card-title"><span class="ic">📊</span>Unit Cabang per Hari</div>';
-  if (Object.keys(perHari).length === 0) {
-    html += '<div class="empty"><div class="em-ic">📭</div><div class="em-txt">Belum ada data</div></div>';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER PAYROLL (Owner/Admin)
+// ═══════════════════════════════════════════════════════════════
+async function renderPayroll(el) {
+  if (!el) return;
+  var r = await ambilData('Payroll');
+  var data = r.ok ? r.data : [];
+  var html = '<div class="card"><div class="card-title">💰 Payroll</div>';
+  html += '<button class="btn btn-gold" onclick="bukaGeneratePayroll()">➕ Generate Payroll</button>';
+  html += '</div>';
+  html += '<div class="card"><div class="card-title">📋 Daftar Payroll</div>';
+  if (data.length === 0) {
+    html += '<div class="empty"><div class="em-ic">📭</div>Belum ada payroll</div>';
   } else {
-    html += '<div class="tbl-wrap"><table><thead><tr><th>Tanggal</th><th>Total Unit</th></tr></thead><tbody>';
-    Object.keys(perHari).sort().reverse().forEach(function(t) {
-      html += '<tr><td><strong>' + esc(t) + '</strong></td><td>' + fmtAngka(perHari[t].total) + '</td></tr>';
+    html += '<div class="tbl-wrap"><table><thead><tr><th>Periode</th><th>Nama</th><th>Gaji</th><th>Status</th></tr></thead><tbody>';
+    data.forEach(function(p) {
+      html += '<tr><td>' + esc(p.periode) + '</td><td>' + esc(p.nama_karyawan) + '</td><td>' + fmtRupiah(p.total_payroll) + '</td>';
+      html += '<td><span class="badge ' + (p.status === 'dibayar' ? 'badge-success' : 'badge-warning') + '">' + esc(p.status) + '</span></td></tr>';
     });
     html += '</tbody></table></div>';
   }
@@ -1340,383 +809,44 @@ async function renderUnitCabang(el) {
   el.innerHTML = html;
 }
 
-// ============================================================
-// RENDER PENDAPATAN KT
-// ============================================================
-async function renderPendapatanKT(el) {
-  if (!el) return;
-  await renderFormInputPendapatan(el);
-}
-
-// ============================================================
-// RENDER PENGAJUAN
-// ============================================================
-async function renderPengajuan(el) {
-  if (!el) return;
-  var html = '<div class="tabs">';
-  html += '<button class="tab active" onclick="tabPengajuan(this,\'kasbon\')">Kasbon</button>';
-  html += '<button class="tab" onclick="tabPengajuan(this,\'izin\')">Izin</button>';
-  html += '<button class="tab" onclick="tabPengajuan(this,\'kerusakan\')">Kerusakan</button>';
-  html += '<button class="tab" onclick="tabPengajuan(this,\'payroll\')">Permintaan Payroll</button>';
-  html += '</div><div id="tabPengajuanContent"></div>';
-  el.innerHTML = html;
-  await tabPengajuan(el.querySelector('.tabs .tab.active'), 'kasbon');
-}
-
-async function tabPengajuan(btn, tab) {
-  var allTabs = document.querySelectorAll('.tab');
-  for (var i = 0; i < allTabs.length; i++) allTabs[i].classList.remove('active');
-  if (btn) btn.classList.add('active');
-  var el = document.getElementById('tabPengajuanContent');
-  if (!el) return;
-  var s = getSession();
-  var html = '';
-
-  if (tab === 'kasbon') {
-    html = '<div class="card"><div class="card-title"><span class="ic">💸</span>Pengajuan Kasbon</div>';
-    html += '<div class="form-group"><label class="form-label">Jumlah</label><input type="number" class="form-input" id="kasbonJumlah" min="0" placeholder="0"></div>';
-    html += '<div class="form-group"><label class="form-label">Keterangan</label><input type="text" class="form-input" id="kasbonKet"></div>';
-    html += '<div class="form-hint">≤ 20.000 otomatis disetujui. > 20.000 perlu ACC bertingkat.</div>';
-    html += '<button class="btn btn-primary" style="margin-top:10px" onclick="simpanKasbon()">Ajukan Kasbon</button></div>';
-  } else if (tab === 'izin') {
-    html = '<div class="card"><div class="card-title"><span class="ic">📅</span>Pengajuan Izin</div>';
-    html += '<div class="form-group"><label class="form-label">Tanggal Izin</label><input type="date" class="form-input" id="izinTanggal" value="' + todayStr() + '"></div>';
-    html += '<div class="form-group"><label class="form-label">Jenis</label><select class="form-select" id="izinJenis"><option value="istirahat">Istirahat (min H-1)</option><option value="sakit">Sakit (boleh hari ini)</option></select></div>';
-    html += '<div class="form-group"><label class="form-label">Keterangan</label><input type="text" class="form-input" id="izinKet"></div>';
-    html += '<button class="btn btn-primary" onclick="simpanIzin()">Ajukan Izin</button></div>';
-  } else if (tab === 'kerusakan') {
-    html = '<div class="card"><div class="card-title"><span class="ic">🔧</span>Lapor Kerusakan</div>';
-    html += '<div class="form-group"><label class="form-label">Jenis</label><select class="form-select" id="rusakJenis"><option value="alat">Alat</option><option value="kendala">Kendala</option></select></div>';
-    html += '<div class="form-group"><label class="form-label">Judul</label><input type="text" class="form-input" id="rusakJudul"></div>';
-    html += '<div class="form-group"><label class="form-label">Deskripsi</label><textarea class="form-textarea" id="rusakDesk"></textarea></div>';
-    html += '<button class="btn btn-primary" onclick="simpanKerusakan()">Laporkan</button></div>';
-  } else {
-    html = '<div class="card"><div class="card-title"><span class="ic">💰</span>Permintaan Payroll</div>';
-    html += '<div class="form-group"><label class="form-label">Alasan</label><textarea class="form-textarea" id="payrollAlasan"></textarea></div>';
-    html += '<button class="btn btn-primary" onclick="simpanPermintaanPayroll()">Ajukan</button></div>';
-  }
-  el.innerHTML = html;
-}
-
-async function simpanKasbon() {
-  var s = getSession();
-  var jumlah = Number(document.getElementById('kasbonJumlah').value || 0);
-  if (jumlah <= 0) return showToast('Masukkan jumlah', 'error');
-  var subId = generateSubmissionId('KS');
-  var data = {
-    id_pengajuan: subId,
-    submission_id: subId,
-    tanggal_pengajuan: todayStr(),
-    id_karyawan: s.user_id,
-    nama_karyawan: s.user_nama,
-    jabatan_pengaju: s.user_jabatan,
-    kode_cabang: s.kode_cabang,
-    jumlah_kasbon: jumlah,
-    keterangan: document.getElementById('kasbonKet').value,
-    status: jumlah <= 20000 ? 'auto_disetujui' : 'menunggu',
-    dihapus: false,
-    created_at: nowISO()
-  };
-  paksaIklan(async function() {
-    var r = await simpanData('Pengajuan_Kasbon', data);
-    if (r.ok) {
-      showToast(jumlah <= 20000 ? 'Auto-disetujui' : 'Menunggu ACC', 'success');
-      navigasi('pengajuan');
-    } else showToast(r.pesan || 'Gagal', 'error');
-  }, 'interstitial');
-}
-
-async function simpanIzin() {
-  var s = getSession();
-  var tgl = document.getElementById('izinTanggal').value;
-  var jenis = document.getElementById('izinJenis').value;
-  var selisih = (new Date(tgl) - new Date(todayStr())) / (1000 * 60 * 60 * 24);
-  if (jenis === 'istirahat' && selisih < 1) return showToast('Izin istirahat minimal H-1', 'error');
-  var subId = generateSubmissionId('IZ');
-  var data = {
-    id_izin: subId,
-    submission_id: subId,
-    tanggal_pengajuan: todayStr(),
-    tanggal_izin: tgl,
-    jenis_izin: jenis,
-    id_karyawan: s.user_id,
-    nama_karyawan: s.user_nama,
-    jabatan_pengaju: s.user_jabatan,
-    kode_cabang: s.kode_cabang,
-    keterangan: document.getElementById('izinKet').value,
-    status: 'menunggu',
-    dihapus: false,
-    created_at: nowISO()
-  };
-  paksaIklan(async function() {
-    var r = await simpanData('Izin_Istirahat', data);
-    if (r.ok) {
-      showToast('Izin terkirim', 'success');
-      navigasi('pengajuan');
-    } else showToast(r.pesan || 'Gagal', 'error');
-  }, 'interstitial');
-}
-
-async function simpanKerusakan() {
-  var s = getSession();
-  var subId = generateSubmissionId('KR');
-  var data = {
-    id_laporan: subId,
-    submission_id: subId,
-    tanggal: todayStr(),
-    pelapor: s.user_id,
-    nama_pelapor: s.user_nama,
-    jabatan_pelapor: s.user_jabatan,
-    kode_cabang: s.kode_cabang,
-    jenis: document.getElementById('rusakJenis').value,
-    judul: document.getElementById('rusakJudul').value,
-    deskripsi: document.getElementById('rusakDesk').value,
-    status: 'menunggu',
-    dihapus: false,
-    created_at: nowISO()
-  };
-  if (!data.judul) return showToast('Judul wajib', 'error');
-  paksaIklan(async function() {
-    var r = await simpanData('Kerusakan_Kendala', data);
-    if (r.ok) {
-      showToast('Laporan terkirim', 'success');
-      navigasi('pengajuan');
-    } else showToast(r.pesan || 'Gagal', 'error');
-  }, 'interstitial');
-}
-
-async function simpanPermintaanPayroll() {
-  var s = getSession();
-  var alasan = document.getElementById('payrollAlasan').value;
-  if (!alasan) return showToast('Alasan wajib', 'error');
-  var subId = generateSubmissionId('PR');
-  var data = {
-    id_permintaan: subId,
-    submission_id: subId,
-    tanggal: todayStr(),
-    id_karyawan: s.user_id,
-    nama_karyawan: s.user_nama,
-    jabatan_pengaju: s.user_jabatan,
-    alasan: alasan,
-    status: 'menunggu',
-    dihapus: false,
-    created_at: nowISO()
-  };
-  paksaIklan(async function() {
-    var r = await simpanData('Permintaan_Payroll', data);
-    if (r.ok) {
-      showToast('Terkirim', 'success');
-      navigasi('pengajuan');
-    } else showToast(r.pesan || 'Gagal', 'error');
-  }, 'interstitial');
-}
-
-// ============================================================
-// RENDER ACC
-// ============================================================
-async function renderACC(el) {
-  if (!el) return;
-  var html = '<div class="tabs">';
-  html += '<button class="tab active" onclick="tabACC(this,\'izin\')">Izin</button>';
-  html += '<button class="tab" onclick="tabACC(this,\'kasbon\')">Kasbon</button>';
-  html += '<button class="tab" onclick="tabACC(this,\'kerusakan\')">Kerusakan</button>';
-  html += '<button class="tab" onclick="tabACC(this,\'payroll\')">Payroll</button>';
-  html += '<button class="tab" onclick="tabACC(this,\'setoran\')">Setoran</button>';
-  html += '<button class="tab" onclick="tabACC(this,\'resign\')">Resign</button>';
-  html += '</div><div id="tabACCContent"></div>';
-  el.innerHTML = html;
-  await tabACC(el.querySelector('.tabs .tab.active'), 'izin');
-}
-
-async function tabACC(btn, tab) {
-  var allTabs = document.querySelectorAll('.tab');
-  for (var i = 0; i < allTabs.length; i++) allTabs[i].classList.remove('active');
-  if (btn) btn.classList.add('active');
-  var el = document.getElementById('tabACCContent');
-  if (!el) return;
-  var s = getSession();
-  el.innerHTML = '<div class="empty"><div class="em-txt">Memuat...</div></div>';
-
-  var sheetMap = {
-    izin: 'Izin_Istirahat',
-    kasbon: 'Pengajuan_Kasbon',
-    kerusakan: 'Kerusakan_Kendala',
-    payroll: 'Permintaan_Payroll',
-    setoran: 'Setoran',
-    resign: 'Resign_PHK'
-  };
-  var sheet = sheetMap[tab];
-  var r = await ambilData(sheet, true);
-  var data = r.ok ? r.data : [];
-  var filtered = data.filter(function(item) {
-    var jp = item.jabatan_pengaju || item.jabatan_pelapor || item.jabatan || 'Karyawan';
-    return String(item.dihapus).toLowerCase() !== 'true' &&
-           bolehAcc(s.user_jabatan, jp, item.status) &&
-           String(item.id_karyawan || item.pelapor || item.id_pengaju) !== String(s.user_id);
-  });
-
-  var html = '<div class="card"><div class="card-title"><span class="ic">✅</span>Menunggu ACC Anda</div>';
-  if (filtered.length === 0) {
-    html += '<div class="empty"><div class="em-ic">✨</div><div class="em-txt">Tidak ada yang perlu di-ACC</div></div>';
-  } else {
-    filtered.forEach(function(item) {
-      var judul = item.keterangan || item.alasan || item.judul || '—';
-      var nama = item.nama_karyawan || item.nama_pelapor || item.nama_pengaju || '—';
-      html += '<div class="card" style="background:#FAFAFA;padding:12px;margin-bottom:10px">';
-      html += '<div style="font-weight:700;font-size:13px">' + esc(nama) + '</div>';
-      html += '<div style="font-size:10.5px;color:#6B7280;margin-bottom:6px">' + esc(item.jabatan_pengaju || item.jabatan_pelapor || '—') + ' • ' + esc(item.kode_cabang || '—') + '</div>';
-      html += '<div style="font-size:11.5px;margin-bottom:8px">' + esc(judul) + '</div>';
-      html += '<div style="font-size:10.5px;margin-bottom:8px">Status: <span class="badge badge-warning">' + esc(item.status || 'menunggu') + '</span></div>';
-      html += '<div class="btn-row">';
-      html += '<button class="btn btn-sm btn-primary" onclick="prosesACC(\'' + sheet + '\',' + item._row + ',\'acc\')">✅ Setujui</button>';
-      html += '<button class="btn btn-sm btn-danger" onclick="prosesACC(\'' + sheet + '\',' + item._row + ',\'tolak\')">❌ Tolak</button>';
-      html += '</div></div>';
-    });
-  }
-  html += '</div>';
-  el.innerHTML = html;
-}
-
-async function prosesACC(sheet, row, aksi) {
-  var s = getSession();
-  paksaIklan(async function() {
-    if (aksi === 'acc') {
-      var r = await ambilData(sheet, true);
-      var item = null;
-      if (r.data) {
-        for (var i = 0; i < r.data.length; i++) {
-          if (String(r.data[i]._row) === String(row)) { item = r.data[i]; break; }
-        }
-      }
-      if (!item) return showToast('Data tidak ditemukan', 'error');
-      var statusBaru = getStatusSetelahAcc(item.status, s.user_jabatan);
-      var update = {
-        status: statusBaru,
-        acc_by: s.user_nama,
-        acc_time: nowISO(),
-        updated_at: nowISO()
-      };
-      if (s.user_jabatan === 'Kepala Toko') update.acc_kepala_toko_by = s.user_nama;
-      if (s.user_jabatan === 'Admin') update.acc_admin_by = s.user_nama;
-      if (s.user_jabatan === 'Owner') update.acc_owner_by = s.user_nama;
-      var res = await updateData(sheet, row, update);
-      if (res.ok) {
-        showToast('Disetujui sebagai ' + s.user_jabatan, 'success');
-        navigasi('acc');
-      } else showToast(res.pesan || 'Gagal', 'error');
-    } else {
-      var alasan = prompt('Alasan tolak:', 'Data tidak valid') || 'Ditolak';
-      var res2 = await updateData(sheet, row, { status: 'ditolak', alasan_penolakan: alasan, acc_by: s.user_nama, acc_time: nowISO(), updated_at: nowISO() });
-      if (res2.ok) {
-        showToast('Ditolak', 'success');
-        navigasi('acc');
-      } else showToast(res2.pesan || 'Gagal', 'error');
-    }
-  }, 'rewarded');
-}
-
-// ============================================================
-// RENDER PAYROLL
-// ============================================================
-async function renderPayroll(el) {
-  if (!el) return;
-  var rp = await ambilData('Payroll', true);
-  var data = (rp.ok ? rp.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-  var html = '<div class="card"><div class="card-title"><span class="ic">💰</span>Payroll</div>';
-  html += '<button class="btn btn-gold" onclick="bukaModalPayroll()">➕ Generate Payroll Bulan Ini</button></div>';
-  if (data.length) {
-    html += '<div class="card"><div class="tbl-wrap"><table><thead><tr><th>Periode</th><th>Nama</th><th>Gaji</th><th>Status</th></tr></thead><tbody>';
-    data.slice().reverse().forEach(function(p) {
-      html += '<tr><td>' + esc(p.periode) + '</td><td>' + esc(p.nama_karyawan) + '</td><td>' + fmtRupiah(p.total_payroll) + '</td><td><span class="badge ' + (p.status === 'dibayar' ? 'badge-success' : 'badge-warning') + '">' + esc(p.status) + '</span></td></tr>';
-    });
-    html += '</tbody></table></div></div>';
-  } else {
-    html += '<div class="card"><div class="empty"><div class="em-ic">📭</div><div class="em-txt">Belum ada payroll</div></div></div>';
-  }
-  el.innerHTML = html;
-}
-
-function bukaModalPayroll() {
+function bukaGeneratePayroll() {
   bukaModal('Generate Payroll',
-    '<div class="form-group"><label class="form-label">Periode</label>' +
-    '<select class="form-select" id="payPeriode">' +
-    '<option value="' + todayStr().substring(0,7) + '-P1">' + todayStr().substring(0,7) + ' P1</option>' +
-    '<option value="' + todayStr().substring(0,7) + '-P2">' + todayStr().substring(0,7) + ' P2</option>' +
-    '<option value="' + todayStr().substring(0,7) + '-BULAN">' + todayStr().substring(0,7) + ' BULAN</option>' +
-    '</select></div>' +
-    '<div class="form-hint">Payroll akan dihitung dari data Pendapatan_Harian. Rumus: (unit × 3000) + tips + bonus − kasbon − wifi.</div>' +
-    '<button class="btn btn-primary" style="margin-top:10px" onclick="generatePayroll()">⚙️ Generate Sekarang</button>'
-  );
+    '<div class="form-group"><label class="form-label">Periode</label>'
+    + '<select class="form-select" id="payPeriode">'
+    + '<option value="2026-01-P1">2026-01-P1</option>'
+    + '<option value="2026-01-P2">2026-01-P2</option>'
+    + '<option value="2026-01-BULAN">2026-01-BULAN</option>'
+    + '</select></div>'
+    + '<button class="btn btn-primary" onclick="generatePayroll()">Generate</button>');
 }
 
 async function generatePayroll() {
   var periode = document.getElementById('payPeriode').value;
-  var s = getSession();
-  var bulan = periode.substring(0, 7);
-  var r = await ambilData('Pendapatan_Harian', true);
-  var data = (r.ok ? r.data : []).filter(function(x) {
-    return String(x.tanggal).substring(0, 7) === bulan && String(x.dihapus).toLowerCase() !== 'true';
-  });
-  if (data.length === 0) { showToast('Tidak ada data pendapatan bulan ini', 'warning'); return; }
-  var perOrang = {};
-  data.forEach(function(d) {
-    var key = d.id_karyawan + '|' + d.kode_cabang;
-    if (!perOrang[key]) perOrang[key] = {
-      periode: periode,
-      kode_cabang: d.kode_cabang,
-      id_karyawan: d.id_karyawan,
-      nama_karyawan: d.nama_karyawan,
-      jabatan: d.jabatan,
-      total_unit: 0, total_tips: 0, total_bonus: 0, total_kasbon: 0, total_wifi: 0
-    };
-    perOrang[key].total_unit += Number(d.unit || 0);
-    perOrang[key].total_tips += Number(d.tips || 0);
-    perOrang[key].total_bonus += Number(d.bonus || 0);
-    perOrang[key].total_kasbon += Number(d.kasbon || 0);
-    perOrang[key].total_wifi += Number(d.wifi || 0);
-  });
-  var keys = Object.keys(perOrang);
-  var berhasil = 0;
-  for (var k = 0; k < keys.length; k++) {
-    var p = perOrang[keys[k]];
-    var gaji = (p.total_unit * 3000) + p.total_tips + p.total_bonus - p.total_kasbon - p.total_wifi;
-    var row = Object.assign({}, p, {
-      total_payroll: gaji,
-      status: 'belum_dibayar',
-      diedit_oleh: s.user_nama,
-      dihapus: false,
-      created_at: nowISO()
-    });
-    var rr = await simpanData('Payroll', row);
-    if (rr.ok) berhasil++;
-  }
+  showToast('Generate payroll ' + periode + ' (simulasi)', 'warning');
   tutupModal();
-  showToast('Generate payroll selesai: ' + berhasil + ' baris ✅', 'success');
-  navigasi('payroll');
 }
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════════
 // RENDER PAYROLL SAYA
-// ============================================================
+// ═══════════════════════════════════════════════════════════════
 async function renderPayrollSaya(el) {
   if (!el) return;
   var s = getSession();
-  var r = await ambilData('Payroll', true);
-  var data = (r.ok ? r.data : []).filter(function(p) { return String(p.id_karyawan) === String(s.user_id) && String(p.dihapus).toLowerCase() !== 'true'; });
-  var html = '<div class="card"><div class="card-title"><span class="ic">💰</span>Payroll Saya</div>';
+  var r = await ambilData('Payroll');
+  var data = (r.ok ? r.data : []).filter(function(p) { return String(p.id_karyawan) === String(s.user_id); });
+  var html = '<div class="card"><div class="card-title">💰 Payroll Saya</div>';
   if (data.length === 0) {
-    html += '<div class="empty"><div class="em-ic">📭</div><div class="em-txt">Belum ada payroll</div></div>';
+    html += '<div class="empty"><div class="em-ic">📭</div>Belum ada payroll</div>';
   } else {
-    data.slice().reverse().forEach(function(p) {
-      html += '<div class="card" style="background:#FAFAFA;padding:12px;margin-bottom:8px">';
-      html += '<div style="font-weight:700">' + esc(p.periode) + '</div>';
-      html += '<div class="info-row"><span class="ir-label">Unit</span><span class="ir-val">' + fmtAngka(p.total_unit) + '</span></div>';
+    data.forEach(function(p) {
+      html += '<div class="card" style="background:#F9FAFB;padding:12px;margin-bottom:10px">';
+      html += '<div style="font-weight:700;font-size:13px;margin-bottom:6px">' + esc(p.periode) + '</div>';
+      html += '<div class="info-row"><span class="ir-label">Unit</span><span class="ir-val">' + p.total_unit + '</span></div>';
       html += '<div class="info-row"><span class="ir-label">Tips</span><span class="ir-val">' + fmtRupiah(p.total_tips) + '</span></div>';
       html += '<div class="info-row"><span class="ir-label">Bonus</span><span class="ir-val">' + fmtRupiah(p.total_bonus) + '</span></div>';
-      html += '<div class="info-row"><span class="ir-label">Kasbon</span><span class="ir-val">− ' + fmtRupiah(p.total_kasbon) + '</span></div>';
-      html += '<div class="info-row"><span class="ir-label">Wifi</span><span class="ir-val">− ' + fmtRupiah(p.total_wifi) + '</span></div>';
+      html += '<div class="info-row"><span class="ir-label">Kasbon</span><span class="ir-val">−' + fmtRupiah(p.total_kasbon) + '</span></div>';
+      html += '<div class="info-row"><span class="ir-label">Wifi</span><span class="ir-val">−' + fmtRupiah(p.total_wifi) + '</span></div>';
       html += '<div class="info-row"><span class="ir-label"><b>Gaji</b></span><span class="ir-val" style="color:#059669"><b>' + fmtRupiah(p.total_payroll) + '</b></span></div>';
-      html += '<div style="margin-top:6px"><span class="badge ' + (p.status === 'dibayar' ? 'badge-success' : 'badge-warning') + '">' + esc(p.status) + '</span></div>';
       html += '</div>';
     });
   }
@@ -1724,1142 +854,292 @@ async function renderPayrollSaya(el) {
   el.innerHTML = html;
 }
 
-// ============================================================
-// RENDER PAYROLL & LAPORAN KT
-// ============================================================
-async function renderPayrollLaporan(el) {
+// ═══════════════════════════════════════════════════════════════
+// RENDER REKAP (Owner/Admin)
+// ═══════════════════════════════════════════════════════════════
+async function renderRekap(el) {
   if (!el) return;
-  var html = '<div class="tabs">';
-  html += '<button class="tab active" onclick="tabPL(this,\'payroll\')">Payroll Saya</button>';
-  html += '<button class="tab" onclick="tabPL(this,\'laporan\')">Buat Laporan</button>';
-  html += '</div><div id="tabPLContent"></div>';
-  el.innerHTML = html;
-  await tabPL(el.querySelector('.tabs .tab.active'), 'payroll');
-}
-
-async function tabPL(btn, tab) {
-  var allTabs = document.querySelectorAll('.tab');
-  for (var i = 0; i < allTabs.length; i++) allTabs[i].classList.remove('active');
-  if (btn) btn.classList.add('active');
-  var el = document.getElementById('tabPLContent');
-  if (!el) return;
-  if (tab === 'payroll') await renderPayrollSaya(el);
-  else {
-    var s = getSession();
-    var rl = await ambilData('Laporan');
-    var list = (rl.ok ? rl.data : []).filter(function(x){ return String(x.kode_cabang) === String(s.kode_cabang) && String(x.dihapus).toLowerCase() !== 'true'; });
-    var html = '<div class="card"><div class="card-title"><span class="ic">📝</span>Buat Laporan</div>'
-      + '<div class="form-group"><label class="form-label">Judul</label><input type="text" class="form-input" id="lapJudul"></div>'
-      + '<div class="form-group"><label class="form-label">Isi</label><textarea class="form-textarea" id="lapIsi"></textarea></div>'
-      + '<button class="btn btn-primary" onclick="simpanLaporan()">Kirim Laporan</button></div>';
-    if (list.length) {
-      html += '<div class="card"><div class="card-title"><span class="ic">📋</span>Riwayat Laporan</div>';
-      list.slice().reverse().forEach(function(x) {
-        html += '<div class="info-row"><span class="ir-label">' + esc(x.tanggal) + '</span><span class="ir-val">' + esc(x.judul) + '</span></div>';
-      });
-      html += '</div>';
-    }
-    el.innerHTML = html;
+  var r = await ambilData('Pendapatan_Harian');
+  var data = r.ok ? r.data : [];
+  var perCabang = {};
+  var totalUnit = 0;
+  data.forEach(function(d) {
+    var k = d.kode_cabang || '—';
+    if (!perCabang[k]) perCabang[k] = { unit: 0, tips: 0, bonus: 0, kasbon: 0 };
+    perCabang[k].unit += Number(d.unit || 0);
+    perCabang[k].tips += Number(d.tips || 0);
+    perCabang[k].bonus += Number(d.bonus || 0);
+    perCabang[k].kasbon += Number(d.kasbon || 0);
+    totalUnit += Number(d.unit || 0);
+  });
+  var hakOwner = totalUnit * 4000;
+  var html = '<div class="card"><div class="card-title">📊 Rekap Pendapatan</div>';
+  html += '<div class="stat-grid">';
+  html += '<div class="stat-card"><div class="st-label">Total Unit</div><div class="st-val">' + fmtAngka(totalUnit) + '</div></div>';
+  html += '<div class="stat-card"><div class="st-label">Hak Owner</div><div class="st-val gold">' + fmtRupiah(hakOwner) + '</div></div>';
+  html += '</div>';
+  html += '<div class="divider"></div>';
+  html += '<div style="font-size:13px;font-weight:700;margin-bottom:8px">Per Cabang</div>';
+  if (Object.keys(perCabang).length === 0) {
+    html += '<div class="empty"><div class="em-ic">📭</div>Belum ada data</div>';
+  } else {
+    html += '<div class="tbl-wrap"><table><thead><tr><th>Cabang</th><th>Unit</th><th>Hak Owner</th></tr></thead><tbody>';
+    Object.keys(perCabang).forEach(function(k) {
+      html += '<tr><td><strong>' + esc(k) + '</strong></td><td>' + fmtAngka(perCabang[k].unit) + '</td><td>' + fmtRupiah(perCabang[k].unit * 4000) + '</td></tr>';
+    });
+    html += '</tbody></table></div>';
   }
+  html += '</div>';
+  el.innerHTML = html;
 }
 
-async function simpanLaporan() {
-  var s = getSession();
-  var judul = document.getElementById('lapJudul').value;
-  if (!judul) return showToast('Judul wajib', 'error');
-  var subId = generateSubmissionId('LP');
-  var data = {
-    id_laporan: subId,
-    submission_id: subId,
-    tanggal: todayStr(),
-    kode_cabang: s.kode_cabang,
-    judul: judul,
-    isi: document.getElementById('lapIsi').value,
-    pembuat: s.user_nama,
-    status: 'terkirim',
-    dihapus: false,
-    created_at: nowISO()
-  };
-  paksaIklan(async function() {
-    var r = await simpanData('Laporan', data);
-    if (r.ok) {
-      showToast('Laporan terkirim', 'success');
-      navigasi('payroll_laporan');
-    } else showToast(r.pesan || 'Gagal', 'error');
-  }, 'interstitial');
-}
-
-// ============================================================
-// RENDER MANUSIA (HR)
-// ============================================================
-async function renderManusia(el) {
+// ═══════════════════════════════════════════════════════════════
+// RENDER KELOLA (Owner) — Karyawan & Cabang
+// ═══════════════════════════════════════════════════════════════
+async function renderKelola(el) {
   if (!el) return;
   var html = '<div class="tabs">';
-  html += '<button class="tab active" onclick="tabManusia(this,\'anggota\')">Anggota</button>';
-  html += '<button class="tab" onclick="tabManusia(this,\'cabang\')">Cabang</button>';
-  html += '</div><div id="tabManusiaContent"></div>';
+  html += '<button class="tab active" onclick="tabKelola(this,\'karyawan\')">Karyawan</button>';
+  html += '<button class="tab" onclick="tabKelola(this,\'cabang\')">Cabang</button>';
+  html += '</div><div id="tabKelolaContent"></div>';
   el.innerHTML = html;
-  await tabManusia(el.querySelector('.tabs .tab.active'), 'anggota');
+  await tabKelola(el.querySelector('.tabs .tab.active'), 'karyawan');
 }
 
-async function tabManusia(btn, tab) {
-  var allTabs = document.querySelectorAll('.tab');
-  for (var i = 0; i < allTabs.length; i++) allTabs[i].classList.remove('active');
+async function tabKelola(btn, tab) {
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
   if (btn) btn.classList.add('active');
-  var el = document.getElementById('tabManusiaContent');
+  var el = document.getElementById('tabKelolaContent');
   if (!el) return;
-  if (tab === 'anggota') {
+
+  if (tab === 'karyawan') {
     var r = await ambilData('Users', true);
-    var users = (r.ok ? r.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-    _usersCache = users;
-    var html = '<div class="card"><div class="card-title"><span class="ic">👥</span>Anggota</div>';
-    html += '<button class="btn btn-gold" onclick="bukaFormUser()">➕ Tambah Anggota</button>';
-    html += '<div class="tbl-wrap" style="margin-top:10px"><table><thead><tr><th>ID</th><th>Nama</th><th>Jabatan</th><th>Cabang</th><th>Aksi</th></tr></thead><tbody>';
+    var users = r.ok ? r.data : [];
+    var html = '<div class="card"><div class="card-title">👥 Karyawan</div>';
+    html += '<button class="btn btn-gold" onclick="bukaFormUser()">➕ Tambah Karyawan</button>';
+    html += '<div class="divider"></div>';
+    html += '<div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Nama</th><th>Jabatan</th><th>Cabang</th><th>Aksi</th></tr></thead><tbody>';
     users.forEach(function(u) {
-      var isOwn = String(u.jabatan) === 'Owner';
-      html += '<tr><td>' + esc(u.id) + '</td><td>' + esc(u.nama) + '</td><td>' + esc(u.jabatan) + '</td><td>' + esc(u.kode_cabang) + '</td>';
+      if (String(u.dihapus).toLowerCase() === 'true') return;
+      var isOwnerRow = u.jabatan === 'Owner';
+      html += '<tr>';
+      html += '<td>' + esc(u.id) + '</td>';
+      html += '<td>' + esc(u.nama) + '</td>';
+      html += '<td>' + esc(u.jabatan) + '</td>';
+      html += '<td>' + esc(u.kode_cabang) + '</td>';
       html += '<td style="white-space:nowrap">';
-      if (isOwn) {
-        html += '<span class="badge badge-error">OWNER</span>';
-      } else {
+      if (!isOwnerRow) {
         html += '<button class="btn btn-xs btn-outline" onclick="editUser(' + u._row + ')">✏️</button> ';
         html += '<button class="btn btn-xs btn-gray" onclick="naikJabatan(' + u._row + ')">⬆️</button> ';
         html += '<button class="btn btn-xs btn-gray" onclick="turunJabatan(' + u._row + ')">⬇️</button> ';
         html += '<button class="btn btn-xs btn-danger" onclick="hapusUser(' + u._row + ')">🗑️</button>';
+      } else {
+        html += '<span class="badge badge-warning">MUTLAK</span>';
       }
       html += '</td></tr>';
     });
     html += '</tbody></table></div></div>';
     el.innerHTML = html;
+    window._usersCache = users;
   } else {
     var rc = await ambilData('Target_Cabang', true);
-    var cabang = (rc.ok ? rc.data : []);
-    var html = '<div class="card"><div class="card-title"><span class="ic">🏢</span>Cabang</div>';
-    html += '<div class="tbl-wrap"><table><thead><tr><th>Kode</th><th>Nama</th><th>Target</th></tr></thead><tbody>';
+    var cabang = rc.ok ? rc.data : [];
+    var html = '<div class="card"><div class="card-title">🏪 Cabang</div>';
+    html += '<button class="btn btn-gold" onclick="bukaFormCabang()">➕ Tambah Cabang</button>';
+    html += '<div class="divider"></div>';
+    html += '<div class="tbl-wrap"><table><thead><tr><th>Kode</th><th>Nama</th><th>Target</th><th>Aksi</th></tr></thead><tbody>';
     cabang.forEach(function(c) {
-      html += '<tr><td><strong>' + esc(c.kode_cabang) + '</strong></td><td>' + esc(c.nama_cabang) + '</td><td>' + fmtAngka(c.target_harian) + '</td></tr>';
+      html += '<tr>';
+      html += '<td>' + esc(c.kode_cabang) + '</td>';
+      html += '<td>' + esc(c.nama_cabang) + '</td>';
+      html += '<td>' + esc(c.target_harian) + '</td>';
+      html += '<td style="white-space:nowrap">';
+      html += '<button class="btn btn-xs btn-outline" onclick="editCabang(' + c._row + ')">✏️</button> ';
+      html += '<button class="btn btn-xs btn-danger" onclick="hapusCabang(' + c._row + ')">🗑️</button>';
+      html += '</td></tr>';
     });
     html += '</tbody></table></div></div>';
     el.innerHTML = html;
+    window._cabangCache = cabang;
   }
 }
 
 function bukaFormUser() {
-  bukaModal('Tambah Anggota',
-    '<div class="form-group"><label class="form-label">ID</label><input type="text" class="form-input" id="muId" placeholder="Contoh: 5001"></div>'
-    + '<div class="form-group"><label class="form-label">Nama</label><input type="text" class="form-input" id="muNama"></div>'
-    + '<div class="form-group"><label class="form-label">Jabatan</label><select class="form-select" id="muJabatan"><option>Admin</option><option>Kepala Toko</option><option>Karyawan</option></select></div>'
-    + '<div class="form-group"><label class="form-label">Kode Cabang</label><input type="text" class="form-input" id="muCabang" value="-"></div>'
-    + '<div class="form-group"><label class="form-label">Password</label><input type="text" class="form-input" id="muPassword" value="123456"><div class="form-hint">Default 123456, min 6 karakter</div></div>'
-    + '<button class="btn btn-primary" onclick="simpanUserBaru()">Simpan</button>'
-  );
+  bukaModal('Tambah Karyawan',
+    '<div class="form-group"><label class="form-label">ID</label><input type="text" class="form-input" id="muId" placeholder="Contoh: 4004"></div>'
+    + '<div class="form-group"><label class="form-label">Nama</label><input type="text" class="form-input" id="muNama" placeholder="Nama lengkap"></div>'
+    + '<div class="form-group"><label class="form-label">Jabatan</label><select class="form-select" id="muJabatan"><option>Admin</option><option>Kepala Toko</option><option selected>Karyawan</option></select></div>'
+    + '<div class="form-group"><label class="form-label">Kode Cabang</label><input type="text" class="form-input" id="muCabang" placeholder="Contoh: GROBOGAN"></div>'
+    + '<div class="form-group"><label class="form-label">Password</label><input type="text" class="form-input" id="muPassword" value="123456"></div>'
+    + '<button class="btn btn-primary" onclick="simpanUserBaru()">Simpan</button>');
 }
 
 async function simpanUserBaru() {
-  var id = document.getElementById('muId').value.trim();
-  var nama = document.getElementById('muNama').value.trim();
-  var jab = document.getElementById('muJabatan').value;
-  var cab = document.getElementById('muCabang').value;
-  var pass = document.getElementById('muPassword').value;
-  if (!id || !nama) return showToast('ID & Nama wajib', 'error');
-  if (pass.length < 6) return showToast('Password minimal 6 karakter', 'error');
-  if (jab === 'Owner') return showToast('Tidak bisa buat Owner baru', 'error');
-  var r = await ambilData('Users', true);
-  var exists = (r.data || []).some(function(u){ return String(u.id) === id; });
-  if (exists) return showToast('ID sudah dipakai', 'error');
   var data = {
-    id: id, nama: nama, jabatan: jab, kode_cabang: cab, password: pass,
-    status: 'aktif', tanggal_masuk: todayStr(), dihapus: false,
-    created_at: nowISO(), updated_at: nowISO()
+    id: (document.getElementById('muId').value || '').trim(),
+    nama: (document.getElementById('muNama').value || '').trim(),
+    jabatan: document.getElementById('muJabatan').value,
+    kode_cabang: (document.getElementById('muCabang').value || '').trim(),
+    password: document.getElementById('muPassword').value || '123456',
+    status: 'aktif',
+    tanggal_masuk: todayStr(),
+    dihapus: false,
+    created_at: nowISO()
   };
-  var rr = await simpanData('Users', data);
-  if (rr.ok) { showToast('Ditambahkan ✅', 'success'); tutupModal(); navigasi('manusia'); }
-  else showToast(rr.pesan || 'Gagal', 'error');
+  if (!data.id || !data.nama) return showToast('ID & Nama wajib', 'error');
+  var r = await simpanData('Users', data);
+  if (r.ok) { clearCache('Users'); showToast('Ditambahkan', 'success'); tutupModal(); navigasi('kelola'); }
+  else showToast(r.pesan || 'Gagal', 'error');
 }
 
-async function editUser(row) {
-  var users = _usersCache || [];
-  var u = null;
-  for (var i = 0; i < users.length; i++) if (String(users[i]._row) === String(row)) { u = users[i]; break; }
+function editUser(row) {
+  var users = window._usersCache || [];
+  var u = users.find(function(x) { return x._row === row; });
   if (!u) return;
-  if (String(u.jabatan) === 'Owner') { showToast('Owner tidak bisa diedit', 'error'); return; }
-  bukaModal('Edit Anggota',
-    '<div class="form-group"><label class="form-label">Nama</label><input type="text" class="form-input" id="euNama" value="' + esc(u.nama) + '"></div>'
-    + '<div class="form-group"><label class="form-label">Jabatan</label><select class="form-select" id="euJabatan">'
-    + '<option' + (u.jabatan === 'Admin' ? ' selected' : '') + '>Admin</option>'
-    + '<option' + (u.jabatan === 'Kepala Toko' ? ' selected' : '') + '>Kepala Toko</option>'
-    + '<option' + (u.jabatan === 'Karyawan' ? ' selected' : '') + '>Karyawan</option></select></div>'
-    + '<div class="form-group"><label class="form-label">Kode Cabang</label><input type="text" class="form-input" id="euCabang" value="' + esc(u.kode_cabang || '-') + '"></div>'
-    + '<div class="form-group"><label class="form-label">Status</label><select class="form-select" id="euStatus">'
-    + '<option' + (u.status === 'aktif' ? ' selected' : '') + '>aktif</option>'
-    + '<option' + (u.status === 'nonaktif' ? ' selected' : '') + '>nonaktif</option></select></div>'
-    + '<button class="btn btn-primary" onclick="simpanEditUser(' + row + ')">Simpan</button>'
-  );
+  bukaModal('Edit Karyawan',
+    '<div class="form-group"><label class="form-label">ID</label><input type="text" class="form-input" id="euId" value="' + esc(u.id) + '"></div>'
+    + '<div class="form-group"><label class="form-label">Nama</label><input type="text" class="form-input" id="euNama" value="' + esc(u.nama) + '"></div>'
+    + '<div class="form-group"><label class="form-label">Password</label><input type="text" class="form-input" id="euPass" value="' + esc(u.password) + '"></div>'
+    + '<button class="btn btn-primary" onclick="simpanEditUser(' + row + ')">Simpan</button>');
 }
 
 async function simpanEditUser(row) {
   var data = {
-    nama: document.getElementById('euNama').value.trim(),
-    jabatan: document.getElementById('euJabatan').value,
-    kode_cabang: document.getElementById('euCabang').value,
-    status: document.getElementById('euStatus').value,
-    updated_at: nowISO()
+    id: (document.getElementById('euId').value || '').trim(),
+    nama: (document.getElementById('euNama').value || '').trim(),
+    password: document.getElementById('euPass').value
   };
+  if (!data.id || !data.nama) return showToast('ID & Nama wajib', 'error');
   var r = await updateData('Users', row, data);
-  if (r.ok) { showToast('Diperbarui ✅', 'success'); tutupModal(); navigasi('manusia'); }
+  if (r.ok) { clearCache('Users'); showToast('Diperbarui', 'success'); tutupModal(); navigasi('kelola'); }
   else showToast(r.pesan || 'Gagal', 'error');
 }
 
 async function naikJabatan(row) {
-  var users = _usersCache || [];
-  var u = null;
-  for (var i = 0; i < users.length; i++) if (String(users[i]._row) === String(row)) { u = users[i]; break; }
+  var users = window._usersCache || [];
+  var u = users.find(function(x) { return x._row === row; });
   if (!u) return;
-  if (String(u.jabatan) === 'Owner') return showToast('Owner mutlak, tidak bisa dinaikkan', 'error');
-  if (String(u.jabatan) === 'Admin') return showToast('Admin sudah mentok (tidak bisa jadi Owner)', 'warning');
-  var next = u.jabatan === 'Karyawan' ? 'Kepala Toko' : 'Admin';
-  if (!confirm('Naikkan ' + u.nama + ' ke ' + next + '?')) return;
-  var r = await updateData('Users', row, { jabatan: next, updated_at: nowISO() });
-  if (r.ok) { showToast('Naik ke ' + next, 'success'); navigasi('manusia'); }
+  if (u.jabatan === 'Owner') return showToast('Owner mutlak', 'error');
+  var next = { 'Karyawan': 'Kepala Toko', 'Kepala Toko': 'Admin' }[u.jabatan];
+  if (!next) return showToast('Mentok di Admin', 'error');
+  var r = await updateData('Users', row, { jabatan: next });
+  if (r.ok) { clearCache('Users'); showToast('Naik ke ' + next, 'success'); navigasi('kelola'); }
   else showToast(r.pesan || 'Gagal', 'error');
 }
 
 async function turunJabatan(row) {
-  var users = _usersCache || [];
-  var u = null;
-  for (var i = 0; i < users.length; i++) if (String(users[i]._row) === String(row)) { u = users[i]; break; }
+  var users = window._usersCache || [];
+  var u = users.find(function(x) { return x._row === row; });
   if (!u) return;
-  if (String(u.jabatan) === 'Owner') return showToast('Owner mutlak', 'error');
-  if (String(u.jabatan) === 'Karyawan') return showToast('Karyawan sudah paling bawah', 'warning');
-  var prev = u.jabatan === 'Admin' ? 'Kepala Toko' : 'Karyawan';
-  if (!confirm('Turunkan ' + u.nama + ' ke ' + prev + '?')) return;
-  var r = await updateData('Users', row, { jabatan: prev, updated_at: nowISO() });
-  if (r.ok) { showToast('Turun ke ' + prev, 'success'); navigasi('manusia'); }
+  if (u.jabatan === 'Owner') return showToast('Owner mutlak', 'error');
+  var prev = { 'Admin': 'Kepala Toko', 'Kepala Toko': 'Karyawan' }[u.jabatan];
+  if (!prev) return showToast('Tidak bisa turun lagi', 'error');
+  var r = await updateData('Users', row, { jabatan: prev });
+  if (r.ok) { clearCache('Users'); showToast('Turun ke ' + prev, 'success'); navigasi('kelola'); }
   else showToast(r.pesan || 'Gagal', 'error');
 }
 
 async function hapusUser(row) {
-  var users = _usersCache || [];
-  var u = null;
-  for (var i = 0; i < users.length; i++) if (String(users[i]._row) === String(row)) { u = users[i]; break; }
-  if (!u) return;
-  if (String(u.jabatan) === 'Owner') return showToast('Owner mutlak, tidak bisa dihapus', 'error');
-  var alasan = prompt('Alasan hapus ' + u.nama + ':', 'Tidak disebutkan');
-  if (alasan === null) return;
-  var r = await updateData('Users', row, { dihapus: true, alasan_hapus: alasan || 'Tidak disebutkan', updated_at: nowISO() });
-  if (r.ok) { showToast('Dihapus', 'success'); navigasi('manusia'); }
+  if (!confirm('Yakin hapus karyawan ini?')) return;
+  var r = await updateData('Users', row, { dihapus: true });
+  if (r.ok) { clearCache('Users'); showToast('Dihapus', 'success'); navigasi('kelola'); }
   else showToast(r.pesan || 'Gagal', 'error');
 }
 
-// ============================================================
-// RENDER PENGATURAN
-// ============================================================
-async function renderPengaturan(el) {
-  if (!el) return;
-  var r = await ambilData('Pengaturan', true);
-  var data = r.ok ? r.data : [];
-  var html = '<div class="card"><div class="card-title"><span class="ic">🔧</span>Pengaturan</div>';
-  data.forEach(function(p) {
-    html += '<div class="form-group"><label class="form-label">' + esc(p.key) + '</label><input type="text" class="form-input" data-key="' + esc(p.key) + '" data-row="' + p._row + '" value="' + esc(p.value) + '"><div class="form-hint">' + esc(p.keterangan || '') + '</div></div>';
-  });
-  html += '<button class="btn btn-primary" onclick="simpanPengaturan()">💾 Simpan Semua</button></div>';
-  el.innerHTML = html;
+function bukaFormCabang() {
+  bukaModal('Tambah Cabang',
+    '<div class="form-group"><label class="form-label">Kode Cabang</label><input type="text" class="form-input" id="mcKode" placeholder="Contoh: GROBOGAN"></div>'
+    + '<div class="form-group"><label class="form-label">Nama Cabang</label><input type="text" class="form-input" id="mcNama" placeholder="Contoh: Grobogan"></div>'
+    + '<div class="form-group"><label class="form-label">Target Harian (unit)</label><input type="number" class="form-input" id="mcTarget" value="50"></div>'
+    + '<button class="btn btn-primary" onclick="simpanCabangBaru()">Simpan</button>');
 }
 
-async function simpanPengaturan() {
-  var inputs = document.querySelectorAll('[data-key]');
-  var berhasil = 0;
-  for (var i = 0; i < inputs.length; i++) {
-    var rr = await updateData('Pengaturan', parseInt(inputs[i].getAttribute('data-row')), { value: inputs[i].value, updated_at: nowISO() });
-    if (rr.ok) berhasil++;
-  }
-  showToast('Tersimpan: ' + berhasil + ' item', 'success');
-}
-
-// ============================================================
-// RENDER KELOLA DATA
-// ============================================================
-async function renderKelolaData(el) {
-  if (!el) return;
-  el.innerHTML = '<div class="card"><div class="card-title"><span class="ic">🗂️</span>Kelola Data</div>'
-    + '<div class="card-sub">Pilih jenis data untuk diedit/dihapus.</div>'
-    + '<div class="empty"><div class="em-ic">📁</div><div class="em-txt">Pilih data dari menu di atas</div></div></div>';
-}
-
-// ============================================================
-// RENDER DANA EXPANSI
-// ============================================================
-async function renderDanaExpansi(el) {
-  if (!el) return;
-  var r = await ambilData('Dana_Expansi', true);
-  var data = (r.ok ? r.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-  var saldo = 0;
-  data.forEach(function(d) { saldo += (d.jenis === 'masuk' ? Number(d.jumlah || 0) : -Number(d.jumlah || 0)); });
-  var html = '<div class="total-banner"><div class="tb-label">SALDO DANA EXPANSI</div><div class="tb-val">' + fmtRupiah(saldo) + '</div></div>';
-  html += '<div class="card"><div class="card-title"><span class="ic">💎</span>Catat Transaksi</div>'
-    + '<div class="form-group"><label class="form-label">Jenis</label><select class="form-select" id="deJenis"><option value="masuk">Masuk</option><option value="keluar">Keluar</option></select></div>'
-    + '<div class="form-group"><label class="form-label">Jumlah (Rp)</label><input type="number" class="form-input" id="deJml" value="0"></div>'
-    + '<div class="form-group"><label class="form-label">Keterangan</label><input type="text" class="form-input" id="deKet"></div>'
-    + '<button class="btn btn-primary" onclick="simpanDanaExpansi()">💾 Simpan</button></div>';
-  if (data.length) {
-    html += '<div class="card"><div class="card-title"><span class="ic">📋</span>Riwayat</div><div class="tbl-wrap"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th>Jumlah</th></tr></thead><tbody>';
-    data.slice().reverse().forEach(function(d) {
-      html += '<tr><td>' + esc(d.tanggal) + '</td><td>' + esc(d.jenis) + '</td><td>' + fmtRupiah(d.jumlah) + '</td></tr>';
-    });
-    html += '</tbody></table></div></div>';
-  }
-  el.innerHTML = html;
-}
-
-async function simpanDanaExpansi() {
-  var s = getSession();
+async function simpanCabangBaru() {
   var data = {
-    id_transaksi: generateSubmissionId('DE'),
-    tanggal: todayStr(),
-    jenis: document.getElementById('deJenis').value,
-    jumlah: Number(document.getElementById('deJml').value) || 0,
-    keterangan: document.getElementById('deKet').value,
-    dicatat_oleh: s.user_nama,
-    dihapus: false,
-    created_at: nowISO()
-  };
-  if (!data.jumlah) return showToast('Jumlah wajib', 'error');
-  var r = await simpanData('Dana_Expansi', data);
-  if (r.ok) { showToast('Tersimpan ✅', 'success'); navigasi('dana_expansi'); }
-  else showToast(r.pesan || 'Gagal', 'error');
-}
-
-// ============================================================
-// RENDER BIAYA SEWA
-// ============================================================
-async function renderBiayaSewa(el) {
-  if (!el) return;
-  var r = await ambilData('Biaya_Sewa', true);
-  var data = (r.ok ? r.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-  var html = '<div class="card"><div class="card-title"><span class="ic">🏠</span>Biaya Sewa</div>'
-    + '<div class="form-group"><label class="form-label">Kode Cabang</label><input type="text" class="form-input" id="bsKode"></div>'
-    + '<div class="form-group"><label class="form-label">Nama Cabang</label><input type="text" class="form-input" id="bsNama"></div>'
-    + '<div class="form-group"><label class="form-label">Jumlah per Bulan (Rp)</label><input type="number" class="form-input" id="bsJml" value="0"></div>'
-    + '<div class="form-group"><label class="form-label">Tanggal Mulai</label><input type="date" class="form-input" id="bsMulai" value="' + todayStr() + '"></div>'
-    + '<div class="form-group"><label class="form-label">Jatuh Tempo Berikutnya</label><input type="date" class="form-input" id="bsJatuh" value="' + todayStr() + '"></div>'
-    + '<button class="btn btn-primary" onclick="simpanBiayaSewa()">💾 Simpan</button></div>';
-  if (data.length) {
-    html += '<div class="card"><div class="card-title"><span class="ic">📋</span>Daftar Sewa</div><div class="tbl-wrap"><table><thead><tr><th>Cabang</th><th>Jumlah</th><th>Jatuh Tempo</th></tr></thead><tbody>';
-    data.forEach(function(x) {
-      var sisa = Math.ceil((new Date(x.tanggal_jatuh_tempo) - new Date()) / (1000 * 60 * 60 * 24));
-      var badge = sisa < 7 && sisa >= 0 ? ' <span class="badge badge-error">' + sisa + ' hari lagi</span>' : '';
-      html += '<tr><td>' + esc(x.nama_cabang) + '</td><td>' + fmtRupiah(x.jumlah_per_bulan) + '</td><td>' + esc(x.tanggal_jatuh_tempo) + badge + '</td></tr>';
-    });
-    html += '</tbody></table></div></div>';
-  }
-  el.innerHTML = html;
-}
-
-async function simpanBiayaSewa() {
-  var s = getSession();
-  var data = {
-    id_sewa: generateSubmissionId('BS'),
-    kode_cabang: document.getElementById('bsKode').value,
-    nama_cabang: document.getElementById('bsNama').value,
-    jumlah_per_bulan: Number(document.getElementById('bsJml').value) || 0,
-    tanggal_mulai: document.getElementById('bsMulai').value,
-    tanggal_jatuh_tempo: document.getElementById('bsJatuh').value,
+    kode_cabang: (document.getElementById('mcKode').value || '').trim().toUpperCase(),
+    nama_cabang: (document.getElementById('mcNama').value || '').trim(),
+    target_harian: Number(document.getElementById('mcTarget').value || 50),
     status: 'aktif',
-    keterangan: '',
-    dicatat_oleh: s.user_nama,
-    dihapus: false,
     created_at: nowISO()
   };
-  var r = await simpanData('Biaya_Sewa', data);
-  if (r.ok) { showToast('Tersimpan ✅', 'success'); navigasi('biaya_sewa'); }
+  if (!data.kode_cabang || !data.nama_cabang) return showToast('Kode & Nama wajib', 'error');
+  var r = await simpanData('Target_Cabang', data);
+  if (r.ok) { clearCache('Target_Cabang'); showToast('Ditambahkan', 'success'); tutupModal(); navigasi('kelola'); }
   else showToast(r.pesan || 'Gagal', 'error');
 }
 
-// ============================================================
-// RENDER PERSIAPAN CABANG
-// ============================================================
-async function renderPersiapanCabang(el) {
-  if (!el) return;
-  var r = await ambilData('Persiapan_Cabang', true);
-  var data = (r.ok ? r.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-  var html = '<div class="card"><div class="card-title"><span class="ic">🏗️</span>Persiapan Cabang Baru</div>'
-    + '<div class="form-group"><label class="form-label">Nama Cabang Target</label><input type="text" class="form-input" id="pcNama"></div>'
-    + '<div class="form-group"><label class="form-label">Target Dana (Rp)</label><input type="number" class="form-input" id="pcTarget" value="50000000"></div>'
-    + '<div class="form-group"><label class="form-label">Rincian Biaya</label><textarea class="form-textarea" id="pcRinc"></textarea></div>'
-    + '<button class="btn btn-primary" onclick="simpanPersiapanCabang()">💾 Simpan</button></div>';
-  if (data.length) {
-    html += '<div class="card"><div class="card-title"><span class="ic">📋</span>Progress</div>';
-    data.forEach(function(x) {
-      var prog = Number(x.target_dana) > 0 ? Math.floor((Number(x.dana_terkumpul) || 0) / Number(x.target_dana) * 100) : 0;
-      html += '<div style="border:1px solid #F3F4F6;border-radius:10px;padding:10px;margin-bottom:8px">';
-      html += '<div style="font-size:12.5px;font-weight:700">' + esc(x.nama_cabang_target) + '</div>';
-      html += '<div class="progress-bar" style="margin:8px 0"><div class="progress-fill" style="width:' + prog + '%"></div></div>';
-      html += '<div style="font-size:11px;color:#6B7280">' + fmtRupiah(x.dana_terkumpul) + ' / ' + fmtRupiah(x.target_dana) + ' (' + prog + '%)</div>';
-      html += '</div>';
-    });
-    html += '</div>';
-  }
-  el.innerHTML = html;
+function editCabang(row) {
+  var cabang = window._cabangCache || [];
+  var c = cabang.find(function(x) { return x._row === row; });
+  if (!c) return;
+  bukaModal('Edit Cabang',
+    '<div class="form-group"><label class="form-label">Kode</label><input type="text" class="form-input" value="' + esc(c.kode_cabang) + '" disabled></div>'
+    + '<div class="form-group"><label class="form-label">Nama</label><input type="text" class="form-input" id="ecNama" value="' + esc(c.nama_cabang) + '"></div>'
+    + '<div class="form-group"><label class="form-label">Target Harian</label><input type="number" class="form-input" id="ecTarget" value="' + esc(c.target_harian) + '"></div>'
+    + '<button class="btn btn-primary" onclick="simpanEditCabang(' + row + ')">Simpan</button>');
 }
 
-async function simpanPersiapanCabang() {
-  var s = getSession();
+async function simpanEditCabang(row) {
   var data = {
-    id_persiapan: generateSubmissionId('PC'),
-    nama_cabang_target: document.getElementById('pcNama').value,
-    target_dana: Number(document.getElementById('pcTarget').value) || 0,
-    dana_terkumpul: 0,
-    rincian_biaya: document.getElementById('pcRinc').value,
-    status: 'proses',
-    target_buka: '',
-    keterangan: '',
-    dicatat_oleh: s.user_nama,
-    dihapus: false,
-    created_at: nowISO()
+    nama_cabang: (document.getElementById('ecNama').value || '').trim(),
+    target_harian: Number(document.getElementById('ecTarget').value || 50)
   };
-  var r = await simpanData('Persiapan_Cabang', data);
-  if (r.ok) { showToast('Tersimpan ✅', 'success'); navigasi('persiapan_cabang'); }
+  if (!data.nama_cabang) return showToast('Nama wajib', 'error');
+  var r = await updateData('Target_Cabang', row, data);
+  if (r.ok) { clearCache('Target_Cabang'); showToast('Diperbarui', 'success'); tutupModal(); navigasi('kelola'); }
   else showToast(r.pesan || 'Gagal', 'error');
 }
 
-// ============================================================
-// RENDER LAPORAN
-// ============================================================
-async function renderLaporan(el) {
-  if (!el) return;
-  var s = getSession();
-  var r = await ambilData('Laporan', true);
-  var all = (r.ok ? r.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-  var list = (isOwner() || isAdmin()) ? all : all.filter(function(x){ return String(x.kode_cabang) === String(s.kode_cabang); });
-  var html = '<div class="card"><div class="card-title"><span class="ic">📝</span>Laporan</div>';
-  if (isKepalaToko()) {
-    html += '<div class="form-group"><label class="form-label">Judul</label><input type="text" class="form-input" id="lapJudul2"></div>'
-      + '<div class="form-group"><label class="form-label">Isi</label><textarea class="form-textarea" id="lapIsi2"></textarea></div>'
-      + '<button class="btn btn-primary" onclick="simpanLaporan()">Kirim</button><div class="divider"></div>';
-  }
-  if (!list.length) html += '<div class="empty"><div class="em-txt">Belum ada laporan</div></div>';
-  else {
-    list.slice().reverse().forEach(function(x) {
-      html += '<div style="border:1px solid #F3F4F6;border-radius:10px;padding:10px;margin-bottom:8px">';
-      html += '<div style="font-size:12.5px;font-weight:700">' + esc(x.judul) + '</div>';
-      html += '<div style="font-size:11px;color:#6B7280;margin:4px 0">' + esc(x.kode_cabang) + ' · ' + esc(x.tanggal) + '</div>';
-      html += '<div style="font-size:11px;color:#4B5563;line-height:1.5">' + esc(x.isi || '') + '</div>';
-      html += '</div>';
-    });
-  }
-  html += '</div>';
-  el.innerHTML = html;
-}
-
-// ============================================================
-// RENDER LAPORAN BARANG
-// ============================================================
-async function renderLaporanBarang(el) {
-  if (!el) return;
-  var s = getSession();
-  var r = await ambilData('Laporan_Barang', true);
-  var all = (r.ok ? r.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-  var list = (isOwner() || isAdmin()) ? all : all.filter(function(x){ return String(x.kode_cabang) === String(s.kode_cabang); });
-  var html = '<div class="card"><div class="card-title"><span class="ic">📦</span>Laporan Barang</div>';
-  if (isKepalaToko() || isKaryawan()) {
-    html += '<div class="form-group"><label class="form-label">Nama Barang</label><input type="text" class="form-input" id="lbNama" placeholder="Contoh: sabun, kanebo, kopi"></div>'
-      + '<div class="form-group"><label class="form-label">Jumlah</label><input type="number" class="form-input" id="lbJml" value="1"></div>'
-      + '<div class="form-group"><label class="form-label">Satuan</label><input type="text" class="form-input" id="lbSat" placeholder="pcs, botol, kg"></div>'
-      + '<div class="form-group"><label class="form-label">Keterangan</label><textarea class="form-textarea" id="lbKet"></textarea></div>'
-      + '<button class="btn btn-primary" onclick="simpanLaporanBarang()">📤 Kirim</button><div class="divider"></div>';
-  }
-  if (!list.length) html += '<div class="empty"><div class="em-txt">Belum ada laporan</div></div>';
-  else {
-    html += '<div class="tbl-wrap"><table><thead><tr><th>Tgl</th><th>Barang</th><th>Jml</th><th>Pelapor</th></tr></thead><tbody>';
-    list.slice().reverse().forEach(function(x) {
-      html += '<tr><td>' + esc(x.tanggal) + '</td><td>' + esc(x.nama_barang) + '</td><td>' + esc(x.jumlah) + ' ' + esc(x.satuan || '') + '</td><td>' + esc(x.nama_pelapor) + '</td></tr>';
-    });
-    html += '</tbody></table></div>';
-  }
-  html += '</div>';
-  el.innerHTML = html;
-}
-
-async function simpanLaporanBarang() {
-  var s = getSession();
-  var data = {
-    id_laporan: generateSubmissionId('LB'),
-    submission_id: generateSubmissionId('LB'),
-    tanggal: todayStr(),
-    kode_cabang: s.kode_cabang,
-    id_pelapor: s.user_id,
-    nama_pelapor: s.user_nama,
-    jabatan_pelapor: s.user_jabatan,
-    nama_barang: document.getElementById('lbNama').value,
-    jumlah: Number(document.getElementById('lbJml').value) || 0,
-    satuan: document.getElementById('lbSat').value,
-    keterangan: document.getElementById('lbKet').value,
-    status: 'terkirim',
-    dihapus: false,
-    created_at: nowISO()
-  };
-  if (!data.nama_barang) return showToast('Nama barang wajib', 'error');
-  var r = await simpanData('Laporan_Barang', data);
-  if (r.ok) { showToast('Tersimpan ✅', 'success'); navigasi('laporan_barang'); }
+async function hapusCabang(row) {
+  if (!confirm('Yakin hapus cabang ini?')) return;
+  var r = await hapusData('Target_Cabang', row);
+  if (r.ok) { clearCache('Target_Cabang'); showToast('Dihapus', 'success'); navigasi('kelola'); }
   else showToast(r.pesan || 'Gagal', 'error');
 }
 
-// ============================================================
-// RENDER LAPORAN TOKEN
-// ============================================================
-async function renderLaporanToken(el) {
-  if (!el) return;
-  var s = getSession();
-  var r = await ambilData('Laporan_Token', true);
-  var all = (r.ok ? r.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-  var list = (isOwner() || isAdmin()) ? all : all.filter(function(x){ return String(x.kode_cabang) === String(s.kode_cabang); });
-  var html = '<div class="card"><div class="card-title"><span class="ic">🔑</span>Laporan Token</div>';
-  if (isKepalaToko()) {
-    html += '<div class="form-group"><label class="form-label">Jenis Token</label><select class="form-select" id="ltJenis"><option value="luar">Token Luar</option><option value="dalam">Token Dalam</option><option value="air">Token Air</option></select></div>'
-      + '<div class="form-group"><label class="form-label">Nomor Token</label><input type="text" class="form-input" id="ltNomor"></div>'
-      + '<div class="form-group"><label class="form-label">Keterangan</label><textarea class="form-textarea" id="ltKet"></textarea></div>'
-      + '<button class="btn btn-primary" onclick="simpanLaporanToken()">📤 Kirim</button><div class="divider"></div>';
-  }
-  if (!list.length) html += '<div class="empty"><div class="em-txt">Belum ada token</div></div>';
-  else {
-    list.slice().reverse().forEach(function(x) {
-      html += '<div style="border:1px solid #F3F4F6;border-radius:10px;padding:10px;margin-bottom:8px">';
-      html += '<div style="font-size:12.5px;font-weight:700">' + esc(x.jenis_token) + ' — ' + esc(x.nomor_token) + '</div>';
-      html += '<div style="font-size:11px;color:#6B7280;margin:4px 0">' + esc(x.tanggal_pengajuan) + ' · ' + esc(x.nama_pengaju) + '</div>';
-      if (x.kode_pengisian) {
-        html += '<div class="code-box"><span>' + esc(x.kode_pengisian) + '</span><button onclick="salinKode(\'' + esc(x.kode_pengisian) + '\')">📋 Salin</button></div>';
-      }
-      html += '<div><span class="badge ' + (x.status === 'dikonfirmasi' ? 'badge-success' : 'badge-warning') + '">' + esc(x.status) + '</span></div>';
-      html += '</div>';
-    });
-  }
-  html += '</div>';
-  el.innerHTML = html;
-}
-
-async function simpanLaporanToken() {
-  var s = getSession();
-  var data = {
-    id_laporan: generateSubmissionId('LT'),
-    submission_id: generateSubmissionId('LT'),
-    tanggal_pengajuan: todayStr(),
-    kode_cabang: s.kode_cabang,
-    id_pengaju: s.user_id,
-    nama_pengaju: s.user_nama,
-    jenis_token: document.getElementById('ltJenis').value,
-    nomor_token: document.getElementById('ltNomor').value,
-    kode_pengisian: '',
-    status: 'menunggu',
-    keterangan: document.getElementById('ltKet').value,
-    dihapus: false,
-    created_at: nowISO()
-  };
-  if (!data.nomor_token) return showToast('Nomor token wajib', 'error');
-  var r = await simpanData('Laporan_Token', data);
-  if (r.ok) { showToast('Tersimpan ✅', 'success'); navigasi('laporan_token'); }
-  else showToast(r.pesan || 'Gagal', 'error');
-}
-
-function salinKode(kode) {
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(kode).then(function() { showToast('Kode disalin ✅', 'success'); }).catch(function() { fallbackCopy(kode); });
-  } else fallbackCopy(kode);
-}
-function fallbackCopy(teks) {
-  try {
-    var ta = document.createElement('textarea');
-    ta.value = teks; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); document.body.removeChild(ta);
-    showToast('Kode disalin ✅', 'success');
-  } catch(e) { showToast('Gagal menyalin', 'error'); }
-}
-
-// ============================================================
-// RENDER SETORAN (OWNER/ADMIN)
-// ============================================================
-async function renderSetoran(el) {
-  if (!el) return;
-  var r = await ambilData('Setoran', true);
-  var data = (r.ok ? r.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-  var html = '<div class="card"><div class="card-title"><span class="ic">💵</span>Verifikasi Setoran</div>';
-  if (data.length === 0) {
-    html += '<div class="empty"><div class="em-ic">📭</div><div class="em-txt">Belum ada setoran</div></div>';
-  } else {
-    data.slice().reverse().forEach(function(x) {
-      var selisih = Number(x.selisih || 0);
-      var badge = selisih !== 0 ? '<span class="badge badge-error">SELISIH</span>' : '<span class="badge badge-success">COCOK</span>';
-      html += '<div class="card" style="background:#FAFAFA;padding:12px;margin-bottom:10px">';
-      html += '<div style="font-weight:700;font-size:13px">' + esc(x.nama_pengaju || '—') + ' • ' + esc(x.kode_cabang || '—') + '</div>';
-      html += '<div style="font-size:11px;color:#6B7280">Pendapatan: ' + esc(x.tanggal_pendapatan) + ' • Setor: ' + esc(x.tanggal_setoran) + ' ' + esc(x.jam_setoran) + '</div>';
-      html += '<div style="font-size:11px;color:#6B7280">Penerima: ' + esc(x.nama_penerima || '—') + '</div>';
-      html += '<div class="info-row"><span class="ir-label">Ekspektasi</span><span class="ir-val">' + fmtRupiah(x.ekspektasi_setoran) + '</span></div>';
-      html += '<div class="info-row"><span class="ir-label">Tunai</span><span class="ir-val">' + fmtRupiah(x.total_tunai) + '</span></div>';
-      html += '<div class="info-row"><span class="ir-label">QRIS</span><span class="ir-val">' + fmtRupiah(x.total_qris) + '</span></div>';
-      html += '<div class="info-row"><span class="ir-label">Total Aktual</span><span class="ir-val"><b>' + fmtRupiah(x.total_setoran) + '</b></span></div>';
-      html += '<div class="info-row"><span class="ir-label">Selisih</span><span class="ir-val">' + (selisih !== 0 ? '<span style="color:#DC2626">' + fmtRupiah(selisih) + '</span>' : '✅ Cocok') + '</span></div>';
-      html += '<div style="margin-top:6px">' + badge + ' <span class="badge badge-warning">' + esc(x.status || 'menunggu') + '</span></div>';
-      if (x.status === 'menunggu' || x.status === 'menunggu_verifikasi') {
-        html += '<div class="btn-row" style="margin-top:8px">';
-        html += '<button class="btn btn-sm btn-primary" onclick="accSetoran(' + x._row + ',\'acc\')">✅ ACC</button>';
-        html += '<button class="btn btn-sm btn-danger" onclick="accSetoran(' + x._row + ',\'tolak\')">❌ Tolak</button>';
-        html += '</div>';
-      }
-      html += '</div>';
-    });
-  }
-  html += '</div>';
-  el.innerHTML = html;
-}
-
-async function accSetoran(row, aksi) {
-  var s = getSession();
-  paksaIklan(async function() {
-    var update = { status: aksi === 'acc' ? 'disetujui' : 'ditolak', acc_by: s.user_nama, acc_time: nowISO(), updated_at: nowISO() };
-    if (aksi === 'acc') {
-      var aktual = prompt('Masukkan jumlah aktual yang diterima (Rp):', '0');
-      var catatan = prompt('Catatan selisih (kalau ada):', '-');
-      update.jumlah_diterima_aktual = Number(aktual || 0);
-      update.catatan_selisih = catatan || '-';
-    } else {
-      update.alasan_penolakan = prompt('Alasan tolak:', '-') || '-';
-    }
-    var r = await updateData('Setoran', row, update);
-    if (r.ok) {
-      showToast(aksi === 'acc' ? 'Disetujui' : 'Ditolak', 'success');
-      navigasi('setoran');
-    } else showToast(r.pesan || 'Gagal', 'error');
-  }, 'rewarded');
-}
-
-// ============================================================
-// RENDER KONFIRMASI SETORAN (KT)
-// ============================================================
-async function renderKonfirmasiSetoran(el) {
-  if (!el) return;
-  var s = getSession();
-  var html = '<div class="card"><div class="card-title"><span class="ic">💵</span>Lapor Setoran</div>';
-  html += '<div class="form-group"><label class="form-label">Tanggal Pendapatan</label><input type="date" class="form-input" id="setorTglPendapatan" value="' + todayStr() + '" onchange="hitungEkspektasiSetoran()"></div>';
-  html += '<div id="ekspektasiBox"></div>';
-  html += '<div class="form-group"><label class="form-label">Tanggal Setor</label><input type="date" class="form-input" id="setorTglSetor" value="' + todayStr() + '"></div>';
-  html += '<div class="form-group"><label class="form-label">Jam Setor</label><input type="time" class="form-input" id="setorJam" value="08:00"></div>';
-  html += '<div class="form-group"><label class="form-label">Nama Penerima</label><select class="form-select" id="setorPenerima"></select></div>';
-  html += '<div class="form-group"><label class="form-label">Uang Tunai (Rp)</label><input type="number" class="form-input" id="setorTunai" value="0" oninput="hitungTotalSetoran()"></div>';
-  html += '<div class="form-group"><label class="form-label">Uang QRIS (Rp)</label><input type="number" class="form-input" id="setorQris" value="0" oninput="hitungTotalSetoran()"></div>';
-  html += '<div id="totalSetoranBox"></div>';
-  html += '<div class="form-group"><label class="form-label">Keterangan (opsional)</label><input type="text" class="form-input" id="setorKet"></div>';
-  html += '<button class="btn btn-primary" onclick="simpanSetoran()">📤 Kirim Laporan Setoran</button>';
-  html += '</div>';
-
-  html += '<div class="card"><div class="card-title"><span class="ic">📋</span>Riwayat Setoran Saya</div><div id="riwayatSetoran"><div class="empty"><div class="em-txt">Memuat...</div></div></div></div>';
-
-  el.innerHTML = html;
-
-  var ru = await ambilData('Users');
-  var users = ru.ok ? ru.data : [];
-  var penerima = users.filter(function(u) { return (u.jabatan === 'Admin' || u.jabatan === 'Owner') && String(u.dihapus).toLowerCase() !== 'true'; });
-  var sel = document.getElementById('setorPenerima');
-  if (sel) {
-    sel.innerHTML = penerima.map(function(u) {
-      return '<option value="' + esc(u.nama) + '" data-jabatan="' + esc(u.jabatan) + '">Bapak/Ibu ' + esc(u.nama) + ' (' + esc(u.jabatan) + ')</option>';
-    }).join('') || '<option value="-">-</option>';
-  }
-
-  await hitungEkspektasiSetoran();
-  await muatRiwayatSetoran();
-}
-
-async function hitungEkspektasiSetoran() {
-  var s = getSession();
-  var inp = document.getElementById('setorTglPendapatan');
-  if (!inp) return;
-  var tgl = inp.value;
-  var r = await ambilData('Pendapatan_Harian', true);
-  var data = (r.ok ? r.data : []).filter(function(d) {
-    return d.tanggal === tgl && d.kode_cabang === s.kode_cabang && String(d.dihapus).toLowerCase() !== 'true';
-  });
-  var box = document.getElementById('ekspektasiBox');
-  if (!box) return;
-  if (data.length === 0) {
-    box.innerHTML = '<div class="role-note" style="background:#FEF2F2;border-color:#DC2626;color:#991B1B">⚠️ Belum ada input pendapatan tanggal ini</div>';
-    _ekspektasi = 0;
-    _setoranDetail = null;
-    return;
-  }
-  var totalUnit = 0, totalTips = 0, totalKasbon = 0;
-  data.forEach(function(d) {
-    totalUnit += Number(d.unit || 0);
-    totalTips += Number(d.tips || 0);
-    totalKasbon += Number(d.kasbon || 0);
-  });
-  var ekspektasi = (totalUnit * 7000) + totalTips - totalKasbon;
-  _ekspektasi = ekspektasi;
-  _setoranDetail = { totalUnit: totalUnit, totalTips: totalTips, totalKasbon: totalKasbon, ekspektasi: ekspektasi, data: data };
-  box.innerHTML = '<div class="card" style="background:#FEF3C7;border:1.5px dashed #F59E0B">'
-    + '<div style="font-size:11px;font-weight:800;color:#92400E">💰 UANG YANG HARUS DISETOR</div>'
-    + '<div style="font-size:22px;font-weight:800;color:#B45309;margin-top:4px">' + fmtRupiah(ekspektasi) + '</div>'
-    + '<div style="font-size:10.5px;color:#92400E;margin-top:4px">Unit ' + totalUnit + ' × Rp 7.000 + tips ' + fmtRupiah(totalTips) + ' − kasbon ' + fmtRupiah(totalKasbon) + '</div>'
-    + '</div>';
-}
-
-function hitungTotalSetoran() {
-  var tIn = document.getElementById('setorTunai');
-  var qIn = document.getElementById('setorQris');
-  var box = document.getElementById('totalSetoranBox');
-  if (!tIn || !qIn || !box) return;
-  var tunai = Number(tIn.value || 0);
-  var qris = Number(qIn.value || 0);
-  var total = tunai + qris;
-  var eksp = _ekspektasi || 0;
-  var selisih = total - eksp;
-  var warna = selisih === 0 ? '#059669' : '#DC2626';
-  box.innerHTML = '<div class="info-row"><span class="ir-label">Total Aktual</span><span class="ir-val" style="color:' + warna + '"><b>' + fmtRupiah(total) + '</b></span></div>';
-  if (selisih !== 0 && eksp > 0) {
-    box.innerHTML += '<div class="role-note" style="background:#FEF2F2;border-color:#DC2626;color:#991B1B">⚠️ Selisih: ' + fmtRupiah(selisih) + ' — akan perlu verifikasi Admin/Owner</div>';
-  }
-}
-
-async function muatRiwayatSetoran() {
-  var s = getSession();
-  var r = await ambilData('Setoran', true);
-  var data = (r.ok ? r.data : []).filter(function(x) { return String(x.id_pengaju) === String(s.user_id) && String(x.dihapus).toLowerCase() !== 'true'; });
-  var el = document.getElementById('riwayatSetoran');
-  if (!el) return;
-  if (data.length === 0) { el.innerHTML = '<div class="empty"><div class="em-txt">Belum ada setoran</div></div>'; return; }
-  var html = '';
-  data.slice().reverse().forEach(function(x) {
-    html += '<div class="card" style="background:#FAFAFA;padding:10px;margin-bottom:8px">';
-    html += '<div style="font-size:11px;color:#6B7280">' + esc(x.tanggal_pendapatan) + ' → ' + esc(x.tanggal_setoran) + ' ' + esc(x.jam_setoran) + '</div>';
-    html += '<div style="font-size:11px;color:#6B7280">Penerima: ' + esc(x.nama_penerima) + '</div>';
-    html += '<div class="info-row"><span class="ir-label">Tunai</span><span class="ir-val">' + fmtRupiah(x.total_tunai) + '</span></div>';
-    html += '<div class="info-row"><span class="ir-label">QRIS</span><span class="ir-val">' + fmtRupiah(x.total_qris) + '</span></div>';
-    html += '<div class="info-row"><span class="ir-label">Total</span><span class="ir-val"><b>' + fmtRupiah(x.total_setoran) + '</b></span></div>';
-    html += '<span class="badge ' + (x.status === 'disetujui' ? 'badge-success' : x.status === 'ditolak' ? 'badge-error' : 'badge-warning') + '">' + esc(x.status || 'menunggu') + '</span>';
-    html += '</div>';
-  });
-  el.innerHTML = html;
-}
-
-async function simpanSetoran() {
-  var s = getSession();
-  var tIn = document.getElementById('setorTunai');
-  var qIn = document.getElementById('setorQris');
-  var tunai = Number(tIn ? tIn.value : 0);
-  var qris = Number(qIn ? qIn.value : 0);
-  var total = tunai + qris;
-  var eksp = _ekspektasi || 0;
-  var selisih = total - eksp;
-
-  if (eksp === 0) return showToast('Belum ada input pendapatan tanggal ini', 'error');
-
-  var detail = _setoranDetail || {};
-  var penerimaSel = document.getElementById('setorPenerima');
-  var subId = generateSubmissionId('ST');
-
-  var data = {
-    id_setoran: subId,
-    submission_id: subId,
-    tanggal_pendapatan: document.getElementById('setorTglPendapatan').value,
-    tanggal_setoran: document.getElementById('setorTglSetor').value,
-    jam_setoran: document.getElementById('setorJam').value,
-    kode_cabang: s.kode_cabang,
-    id_pengaju: s.user_id,
-    nama_pengaju: s.user_nama,
-    nama_penerima: penerimaSel ? penerimaSel.value : '-',
-    jabatan_penerima: (penerimaSel && penerimaSel.options[penerimaSel.selectedIndex]) ? penerimaSel.options[penerimaSel.selectedIndex].getAttribute('data-jabatan') : '-',
-    total_unit_cabang: detail.totalUnit || 0,
-    total_tips_cabang: detail.totalTips || 0,
-    total_kasbon_cabang: detail.totalKasbon || 0,
-    ekspektasi_setoran: eksp,
-    total_tunai: tunai,
-    total_qris: qris,
-    total_setoran: total,
-    selisih: selisih,
-    status_selisih: selisih === 0 ? 'cocok' : 'selisih',
-    catatan_selisih: selisih === 0 ? '' : 'Selisih ' + fmtRupiah(selisih) + ' — perlu verifikasi',
-    jumlah_diterima_aktual: selisih === 0 ? total : 0,
-    keterangan: document.getElementById('setorKet').value,
-    status: selisih === 0 ? 'menunggu' : 'menunggu_verifikasi',
-    dihapus: false,
-    created_at: nowISO()
-  };
-
-  if (selisih !== 0) {
-    var ov = document.createElement('div');
-    ov.className = 'modal-overlay show';
-    ov.innerHTML = '<div class="modal" style="text-align:center">'
-      + '<div style="font-size:42px">⚠️</div>'
-      + '<div style="font-size:16px;font-weight:800;color:#DC2626;margin:8px 0">PERINGATAN SELISIH SETORAN</div>'
-      + '<div class="info-row"><span class="ir-label">Ekspektasi</span><span class="ir-val">' + fmtRupiah(eksp) + '</span></div>'
-      + '<div class="info-row"><span class="ir-label">Aktual</span><span class="ir-val">' + fmtRupiah(total) + '</span></div>'
-      + '<div class="info-row"><span class="ir-label">Selisih</span><span class="ir-val" style="color:#DC2626"><b>' + fmtRupiah(selisih) + '</b></span></div>'
-      + '<div class="role-note" style="margin-top:10px;background:#FEF2F2;border-color:#DC2626;color:#991B1B">Tolong hitung ulang, cek data, atau lapor Admin/Owner. Data akan disimpan dengan status "menunggu verifikasi".</div>'
-      + '<button class="btn btn-primary" id="btnLaporSelisih">📱 Lapor ke Admin/Owner</button>'
-      + '<button class="btn btn-gray" id="btnBatalSelisih" style="margin-top:8px">Batal</button>'
-      + '</div>';
-    document.body.appendChild(ov);
-
-    var btnBatal = document.getElementById('btnBatalSelisih');
-    if (btnBatal) btnBatal.addEventListener('click', function() { if (ov.parentNode) ov.parentNode.removeChild(ov); });
-
-    var btnLapor = document.getElementById('btnLaporSelisih');
-    if (btnLapor) btnLapor.addEventListener('click', function() {
-      if (ov.parentNode) ov.parentNode.removeChild(ov);
-      paksaIklan(async function() {
-        var r = await simpanData('Setoran', data);
-        if (r.ok) {
-          showToast('Laporan selisih terkirim ke Admin/Owner', 'success');
-          navigasi('konfirmasi_setoran');
-        } else showToast(r.pesan || 'Gagal', 'error');
-      }, 'rewarded');
-    });
-    return;
-  }
-
-  paksaIklan(async function() {
-    var r = await simpanData('Setoran', data);
-    if (r.ok) {
-      showToast('Setoran terkirim ✅', 'success');
-      navigasi('konfirmasi_setoran');
-    } else showToast(r.pesan || 'Gagal', 'error');
-  }, 'rewarded');
-}
-
-// ============================================================
-// RENDER LIHAT TOKEN (KARYAWAN)
-// ============================================================
-async function renderLihatToken(el) {
-  if (!el) return;
-  var s = getSession();
-  var r = await ambilData('Laporan_Token', true);
-  var list = (r.ok ? r.data : []).filter(function(x) {
-    return String(x.dihapus).toLowerCase() !== 'true' &&
-      (String(x.kode_cabang) === String(s.kode_cabang) || String(x.id_pengaju) === String(s.user_id));
-  });
-  var html = '<div class="card"><div class="card-title"><span class="ic">🔑</span>Token Saya</div>';
-  if (!list.length) html += '<div class="empty"><div class="em-ic">🔑</div><div class="em-txt">Belum ada token</div></div>';
-  else {
-    list.slice().reverse().forEach(function(x) {
-      html += '<div style="border:1px solid #F3F4F6;border-radius:10px;padding:10px;margin-bottom:8px">';
-      html += '<div style="font-size:12.5px;font-weight:700">' + esc(x.jenis_token) + ' — ' + esc(x.nomor_token) + '</div>';
-      html += '<div style="font-size:11px;color:#6B7280;margin:4px 0">' + esc(x.tanggal_pengajuan) + '</div>';
-      if (x.kode_pengisian) {
-        html += '<div class="code-box"><span>' + esc(x.kode_pengisian) + '</span><button onclick="salinKode(\'' + esc(x.kode_pengisian) + '\')">📋 Salin</button></div>';
-      } else {
-        html += '<div style="font-size:11px;color:#9CA3AF;margin:4px 0">Kode belum tersedia</div>';
-      }
-      html += '<div><span class="badge ' + (x.status === 'dikonfirmasi' ? 'badge-success' : 'badge-warning') + '">' + esc(x.status) + '</span></div>';
-      html += '</div>';
-    });
-  }
-  html += '</div>';
-  el.innerHTML = html;
-}
-
-// ============================================================
-// RENDER HR
-// ============================================================
-async function renderHR(el) {
-  if (!el) return;
-  var html = '<div class="tabs">';
-  html += '<button class="tab active" onclick="tabHR(this,\'data\')">Data Karyawan</button>';
-  html += '<button class="tab" onclick="tabHR(this,\'sp\')">SP</button>';
-  html += '<button class="tab" onclick="tabHR(this,\'resign\')">Resign/PHK</button>';
-  html += '<button class="tab" onclick="tabHR(this,\'kehadiran\')">Kehadiran</button>';
-  html += '<button class="tab" onclick="tabHR(this,\'evaluasi\')">Evaluasi</button>';
-  html += '</div><div id="tabHRContent"></div>';
-  el.innerHTML = html;
-  await tabHR(el.querySelector('.tabs .tab.active'), 'data');
-}
-
-async function tabHR(btn, tab) {
-  var allTabs = document.querySelectorAll('.tab');
-  for (var i = 0; i < allTabs.length; i++) allTabs[i].classList.remove('active');
-  if (btn) btn.classList.add('active');
-  var el = document.getElementById('tabHRContent');
-  if (!el) return;
-  el.innerHTML = '<div class="empty"><div class="em-txt">Memuat...</div></div>';
-  var r = await ambilData('Users', true);
-  var users = (r.ok ? r.data : []).filter(function(u){ return String(u.dihapus).toLowerCase() !== 'true'; });
-  if (tab === 'data') {
-    el.innerHTML = '<div class="card"><div class="card-title"><span class="ic">👥</span>Data Karyawan</div><div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Nama</th><th>Jabatan</th><th>Cabang</th></tr></thead><tbody>'
-      + users.map(function(u) { return '<tr><td>' + esc(u.id) + '</td><td>' + esc(u.nama) + '</td><td>' + esc(u.jabatan) + '</td><td>' + esc(u.kode_cabang) + '</td></tr>'; }).join('')
-      + '</tbody></table></div></div>';
-  } else if (tab === 'kehadiran') {
-    var rp = await ambilData('Pendapatan_Harian');
-    var data = rp.ok ? rp.data : [];
-    var per = {};
-    data.forEach(function(d) {
-      var k = d.id_karyawan || d.nama_karyawan;
-      if (!per[k]) per[k] = { nama: d.nama_karyawan, masuk: 0, tidak: 0 };
-      if (d.status_masuk === 'ya') per[k].masuk++; else per[k].tidak++;
-    });
-    el.innerHTML = '<div class="card"><div class="card-title"><span class="ic">📊</span>Rekap Kehadiran</div><div class="tbl-wrap"><table><thead><tr><th>Nama</th><th>Masuk</th><th>Tidak</th></tr></thead><tbody>'
-      + Object.keys(per).map(function(k) { return '<tr><td>' + esc(per[k].nama) + '</td><td>' + per[k].masuk + '</td><td>' + per[k].tidak + '</td></tr>'; }).join('')
-      + '</tbody></table></div></div>';
-  } else if (tab === 'evaluasi') {
-    var rp2 = await ambilData('Pendapatan_Harian');
-    var data2 = rp2.ok ? rp2.data : [];
-    var per2 = {};
-    data2.forEach(function(d) {
-      var k = d.id_karyawan || d.nama_karyawan;
-      if (!per2[k]) per2[k] = { nama: d.nama_karyawan, unit: 0 };
-      per2[k].unit += Number(d.unit || 0);
-    });
-    var arr = Object.keys(per2).map(function(k) { return per2[k]; }).sort(function(a, b) { return b.unit - a.unit; });
-    el.innerHTML = '<div class="card"><div class="card-title"><span class="ic">⭐</span>Evaluasi Kinerja</div><div class="tbl-wrap"><table><thead><tr><th>#</th><th>Nama</th><th>Total Unit</th></tr></thead><tbody>'
-      + arr.map(function(p, i) { return '<tr><td>' + (i+1) + '</td><td>' + esc(p.nama) + '</td><td>' + fmtAngka(p.unit) + '</td></tr>'; }).join('')
-      + '</tbody></table></div></div>';
-  } else if (tab === 'sp') {
-    var rsp = await ambilData('SP_Karyawan');
-    var sp = (rsp.ok ? rsp.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-    var html = '<div class="card"><div class="card-title"><span class="ic">📄</span>Surat Peringatan</div>';
-    if (!sp.length) html += '<div class="empty"><div class="em-txt">Belum ada SP</div></div>';
-    else {
-      html += '<div class="tbl-wrap"><table><thead><tr><th>Tgl</th><th>Nama</th><th>Tingkat</th><th>Alasan</th></tr></thead><tbody>';
-      sp.slice().reverse().forEach(function(x) {
-        html += '<tr><td>' + esc(x.tanggal) + '</td><td>' + esc(x.nama_karyawan) + '</td><td>' + esc(x.tingkat) + '</td><td>' + esc(x.alasan) + '</td></tr>';
-      });
-      html += '</tbody></table></div>';
-    }
-    html += '</div>';
-    el.innerHTML = html;
-  } else if (tab === 'resign') {
-    var rr = await ambilData('Resign_PHK');
-    var list = (rr.ok ? rr.data : []).filter(function(x){ return String(x.dihapus).toLowerCase() !== 'true'; });
-    var html = '<div class="card"><div class="card-title"><span class="ic">🚪</span>Resign / PHK</div>';
-    if (!list.length) html += '<div class="empty"><div class="em-txt">Belum ada pengajuan</div></div>';
-    else {
-      html += '<div class="tbl-wrap"><table><thead><tr><th>Nama</th><th>Jenis</th><th>Status</th></tr></thead><tbody>';
-      list.slice().reverse().forEach(function(x) {
-        html += '<tr><td>' + esc(x.nama_karyawan) + '</td><td>' + esc(x.jenis) + '</td><td>' + esc(x.status) + '</td></tr>';
-      });
-      html += '</tbody></table></div>';
-    }
-    html += '</div>';
-    el.innerHTML = html;
-  } else {
-    el.innerHTML = '<div class="card"><div class="empty"><div class="em-txt">Fitur ' + esc(tab) + '</div></div></div>';
-  }
-}
-
-// ============================================================
+// ═══════════════════════════════════════════════════════════════
 // RENDER PROFIL
-// ============================================================
+// ═══════════════════════════════════════════════════════════════
 async function renderProfil(el) {
   if (!el) return;
   var s = getSession();
-  var note = isOwner() ? 'Owner bebas iklan mutlak.' : 'Iklan hanya muncul sesekali, tidak akan mengganggu.';
-  var html = '<div class="card"><div class="card-title"><span class="ic">👤</span>Profil</div>';
+  if (!s) return;
+  var note = isOwner() ? 'Owner bebas iklan.' : 'Iklan wajib untuk role Anda.';
+  var html = '<div class="card"><div class="card-title">👤 Profil</div>';
   html += '<div class="info-row"><span class="ir-label">ID</span><span class="ir-val">' + esc(s.user_id) + '</span></div>';
   html += '<div class="info-row"><span class="ir-label">Nama</span><span class="ir-val">' + esc(s.user_nama) + '</span></div>';
   html += '<div class="info-row"><span class="ir-label">Jabatan</span><span class="ir-val">' + esc(s.user_jabatan) + '</span></div>';
   html += '<div class="info-row"><span class="ir-label">Cabang</span><span class="ir-val">' + esc(s.kode_cabang) + '</span></div>';
-  html += '<div class="info-row"><span class="ir-label">Mode</span><span class="ir-val">' + (s.is_demo ? 'Demo' : 'User') + '</span></div>';
   html += '<div class="role-note" style="margin-top:12px">' + esc(note) + '</div>';
-  html += '<button class="btn btn-gold" style="margin-top:12px" onclick="mulaiTutorial()">❓ Bantuan / Tutorial</button>';
-  html += '<button class="btn btn-danger" style="margin-top:8px" onclick="logout()">🚪 Keluar</button>';
+  html += '<button class="btn btn-danger" style="margin-top:12px" onclick="logout()">🚪 Keluar</button>';
   html += '</div>';
   el.innerHTML = html;
 }
 
-// ============================================================
-// ERROR CATCHER
-// ============================================================
-var errorLog = [];
-function tampilkanError(pesan, detail) {
-  var panel = document.getElementById('errorPanel');
-  if (!panel) return;
-  var p = document.getElementById('errorPesan');
-  var d = document.getElementById('errorDetail');
-  if (p) p.textContent = pesan;
-  if (d) d.textContent = detail;
-  panel.style.display = 'block';
-  errorLog.push({ pesan: pesan, detail: detail, waktu: new Date().toLocaleString('id-ID') });
-  if (errorLog.length > 20) errorLog.shift();
-}
-function buildErrorText() {
-  var lines = [];
-  lines.push('=== STEAM MP 7000 ERROR REPORT ===');
-  lines.push('Waktu: ' + new Date().toLocaleString('id-ID'));
-  lines.push('URL: ' + location.href);
-  lines.push('User Agent: ' + navigator.userAgent);
-  var s = getSession();
-  if (s) lines.push('User: ' + s.user_nama + ' (' + s.user_jabatan + ')');
-  lines.push('=====================================');
-  for (var i = 0; i < errorLog.length; i++) {
-    lines.push('--- ERROR #' + (i+1) + ' ---');
-    lines.push('Pesan: ' + errorLog[i].pesan);
-    if (errorLog[i].detail) lines.push('Detail: ' + errorLog[i].detail);
-    lines.push('Waktu: ' + errorLog[i].waktu);
-    lines.push('');
-  }
-  return lines.join('\n');
-}
-function salinError() {
-  var teks = buildErrorText();
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(teks).then(function(){ showToast('Tersalin ✅', 'success'); }).catch(function(){ fallbackCopy(teks); });
-  } else fallbackCopy(teks);
-}
-function kirimWAError() {
-  var teks = buildErrorText();
-  window.open('https://wa.me/' + WA_DEVELOPER + '?text=' + encodeURIComponent(teks), '_blank');
-}
-function toggleDetailError() {
-  var d = document.getElementById('errorDetail');
-  var b = document.getElementById('btnDetail');
-  if (!d) return;
-  d.classList.toggle('show');
-  if (b) b.textContent = d.classList.contains('show') ? '🔼 Sembunyikan Detail' : '🔽 Lihat Detail';
-}
-function tutupErrorPanel() {
-  var panel = document.getElementById('errorPanel');
-  if (panel) panel.style.display = 'none';
-}
-window.onerror = function(msg, url, line, col, error) {
-  tampilkanError('JS Error: ' + msg, 'File: ' + url + '\nBaris: ' + line + ':' + col + '\n' + (error && error.stack ? error.stack : ''));
-};
-window.addEventListener('unhandledrejection', function(e) {
-  tampilkanError('Promise: ' + (e.reason && e.reason.message || 'Unknown'), String(e.reason && e.reason.stack || ''));
-});
-
-// ============================================================
-// TUTORIAL
-// ============================================================
-function getTutorialSteps(jabatan) {
-  var base = [
-    { target: '.header', judul: 'Header Akun', teks: 'Info akun & tombol profil/logout.' },
-    { target: '.menu-grid', judul: 'Menu Utama', teks: 'Semua fitur aplikasi ada di sini.' },
-    { target: '.bottom-nav', judul: 'Navigasi Bawah', teks: 'Akses cepat menu utama.' }
-  ];
-  if (jabatan === 'Karyawan') return base.concat([
-    { target: '.menu-grid', judul: 'Pengajuan', teks: 'Ajukan kasbon, izin, kerusakan di sini.' },
-    { target: '.menu-grid', judul: 'Payroll Saya', teks: 'Lihat gaji Anda di sini.' },
-    { target: '.menu-grid', judul: 'Lihat Token', teks: 'Lihat token & kode pengisian.' }
-  ]);
-  if (jabatan === 'Kepala Toko') return base.concat([
-    { target: '.menu-grid', judul: 'Input Pendapatan', teks: 'Input unit, tips, kasbon harian.' },
-    { target: '.menu-grid', judul: 'Lapor Setoran', teks: 'Laporkan setoran ke Admin/Owner.' },
-    { target: '.menu-grid', judul: 'ACC Izin', teks: 'Setujui izin karyawan Anda.' },
-    { target: '.menu-grid', judul: 'Lapor Barang', teks: 'Laporkan barang masuk.' },
-    { target: '.menu-grid', judul: 'Lapor Token', teks: 'Laporkan token.' }
-  ]);
-  if (jabatan === 'Admin') return base.concat([
-    { target: '.menu-grid', judul: 'Operasional', teks: 'Kelola pendapatan & pengeluaran.' },
-    { target: '.menu-grid', judul: 'Persetujuan', teks: 'ACC pengajuan.' },
-    { target: '.menu-grid', judul: 'Setoran', teks: 'Verifikasi setoran KT.' },
-    { target: '.menu-grid', judul: 'HR', teks: 'Data & evaluasi karyawan.' },
-    { target: '.menu-grid', judul: 'Kelola Data', teks: 'Edit & hapus data.' }
-  ]);
-  if (jabatan === 'Owner') return base.concat([
-    { target: '.menu-grid', judul: 'Pendapatan Owner', teks: 'Pantau total pendapatan.' },
-    { target: '.menu-grid', judul: 'Manusia (HR)', teks: 'Kelola user & jabatan.' },
-    { target: '.menu-grid', judul: 'Payroll', teks: 'Kelola semua payroll.' },
-    { target: '.menu-grid', judul: 'Setoran', teks: 'Verifikasi setoran.' },
-    { target: '.menu-grid', judul: 'Pengaturan', teks: 'Atur target & global.' },
-    { target: '.menu-grid', judul: 'Dana Expansi', teks: 'Tabungan cabang baru.' },
-    { target: '.menu-grid', judul: 'Biaya Sewa', teks: 'Kelola sewa cabang.' },
-    { target: '.menu-grid', judul: 'Persiapan Cabang', teks: 'Rencana cabang baru.' }
-  ]);
-  return base;
-}
-function cekTutorial() {
-  var s = getSession();
-  if (!s) return;
-  if (localStorage.getItem('tutorial_done_' + s.user_id) === 'true') return;
-  setTimeout(mulaiTutorial, 1200);
-}
-function mulaiTutorial() {
-  var s = getSession();
-  if (!s) return;
-  var steps = getTutorialSteps(s.user_jabatan);
-  var stepAkhir = parseInt(localStorage.getItem('tutorial_step_' + s.user_id) || '0');
-  tampilkanTutorialStep(steps, stepAkhir);
-}
-function tampilkanTutorialStep(steps, index) {
-  var s = getSession();
-  var ov = document.getElementById('tutorialOverlay');
-  if (!ov) return;
-  if (index >= steps.length) {
-    try { localStorage.setItem('tutorial_done_' + s.user_id, 'true'); localStorage.removeItem('tutorial_step_' + s.user_id); } catch(e){}
-    ov.style.display = 'none';
-    ov.innerHTML = '';
-    showToast('Tutorial selesai! Selamat menggunakan aplikasi 💪', 'success');
-    return;
-  }
-  ov.style.display = 'block';
-  ov.innerHTML = '<div style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99999;display:flex;align-items:flex-end">'
-    + '<div style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:520px;margin:0 auto;padding:20px 18px calc(20px + env(safe-area-inset-bottom))">'
-    + '<div style="font-size:11px;color:#6B7280;font-weight:600">TUTORIAL ' + (index + 1) + ' / ' + steps.length + '</div>'
-    + '<div style="font-size:16px;font-weight:800;margin:6px 0">' + esc(steps[index].judul) + '</div>'
-    + '<div style="font-size:13px;line-height:1.5;color:#374151;margin-bottom:14px">' + esc(steps[index].teks) + '</div>'
-    + '<div style="display:flex;gap:8px">'
-    + (index > 0 ? '<button class="btn btn-gray" id="tutPrev" style="flex:1">◀ Sebelumnya</button>' : '')
-    + '<button class="btn btn-primary" id="tutNext" style="flex:1">' + (index >= steps.length - 1 ? '✓ Selesai' : 'Lanjut ▶') + '</button>'
-    + '</div></div></div>';
-  if (index > 0) {
-    var btnPrev = document.getElementById('tutPrev');
-    if (btnPrev) btnPrev.addEventListener('click', function() {
-      try { localStorage.setItem('tutorial_step_' + s.user_id, (index - 1).toString()); } catch(e){}
-      tampilkanTutorialStep(steps, index - 1);
-    });
-  }
-  var btnNext = document.getElementById('tutNext');
-  if (btnNext) btnNext.addEventListener('click', function() {
-    try { localStorage.setItem('tutorial_step_' + s.user_id, (index + 1).toString()); } catch(e){}
-    tampilkanTutorialStep(steps, index + 1);
-  });
-}
-
-// ============================================================
-// LOGOUT
-// ============================================================
-function logout() {
-  if (!confirm('Keluar dari akun?')) return;
-  try { sessionStorage.removeItem(SESSION_KEY); } catch(e){}
-  try { localStorage.removeItem(SESSION_KEY); } catch(e){}
-  window.location.href = 'index.html';
-}
-
-// ============================================================
-// BACK BUTTON & OFFLINE
-// ============================================================
-window.addEventListener('offline', function() { showToast('Tidak ada koneksi internet', 'error'); });
-window.addEventListener('popstate', function() {
-  var ov = document.getElementById('modalOverlay');
-  if (ov && ov.classList.contains('show')) {
-    tutupModal();
-    history.pushState(null, '', location.href);
-    return;
-  }
-  if (HALAMAN_AKTIF !== 'home') {
-    navigasi('home');
-    history.pushState(null, '', location.href);
-    return;
-  }
-});
-
-// ============================================================
+// ═══════════════════════════════════════════════════════════════
 // INIT
-// ============================================================
+// ═══════════════════════════════════════════════════════════════
 function init() {
+  document.getElementById('btnMasuk').addEventListener('click', cobaLogin);
+  document.getElementById('btnDemo').addEventListener('click', bukaModalDemo);
+  document.getElementById('togglePass').addEventListener('click', function() {
+    var inp = document.getElementById('loginPass');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    this.textContent = inp.type === 'password' ? '👁' : '🙈';
+  });
+  document.getElementById('loginPass').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') cobaLogin();
+  });
+  document.getElementById('loginId').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('loginPass').focus();
+  });
+
   var s = getSession();
-  if (!s) { window.location.href = 'index.html'; return; }
-  var namaEl = document.getElementById('hdrNama');
-  var jabEl = document.getElementById('hdrJabatan');
-  if (namaEl) namaEl.textContent = s.user_nama;
-  if (jabEl) jabEl.textContent = s.user_jabatan + ' • ' + s.kode_cabang + (isDemo() ? ' (Demo)' : '');
-  navigasi('home');
-  setTimeout(cekTutorial, 1500);
-  try { history.pushState(null, '', location.href); } catch(e){}
+  if (s) tampilkanDashboard();
+  else tampilkanLogin();
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
+document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
